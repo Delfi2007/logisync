@@ -104,7 +104,7 @@ export interface Warehouse {
     city: string;
     state: string;
     pincode: string;
-    coordinates: { lat: number; lng: number };
+    coordinates?: { lat: number; lng: number };
   };
   totalArea: number;
   availableArea: number;

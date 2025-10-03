@@ -6,6 +6,7 @@ import Orders from '@/pages/Orders';
 import Marketplace from '@/pages/Marketplace';
 import Analytics from '@/pages/Analytics';
 import Customers from '@/pages/Customers';
+import Warehouses from '@/pages/Warehouses';
 import Settings from '@/pages/Settings';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/customers" element={<Customers />} />
+          <Route path="/warehouses" element={<Warehouses />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </MainLayout>

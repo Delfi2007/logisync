@@ -5,6 +5,7 @@ import {
   Store, 
   Brain, 
   Users, 
+  Warehouse,
   Settings,
   Menu,
   X,
@@ -27,6 +28,7 @@ const navigation = [
   { name: 'Marketplace', href: '/marketplace', icon: Store },
   { name: 'Analytics', href: '/analytics', icon: Brain },
   { name: 'Customers', href: '/customers', icon: Users },
+  { name: 'Warehouses', href: '/warehouses', icon: Warehouse },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
