@@ -188,6 +188,7 @@ export const mockOrders: Order[] = [
       {
         productId: 'PRD-001',
         productName: 'Premium Rice (Basmati)',
+        sku: 'SKU-2024-001',
         quantity: 50,
         unitPrice: 180,
         total: 9000,
@@ -195,6 +196,7 @@ export const mockOrders: Order[] = [
       {
         productId: 'PRD-002',
         productName: 'Organic Wheat Flour',
+        sku: 'SKU-2024-002',
         quantity: 20,
         unitPrice: 350,
         total: 7000,
@@ -227,6 +229,7 @@ export const mockOrders: Order[] = [
       {
         productId: 'PRD-003',
         productName: 'Cotton T-Shirts (Pack of 3)',
+        sku: 'SKU-2024-003',
         quantity: 10,
         unitPrice: 899,
         total: 8990,
@@ -259,6 +262,7 @@ export const mockOrders: Order[] = [
       {
         productId: 'PRD-005',
         productName: 'Laptop Backpack',
+        sku: 'SKU-2024-005',
         quantity: 2,
         unitPrice: 1499,
         total: 2998,
@@ -290,6 +294,7 @@ export const mockOrders: Order[] = [
       {
         productId: 'PRD-004',
         productName: 'Mustard Oil',
+        sku: 'SKU-2024-004',
         quantity: 25,
         unitPrice: 220,
         total: 5500,
@@ -321,6 +326,7 @@ export const mockOrders: Order[] = [
       {
         productId: 'PRD-001',
         productName: 'Premium Rice (Basmati)',
+        sku: 'SKU-2024-001',
         quantity: 30,
         unitPrice: 180,
         total: 5400,

@@ -17,13 +17,15 @@ import {
 import { mockOrders } from '@/data/mockData';
 import { Order, OrderStatus } from '@/types';
 import OrderDetailModal from '@/components/OrderDetailModal';
+import CreateOrderModal from '@/components/CreateOrderModal';
 
 export default function Orders() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
-  const [orders] = useState<Order[]>(mockOrders);
+  const [orders, setOrders] = useState<Order[]>(mockOrders);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // Filter orders
   const filteredOrders = orders.filter(order => {
@@ -90,6 +92,97 @@ export default function Orders() {
     }).format(new Date(date));
   };
 
+  // Handle create order
+  const handleCreateOrder = (newOrder: Partial<Order>) => {
+    // Calculate estimated delivery based on delivery type
+    const today = new Date();
+    const estimatedDelivery = new Date(today);
+    estimatedDelivery.setDate(today.getDate() + (newOrder.deliveryType === 'express' ? 2 : 5));
+
+    const completeOrder: Order = {
+      ...newOrder,
+      id: `ord-${Date.now()}`,
+      orderNumber: newOrder.orderNumber || `ORD-${Date.now()}`,
+      customerId: newOrder.customerId || '',
+      customerName: newOrder.customerName || '',
+      items: newOrder.items || [],
+      subtotal: newOrder.subtotal || 0,
+      tax: newOrder.tax || 0,
+      shippingCost: newOrder.shippingCost || 0,
+      total: newOrder.total || 0,
+      status: newOrder.status || 'pending',
+      paymentStatus: newOrder.paymentStatus || 'pending',
+      deliveryType: newOrder.deliveryType || 'standard',
+      shippingAddress: newOrder.shippingAddress || {
+        line1: '',
+        line2: '',
+        city: '',
+        state: '',
+        pincode: '',
+      },
+      estimatedDelivery,
+      notes: newOrder.notes,
+      trackingNumber: newOrder.trackingNumber,
+      createdAt: newOrder.createdAt || new Date(),
+      updatedAt: newOrder.updatedAt || new Date(),
+    };
+    
+    setOrders([completeOrder, ...orders]);
+    alert('Order created successfully!');
+  };
+
+  // Handle status update
+  const handleUpdateStatus = (orderId: string, newStatus: OrderStatus, note?: string) => {
+    setOrders(prevOrders =>
+      prevOrders.map(order => {
+        if (order.id === orderId) {
+          // Generate tracking number when shipped
+          const trackingNumber = newStatus === 'shipped' && !order.trackingNumber
+            ? `TRK-${Date.now()}`
+            : order.trackingNumber;
+
+          // Update notes if provided
+          const updatedNotes = note
+            ? `${order.notes ? order.notes + '\n\n' : ''}[${new Date().toLocaleString('en-IN')}] Status updated to ${newStatus}: ${note}`
+            : order.notes;
+
+          return {
+            ...order,
+            status: newStatus,
+            trackingNumber,
+            notes: updatedNotes,
+            updatedAt: new Date(),
+          };
+        }
+        return order;
+      })
+    );
+
+    // Update selected order if it's the one being updated
+    if (selectedOrder?.id === orderId) {
+      setSelectedOrder(prev => {
+        if (!prev) return null;
+        const trackingNumber = newStatus === 'shipped' && !prev.trackingNumber
+          ? `TRK-${Date.now()}`
+          : prev.trackingNumber;
+        
+        const updatedNotes = note
+          ? `${prev.notes ? prev.notes + '\n\n' : ''}[${new Date().toLocaleString('en-IN')}] Status updated to ${newStatus}: ${note}`
+          : prev.notes;
+
+        return {
+          ...prev,
+          status: newStatus,
+          trackingNumber,
+          notes: updatedNotes,
+          updatedAt: new Date(),
+        };
+      });
+    }
+
+    alert(`Order status updated to ${newStatus}!`);
+  };
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -105,7 +198,10 @@ export default function Orders() {
             <Download className="w-4 h-4" />
             <span className="hidden sm:inline">Export</span>
           </button>
-          <button className="btn-primary flex items-center gap-2">
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="btn-primary flex items-center gap-2"
+          >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">Create Order</span>
           </button>
@@ -363,6 +459,14 @@ export default function Orders() {
           setSelectedOrder(null);
         }}
         order={selectedOrder}
+        onUpdateStatus={handleUpdateStatus}
+      />
+
+      {/* Create Order Modal */}
+      <CreateOrderModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateOrder}
       />
     </div>
   );

@@ -222,7 +222,11 @@ npm install
 
 - `LOGISYNC_PROMPT.md` - Full project requirements
 - `PROGRESS.md` - Development progress tracker
-- `SESSION_2_SUMMARY.md` - Session 2 achievements
+- `SESSION_2_SUMMARY.md` - Inventory module details
+- `SESSION_3_SUMMARY.md` - Orders page & detail modal
+- `SESSION_4_SUMMARY.md` - Order creation flow
+- `SESSION_5_SUMMARY.md` - Order status management
+- `SESSION_6_SUMMARY.md` - Invoice generation (GST)
 - `VISUAL_GUIDE.md` - Component visual reference
 - `README.md` - Project overview
 - `QUICK_REFERENCE.md` - This file
@@ -231,6 +235,7 @@ npm install
 
 ## 💡 Tips
 
+### Inventory Tips
 1. **Search is instant** - No need to press Enter
 2. **Stats update automatically** - Add/edit/delete products
 3. **SKU auto-generates** - Toggle "Auto" button
@@ -238,6 +243,15 @@ npm install
 5. **Confirmation on delete** - Prevents accidents
 6. **Tab navigation** - Switch between product views
 7. **Responsive design** - Works on mobile
+
+### Orders Tips
+8. **Click order row** - Opens detailed view with timeline
+9. **Status workflow** - Can only move forward (pending→confirmed→packed→shipped→delivered)
+10. **Track shipments** - Tracking number auto-generates on ship status
+11. **Generate invoices** - Click "Generate Invoice" for GST-compliant invoice
+12. **Print invoices** - Use Ctrl+P or Print button in invoice modal
+13. **Order notes** - Status changes append to order notes with timestamps
+14. **Stock validation** - Order creation checks available stock
 
 ---
 
@@ -270,5 +284,33 @@ Esc         → Close modal
 
 ---
 
-**Quick Reference v1.0**  
-Last Updated: October 2, 2025
+---
+
+## 🧾 Invoice Generation (NEW!)
+
+### How to Generate Invoice
+1. Go to **Orders** page
+2. Click on any order row
+3. Click **"Generate Invoice"** button
+4. View GST-compliant invoice
+
+### Invoice Actions
+- **Print**: Click Print button or Ctrl+P
+- **Download PDF**: Coming soon (placeholder)
+- **Close**: Return to order details
+
+### Invoice Features
+- Company details with GSTIN & PAN
+- Customer billing address
+- Itemized product list with HSN codes
+- Smart tax calculation:
+  - **Intra-state**: CGST @ 9% + SGST @ 9%
+  - **Inter-state**: IGST @ 18%
+- Payment details & terms
+- Professional A4 layout
+- Print-optimized CSS
+
+---
+
+**Quick Reference v2.0**  
+Last Updated: October 3, 2025

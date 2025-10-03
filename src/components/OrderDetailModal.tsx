@@ -1,14 +1,32 @@
+import { useState } from 'react';
 import { X, MapPin, Calendar, Truck, Package, CreditCard, FileText } from 'lucide-react';
-import { Order } from '@/types';
+import { Order, OrderStatus } from '@/types';
+import UpdateStatusModal from './UpdateStatusModal';
+import InvoiceModal from './InvoiceModal';
 
 interface OrderDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   order: Order | null;
+  onUpdateStatus?: (orderId: string, newStatus: OrderStatus, note?: string) => void;
 }
 
-export default function OrderDetailModal({ isOpen, onClose, order }: OrderDetailModalProps) {
+export default function OrderDetailModal({ isOpen, onClose, order, onUpdateStatus }: OrderDetailModalProps) {
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+
   if (!isOpen || !order) return null;
+
+  const handleUpdateStatus = (newStatus: OrderStatus, note?: string) => {
+    if (onUpdateStatus) {
+      onUpdateStatus(order.id, newStatus, note);
+    }
+    setIsStatusModalOpen(false);
+  };
+
+  const handleGenerateInvoice = () => {
+    setIsInvoiceModalOpen(true);
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -250,7 +268,10 @@ export default function OrderDetailModal({ isOpen, onClose, order }: OrderDetail
 
             {/* Actions */}
             <div className="flex items-center justify-between gap-3 pt-4 border-t border-neutral-200">
-              <button className="btn-secondary flex items-center gap-2">
+              <button 
+                onClick={handleGenerateInvoice}
+                className="btn-secondary flex items-center gap-2"
+              >
                 <FileText className="w-4 h-4" />
                 Generate Invoice
               </button>
@@ -258,12 +279,34 @@ export default function OrderDetailModal({ isOpen, onClose, order }: OrderDetail
                 <button onClick={onClose} className="btn-secondary">
                   Close
                 </button>
-                <button className="btn-primary">Update Status</button>
+                <button 
+                  onClick={() => setIsStatusModalOpen(true)}
+                  className="btn-primary"
+                  disabled={order.status === 'delivered' || order.status === 'cancelled'}
+                >
+                  Update Status
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Update Status Modal */}
+      <UpdateStatusModal
+        isOpen={isStatusModalOpen}
+        onClose={() => setIsStatusModalOpen(false)}
+        currentStatus={order.status}
+        onUpdateStatus={handleUpdateStatus}
+        orderNumber={order.orderNumber}
+      />
+
+      {/* Invoice Modal */}
+      <InvoiceModal
+        isOpen={isInvoiceModalOpen}
+        onClose={() => setIsInvoiceModalOpen(false)}
+        order={order}
+      />
     </div>
   );
 }
