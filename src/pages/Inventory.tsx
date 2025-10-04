@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Plus, 
   Search, 
@@ -10,11 +10,11 @@ import {
   TrendingDown,
   Edit,
   Trash2,
-  MoreVertical
+  MoreVertical,
+  Loader2
 } from 'lucide-react';
-import { mockProducts } from '@/data/mockData';
-import { Product } from '@/types';
 import ProductModal from '@/components/ProductModal';
+import productsService, { Category } from '@/services/products';
 
 type TabType = 'products' | 'movements' | 'alerts';
 
@@ -23,25 +23,70 @@ export default function Inventory() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [editingProduct, setEditingProduct] = useState<any | null>(null);
+  const [products, setProducts] = useState<any[]>([]);
+  const [lowStockProducts, setLowStockProducts] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  // Filter products
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         product.sku.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  // Fetch products
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await productsService.getAll({
+        page: currentPage,
+        limit: 20,
+        search: searchQuery || undefined,
+        category: selectedCategory !== 'all' ? selectedCategory : undefined,
+      });
+      setProducts(data.products);
+      setTotalPages(data.pagination.totalPages);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load products');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Get unique categories
-  const categories = ['all', ...new Set(products.map(p => p.category))];
+  // Fetch categories
+  const fetchCategories = async () => {
+    try {
+      const data = await productsService.getCategories();
+      setCategories(data);
+    } catch (err) {
+      console.error('Failed to load categories:', err);
+    }
+  };
+
+  // Fetch low stock products
+  const fetchLowStock = async () => {
+    try {
+      const data = await productsService.getLowStock();
+      setLowStockProducts(data.products);
+    } catch (err) {
+      console.error('Failed to load low stock products:', err);
+    }
+  };
+
+  // Load data on mount and when filters change
+  useEffect(() => {
+    fetchProducts();
+  }, [currentPage, searchQuery, selectedCategory]);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchLowStock();
+  }, []);
 
   // Get stock status
-  const getStockStatus = (product: Product): { label: string; color: string } => {
-    if (product.currentStock === 0) {
+  const getStockStatus = (product: any): { label: string; color: string } => {
+    if (product.stock === 0) {
       return { label: 'Out of Stock', color: 'bg-neutral-900 text-white' };
-    } else if (product.currentStock < product.reorderLevel) {
+    } else if (product.stock < product.reorder_level) {
       return { label: 'Low Stock', color: 'bg-neutral-300 text-neutral-900' };
     } else {
       return { label: 'In Stock', color: 'bg-neutral-100 text-neutral-700' };
@@ -49,21 +94,33 @@ export default function Inventory() {
   };
 
   // Handle product save
-  const handleSaveProduct = (productData: Partial<Product>) => {
-    if (editingProduct) {
-      // Update existing product
-      setProducts(prev => prev.map(p => p.id === editingProduct.id ? { ...p, ...productData } : p));
-    } else {
-      // Add new product
-      setProducts(prev => [...prev, productData as Product]);
+  const handleSaveProduct = async (productData: any) => {
+    try {
+      if (editingProduct) {
+        // Update existing product
+        await productsService.update(editingProduct.id, productData);
+      } else {
+        // Add new product
+        await productsService.create(productData);
+      }
+      setEditingProduct(null);
+      fetchProducts(); // Reload products
+      fetchLowStock(); // Update low stock list
+    } catch (err: any) {
+      alert(err.message || 'Failed to save product');
     }
-    setEditingProduct(null);
   };
 
   // Handle product delete
-  const handleDeleteProduct = (productId: string) => {
+  const handleDeleteProduct = async (productId: number) => {
     if (confirm('Are you sure you want to delete this product?')) {
-      setProducts(prev => prev.filter(p => p.id !== productId));
+      try {
+        await productsService.delete(productId);
+        fetchProducts(); // Reload products
+        fetchLowStock(); // Update low stock list
+      } catch (err: any) {
+        alert(err.message || 'Failed to delete product');
+      }
     }
   };
 
@@ -102,7 +159,11 @@ export default function Inventory() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-neutral-600">Total Products</p>
-              <p className="text-2xl font-bold text-neutral-900 mt-1">{products.length}</p>
+              {loading ? (
+                <div className="h-8 w-16 bg-neutral-200 animate-pulse rounded mt-1" />
+              ) : (
+                <p className="text-2xl font-bold text-neutral-900 mt-1">{products.length}</p>
+              )}
             </div>
             <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
               <Package className="w-6 h-6 text-neutral-700" />
@@ -114,9 +175,13 @@ export default function Inventory() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-neutral-600">Low Stock Items</p>
-              <p className="text-2xl font-bold text-neutral-900 mt-1">
-                {products.filter(p => p.currentStock < p.reorderLevel && p.currentStock > 0).length}
-              </p>
+              {loading ? (
+                <div className="h-8 w-16 bg-neutral-200 animate-pulse rounded mt-1" />
+              ) : (
+                <p className="text-2xl font-bold text-neutral-900 mt-1">
+                  {lowStockProducts.length}
+                </p>
+              )}
             </div>
             <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
               <TrendingDown className="w-6 h-6 text-neutral-700" />
@@ -128,9 +193,13 @@ export default function Inventory() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-neutral-600">Out of Stock</p>
-              <p className="text-2xl font-bold text-neutral-900 mt-1">
-                {products.filter(p => p.currentStock === 0).length}
-              </p>
+              {loading ? (
+                <div className="h-8 w-16 bg-neutral-200 animate-pulse rounded mt-1" />
+              ) : (
+                <p className="text-2xl font-bold text-neutral-900 mt-1">
+                  {products.filter(p => p.stock === 0).length}
+                </p>
+              )}
             </div>
             <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
               <AlertTriangle className="w-6 h-6 text-neutral-700" />
@@ -142,9 +211,13 @@ export default function Inventory() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-neutral-600">Total Stock Value</p>
-              <p className="text-2xl font-bold text-neutral-900 mt-1">
-                ₹{products.reduce((sum, p) => sum + (p.currentStock * p.costPrice), 0).toLocaleString('en-IN')}
-              </p>
+              {loading ? (
+                <div className="h-8 w-24 bg-neutral-200 animate-pulse rounded mt-1" />
+              ) : (
+                <p className="text-2xl font-bold text-neutral-900 mt-1">
+                  ₹{products.reduce((sum, p) => sum + (p.stock * p.cost), 0).toLocaleString('en-IN')}
+                </p>
+              )}
             </div>
             <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
               <Package className="w-6 h-6 text-neutral-700" />
@@ -213,9 +286,10 @@ export default function Inventory() {
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="input"
               >
+                <option value="all">All Categories</option>
                 {categories.map(cat => (
-                  <option key={cat} value={cat}>
-                    {cat === 'all' ? 'All Categories' : cat}
+                  <option key={cat.category} value={cat.category}>
+                    {cat.category} ({cat.product_count})
                   </option>
                 ))}
               </select>
@@ -227,121 +301,171 @@ export default function Inventory() {
             </button>
           </div>
 
+          {/* Error State */}
+          {error && (
+            <div className="card p-6 bg-red-50 border border-red-200">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
+                <div>
+                  <h3 className="font-medium text-red-900">Error loading products</h3>
+                  <p className="text-sm text-red-700 mt-1">{error}</p>
+                </div>
+                <button 
+                  onClick={fetchProducts}
+                  className="ml-auto btn-secondary text-sm"
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Products Table */}
           <div className="card overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-neutral-200">
-                <thead className="bg-neutral-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                      Product
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                      SKU
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                      Category
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                      Current Stock
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                      Reorder Level
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                      Unit Price
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-neutral-200">
-                  {filteredProducts.map((product) => {
-                    const status = getStockStatus(product);
-                    return (
-                      <tr key={product.id} className="hover:bg-neutral-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <Package className="w-5 h-5 text-neutral-600" />
-                            </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-neutral-900">
-                                {product.name}
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 text-neutral-400 animate-spin" />
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-neutral-200">
+                  <thead className="bg-neutral-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                        Product
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                        SKU
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                        Category
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                        Current Stock
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                        Reorder Level
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                        Unit Price
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-neutral-200">
+                    {products.map((product) => {
+                      const status = getStockStatus(product);
+                      return (
+                        <tr key={product.id} className="hover:bg-neutral-50 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <div className="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <Package className="w-5 h-5 text-neutral-600" />
                               </div>
-                              <div className="text-sm text-neutral-500">
-                                {product.description.substring(0, 30)}...
+                              <div className="ml-4">
+                                <div className="text-sm font-medium text-neutral-900">
+                                  {product.name}
+                                </div>
+                                {product.description && (
+                                  <div className="text-sm text-neutral-500">
+                                    {product.description.substring(0, 30)}...
+                                  </div>
+                                )}
                               </div>
                             </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="font-mono text-sm text-neutral-900">{product.sku}</span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-neutral-700">{product.category}</span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm font-medium text-neutral-900">
-                            {product.currentStock} {product.unit}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm text-neutral-600">
-                            {product.reorderLevel} {product.unit}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="text-sm font-medium text-neutral-900">
-                            ₹{product.unitPrice.toLocaleString('en-IN')}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`badge ${status.color}`}>
-                            {status.label}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <div className="flex items-center justify-end gap-2">
-                            <button 
-                              onClick={() => {
-                                setEditingProduct(product);
-                                setShowAddModal(true);
-                              }}
-                              className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
-                              title="Edit product"
-                            >
-                              <Edit className="w-4 h-4 text-neutral-600" />
-                            </button>
-                            <button 
-                              onClick={() => handleDeleteProduct(product.id)}
-                              className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
-                              title="Delete product"
-                            >
-                              <Trash2 className="w-4 h-4 text-neutral-600" />
-                            </button>
-                            <button className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors">
-                              <MoreVertical className="w-4 h-4 text-neutral-600" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="font-mono text-sm text-neutral-900">{product.sku}</span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="text-sm text-neutral-700">{product.category || 'Uncategorized'}</span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="text-sm font-medium text-neutral-900">
+                              {product.stock} {product.unit || 'units'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="text-sm text-neutral-600">
+                              {product.reorder_level} {product.unit || 'units'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className="text-sm font-medium text-neutral-900">
+                              ₹{product.price.toLocaleString('en-IN')}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`badge ${status.color}`}>
+                              {status.label}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div className="flex items-center justify-end gap-2">
+                              <button 
+                                onClick={() => {
+                                  setEditingProduct(product);
+                                  setShowAddModal(true);
+                                }}
+                                className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
+                                title="Edit product"
+                              >
+                                <Edit className="w-4 h-4 text-neutral-600" />
+                              </button>
+                              <button 
+                                onClick={() => handleDeleteProduct(product.id)}
+                                className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
+                                title="Delete product"
+                              >
+                                <Trash2 className="w-4 h-4 text-neutral-600" />
+                              </button>
+                              <button className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors">
+                                <MoreVertical className="w-4 h-4 text-neutral-600" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
 
-            {/* Empty State */}
-            {filteredProducts.length === 0 && (
-              <div className="text-center py-12">
-                <Package className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
-                <h3 className="text-lg font-medium text-neutral-900 mb-1">No products found</h3>
-                <p className="text-neutral-600">Try adjusting your search or filters</p>
+                {/* Empty State */}
+                {!loading && products.length === 0 && (
+                  <div className="text-center py-12">
+                    <Package className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
+                    <h3 className="text-lg font-medium text-neutral-900 mb-1">No products found</h3>
+                    <p className="text-neutral-600">Try adjusting your search or filters</p>
+                  </div>
+                )}
+
+                {/* Pagination */}
+                {!loading && products.length > 0 && totalPages > 1 && (
+                  <div className="px-6 py-4 border-t border-neutral-200 flex items-center justify-between">
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    <span className="text-sm text-neutral-600">
+                      Page {currentPage} of {totalPages}
+                    </span>
+                    <button
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -368,30 +492,44 @@ export default function Inventory() {
               </div>
               <div className="flex-1">
                 <h3 className="text-lg font-bold text-neutral-900 mb-2">Low Stock Alerts</h3>
-                <p className="text-neutral-600 mb-4">
-                  {products.filter(p => p.currentStock < p.reorderLevel).length} products need attention
-                </p>
-                
-                <div className="space-y-3">
-                  {products
-                    .filter(p => p.currentStock < p.reorderLevel)
-                    .map(product => (
-                      <div key={product.id} className="flex items-center justify-between p-4 bg-neutral-50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <Package className="w-5 h-5 text-neutral-600" />
-                          <div>
-                            <p className="font-medium text-neutral-900">{product.name}</p>
-                            <p className="text-sm text-neutral-600">
-                              Current: {product.currentStock} {product.unit} | Reorder Level: {product.reorderLevel} {product.unit}
-                            </p>
+                {loading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 text-neutral-400 animate-spin" />
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-neutral-600 mb-4">
+                      {lowStockProducts.length} products need attention
+                    </p>
+                    
+                    {lowStockProducts.length > 0 ? (
+                      <div className="space-y-3">
+                        {lowStockProducts.map(product => (
+                          <div key={product.id} className="flex items-center justify-between p-4 bg-neutral-50 rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <Package className="w-5 h-5 text-neutral-600" />
+                              <div>
+                                <p className="font-medium text-neutral-900">{product.name}</p>
+                                <p className="text-sm text-neutral-600">
+                                  Current: {product.stock} {product.unit || 'units'} | Reorder Level: {product.reorder_level} {product.unit || 'units'}
+                                </p>
+                              </div>
+                            </div>
+                            <button className="btn-primary text-sm">
+                              Reorder
+                            </button>
                           </div>
-                        </div>
-                        <button className="btn-primary text-sm">
-                          Reorder
-                        </button>
+                        ))}
                       </div>
-                    ))}
-                </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <Package className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
+                        <h3 className="text-lg font-medium text-neutral-900 mb-1">All Good!</h3>
+                        <p className="text-neutral-600">No products are running low on stock</p>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -1,0 +1,42 @@
+{
+  "name": "logisync-backend",
+  "version": "1.0.0",
+  "description": "LogiSync Backend API - Node.js + Express + PostgreSQL",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "migrate": "node migrations/run-migrations.js",
+    "seed:demo": "node scripts/create-demo-user.js",
+    "lint": "eslint src/"
+  },
+  "keywords": [
+    "logistics",
+    "supply-chain",
+    "api",
+    "rest"
+  ],
+  "author": "LogiSync Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "node-fetch": "^3.3.2",
+    "pg": "^8.11.3"
+  },
+  "devDependencies": {
+    "eslint": "^8.55.0",
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

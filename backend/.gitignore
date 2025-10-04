@@ -1,0 +1,11 @@
+# Backend Environment File
+# Copy this to .env and update with your actual values
+
+.env
+node_modules/
+*.log
+.DS_Store
+.vscode/
+dist/
+build/
+coverage/

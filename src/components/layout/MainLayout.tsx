@@ -11,18 +11,19 @@ import {
   X,
   Bell,
   Search,
-  User
+  User,
+  LogOut
 } from 'lucide-react';
 import { ReactNode, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { currentUser } from '@/data/mockData';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 const navigation = [
-  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Inventory', href: '/inventory', icon: Package },
   { name: 'Orders', href: '/orders', icon: ShoppingCart },
   { name: 'Marketplace', href: '/marketplace', icon: Store },
@@ -35,6 +36,15 @@ const navigation = [
 export default function MainLayout({ children }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    if (confirm('Are you sure you want to logout?')) {
+      logout();
+      navigate('/login');
+    }
+  };
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -101,9 +111,16 @@ export default function MainLayout({ children }: LayoutProps) {
                 </div>
               </div>
               <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-neutral-900">{currentUser.name}</p>
-                <p className="text-xs text-neutral-500 capitalize">{currentUser.role}</p>
+                <p className="text-sm font-medium text-neutral-900">{user?.full_name || 'User'}</p>
+                <p className="text-xs text-neutral-500">{user?.email}</p>
               </div>
+              <button
+                onClick={handleLogout}
+                className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4 text-neutral-600" />
+              </button>
             </div>
           </div>
         </div>
@@ -172,9 +189,16 @@ export default function MainLayout({ children }: LayoutProps) {
                 </div>
               </div>
               <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-neutral-900">{currentUser.name}</p>
-                <p className="text-xs text-neutral-500 capitalize">{currentUser.role}</p>
+                <p className="text-sm font-medium text-neutral-900">{user?.full_name || 'User'}</p>
+                <p className="text-xs text-neutral-500">{user?.email}</p>
               </div>
+              <button
+                onClick={handleLogout}
+                className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                title="Logout"
+              >
+                <LogOut className="w-4 h-4 text-neutral-600" />
+              </button>
             </div>
           </div>
         </div>
@@ -217,8 +241,8 @@ export default function MainLayout({ children }: LayoutProps) {
                 {/* User menu - desktop only */}
                 <div className="hidden lg:flex items-center space-x-3 pl-3 border-l border-neutral-200">
                   <div className="text-right">
-                    <p className="text-sm font-medium text-neutral-900">{currentUser.name}</p>
-                    <p className="text-xs text-neutral-500">{currentUser.businessName}</p>
+                    <p className="text-sm font-medium text-neutral-900">{user?.full_name || 'User'}</p>
+                    <p className="text-xs text-neutral-500">{user?.email}</p>
                   </div>
                   <div className="w-10 h-10 bg-neutral-200 rounded-full flex items-center justify-center">
                     <User className="w-5 h-5 text-neutral-600" />
