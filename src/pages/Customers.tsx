@@ -1,24 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense, useCallback } from 'react';
 import { 
   Users, 
   TrendingUp, 
   UserPlus, 
   Search, 
-  Filter,
-  Edit,
-  Trash2,
-  Eye,
-  Mail,
-  Phone,
-  Building2,
-  MapPin
+  Filter
 } from 'lucide-react';
+import CustomerRow from '@/components/customers/CustomerRow';
+import ModalLoader from '@/components/ModalLoader';
 import customersService, { 
-  Customer, 
-  CustomerAddress,
-  CreateCustomerData,
-  UpdateCustomerData 
+  Customer
 } from '@/services/customers';
+
+// Lazy load the modal component
+const CustomerModal = lazy(() => import('@/components/customers/CustomerModal'));
 
 export default function Customers() {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -32,18 +27,17 @@ export default function Customers() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalCustomers, setTotalCustomers] = useState(0);
   
+  // Bulk selection state
+  const [selectedCustomers, setSelectedCustomers] = useState<Set<number>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  
   // Modals
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
+  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
 
-  // Fetch customers
-  useEffect(() => {
-    fetchCustomers();
-  }, [currentPage, segmentFilter, searchTerm]);
-
-  const fetchCustomers = async () => {
+  // Fetch customers wrapped in useCallback
+  const fetchCustomers = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -67,15 +61,20 @@ export default function Customers() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, segmentFilter, searchTerm]);
+
+  // Fetch customers
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
 
   // Calculate statistics from current customers
   const stats = {
-    total: totalCustomers,
+    total: totalCustomers || 0,
     premium: customers.filter(c => c.segment === 'premium').length,
     regular: customers.filter(c => c.segment === 'regular').length,
     new: customers.filter(c => c.segment === 'new').length,
-    totalRevenue: customers.reduce((sum, c) => sum + c.total_revenue, 0),
+    totalRevenue: customers.reduce((sum, c) => sum + (c.total_revenue || 0), 0),
   };
 
   const formatCurrency = (amount: number) => {
@@ -86,45 +85,26 @@ export default function Customers() {
     }).format(amount);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const getSegmentBadge = (segment: 'premium' | 'regular' | 'new') => {
-    const styles = {
-      premium: 'bg-purple-100 text-purple-800 border-purple-200',
-      regular: 'bg-blue-100 text-blue-800 border-blue-200',
-      new: 'bg-green-100 text-green-800 border-green-200',
-    };
-    
-    return (
-      <span className={`px-2 py-1 text-xs font-medium border rounded capitalize ${styles[segment]}`}>
-        {segment}
-      </span>
-    );
-  };
-
-  const handleViewCustomer = async (customer: Customer) => {
+  const handleViewCustomer = useCallback(async (customer: Customer) => {
     try {
       // Fetch full customer details including addresses
       const fullCustomer = await customersService.getById(customer.id);
-      setSelectedCustomer(fullCustomer);
-      setIsDetailModalOpen(true);
+      // Open edit modal to view customer details
+      setEditingCustomer(fullCustomer);
+      setModalMode('edit');
+      setIsModalOpen(true);
     } catch (err: any) {
       alert('Failed to load customer details: ' + err.message);
     }
-  };
+  }, []);
 
-  const handleEditCustomer = (customer: Customer) => {
+  const handleEditCustomer = useCallback((customer: Customer) => {
+    setModalMode('edit');
     setEditingCustomer(customer);
-    setIsAddEditModalOpen(true);
-  };
+    setIsModalOpen(true);
+  }, []);
 
-  const handleDeleteCustomer = async (customerId: number) => {
+  const handleDeleteCustomer = useCallback(async (customerId: number) => {
     if (window.confirm('Are you sure you want to delete this customer? This action cannot be undone.')) {
       try {
         await customersService.delete(customerId);
@@ -133,34 +113,122 @@ export default function Customers() {
         alert('Failed to delete customer: ' + err.message);
       }
     }
-  };
+  }, [fetchCustomers]);
 
-  const handleAddCustomer = () => {
-    setEditingCustomer(null);
-    setIsAddEditModalOpen(true);
-  };
+  // Bulk selection handlers wrapped in useCallback
+  const handleSelectAll = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      const allIds = new Set(customers.map(c => c.id));
+      setSelectedCustomers(allIds);
+    } else {
+      setSelectedCustomers(new Set());
+    }
+  }, [customers]);
 
-  const handleSaveCustomer = async (customerData: CreateCustomerData | UpdateCustomerData) => {
-    try {
-      if (editingCustomer) {
-        // Update existing customer
-        await customersService.update(editingCustomer.id, customerData as UpdateCustomerData);
+  const handleSelectCustomer = useCallback((customerId: number) => {
+    setSelectedCustomers(prev => {
+      const newSelected = new Set(prev);
+      if (newSelected.has(customerId)) {
+        newSelected.delete(customerId);
       } else {
-        // Add new customer
-        await customersService.create(customerData as CreateCustomerData);
+        newSelected.add(customerId);
       }
-      setIsAddEditModalOpen(false);
-      fetchCustomers(); // Refresh the list
-    } catch (err: any) {
-      alert('Failed to save customer: ' + err.message);
+      return newSelected;
+    });
+  }, []);
+
+  const handleBulkDelete = async () => {
+    if (selectedCustomers.size === 0) return;
+    
+    const count = selectedCustomers.size;
+    if (!confirm(`Are you sure you want to delete ${count} customer${count > 1 ? 's' : ''}? This action cannot be undone.`)) {
+      return;
+    }
+
+    setBulkDeleting(true);
+    let successCount = 0;
+    let errorCount = 0;
+
+    try {
+      for (const customerId of Array.from(selectedCustomers)) {
+        try {
+          await customersService.delete(customerId);
+          successCount++;
+        } catch (err: any) {
+          console.error(`Failed to delete customer ${customerId}:`, err);
+          console.error('Error details:', err.response?.data || err.message);
+          errorCount++;
+        }
+      }
+
+      if (errorCount === 0) {
+        alert(`Successfully deleted ${successCount} customer${successCount > 1 ? 's' : ''}`);
+      } else {
+        alert(`Deleted ${successCount} customer${successCount > 1 ? 's' : ''}. Failed to delete ${errorCount}.`);
+      }
+
+      setSelectedCustomers(new Set());
+      await fetchCustomers();
+    } catch (error: any) {
+      console.error('Bulk delete error:', error);
+      alert('Failed to complete bulk delete operation: ' + (error.message || 'Unknown error'));
+    } finally {
+      setBulkDeleting(false);
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleExportCSV = () => {
+    const dataToExport = selectedCustomers.size > 0
+      ? customers.filter(c => selectedCustomers.has(c.id))
+      : customers;
+
+    const headers = ['Name', 'Email', 'Phone', 'Business Name', 'Segment', 'Total Orders', 'Total Revenue'];
+    const rows = dataToExport.map(c => [
+      c.name,
+      c.email,
+      c.phone,
+      c.business_name || '',
+      c.segment,
+      c.total_orders,
+      c.total_revenue
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `customers_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleAddCustomer = useCallback(() => {
+    setModalMode('create');
+    setEditingCustomer(null);
+    setIsModalOpen(true);
+  }, []);
+
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+    setEditingCustomer(null);
+  }, []);
+
+  const handleSaveSuccess = useCallback(() => {
+    fetchCustomers(); // Refresh the list
+  }, [fetchCustomers]);
+
+  const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1); // Reset to first page on search
     fetchCustomers();
-  };
+  }, [fetchCustomers]);
 
   if (loading && customers.length === 0) {
     return (
@@ -189,7 +257,7 @@ export default function Customers() {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+        <div className="bg-neutral-50 border border-neutral-300 text-neutral-900 px-4 py-3 rounded">
           {error}
         </div>
       )}
@@ -200,7 +268,7 @@ export default function Customers() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-neutral-600">Total Customers</p>
-              <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.total}</p>
+              <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.total || 0}</p>
             </div>
             <div className="p-3 bg-neutral-100 rounded-lg">
               <Users className="w-6 h-6 text-neutral-700" />
@@ -212,13 +280,13 @@ export default function Customers() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-neutral-600">Premium</p>
-              <p className="text-2xl font-bold text-purple-600 mt-1">{stats.premium}</p>
+              <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.premium}</p>
               <p className="text-xs text-neutral-500 mt-1">
                 {stats.total > 0 ? ((stats.premium / stats.total) * 100).toFixed(0) : 0}% of total
               </p>
             </div>
-            <div className="p-3 bg-purple-100 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-purple-600" />
+            <div className="p-3 bg-neutral-100 rounded-lg">
+              <TrendingUp className="w-6 h-6 text-neutral-700" />
             </div>
           </div>
         </div>
@@ -227,13 +295,13 @@ export default function Customers() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-neutral-600">Regular</p>
-              <p className="text-2xl font-bold text-blue-600 mt-1">{stats.regular}</p>
+              <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.regular}</p>
               <p className="text-xs text-neutral-500 mt-1">
                 {stats.total > 0 ? ((stats.regular / stats.total) * 100).toFixed(0) : 0}% of total
               </p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Users className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-neutral-100 rounded-lg">
+              <Users className="w-6 h-6 text-neutral-700" />
             </div>
           </div>
         </div>
@@ -242,12 +310,12 @@ export default function Customers() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-neutral-600">Total Revenue</p>
-              <p className="text-2xl font-bold text-green-600 mt-1">
+              <p className="text-2xl font-bold text-neutral-900 mt-1">
                 {formatCurrency(stats.totalRevenue)}
               </p>
             </div>
-            <div className="p-3 bg-green-100 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-green-600" />
+            <div className="p-3 bg-neutral-100 rounded-lg">
+              <TrendingUp className="w-6 h-6 text-neutral-700" />
             </div>
           </div>
         </div>
@@ -290,12 +358,53 @@ export default function Customers() {
         </div>
       </div>
 
+      {/* Bulk Actions Toolbar */}
+      {selectedCustomers.size > 0 && (
+        <div className="flex items-center justify-between p-4 bg-neutral-50 border border-neutral-200 rounded-lg">
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-neutral-700">
+              {selectedCustomers.size} customer{selectedCustomers.size > 1 ? 's' : ''} selected
+            </span>
+            <button
+              onClick={() => setSelectedCustomers(new Set())}
+              className="text-sm text-neutral-600 hover:text-neutral-900"
+            >
+              Clear selection
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleExportCSV}
+              disabled={bulkDeleting}
+              className="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Export CSV
+            </button>
+            <button
+              onClick={handleBulkDelete}
+              disabled={bulkDeleting}
+              className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {bulkDeleting ? 'Deleting...' : 'Delete Selected'}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Customers Table */}
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-neutral-50 border-b border-neutral-200">
               <tr>
+                <th className="py-3 px-6 w-12">
+                  <input
+                    type="checkbox"
+                    checked={customers.length > 0 && selectedCustomers.size === customers.length}
+                    onChange={handleSelectAll}
+                    className="rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900"
+                  />
+                </th>
                 <th className="text-left py-3 px-6 text-sm font-medium text-neutral-600">Customer</th>
                 <th className="text-left py-3 px-6 text-sm font-medium text-neutral-600">Contact</th>
                 <th className="text-left py-3 px-6 text-sm font-medium text-neutral-600">Business</th>
@@ -309,83 +418,21 @@ export default function Customers() {
             <tbody className="divide-y divide-neutral-200">
               {customers.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-neutral-500">
+                  <td colSpan={9} className="py-12 text-center text-neutral-500">
                     No customers found. {searchTerm || segmentFilter !== 'all' ? 'Try adjusting your filters.' : 'Add your first customer to get started.'}
                   </td>
                 </tr>
               ) : (
                 customers.map((customer) => (
-                  <tr key={customer.id} className="hover:bg-neutral-50">
-                    <td className="py-4 px-6">
-                      <div>
-                        <p className="font-medium text-neutral-900">{customer.name}</p>
-                        {customer.gst_number && (
-                          <p className="text-xs text-neutral-500">GST: {customer.gst_number}</p>
-                        )}
-                      </div>
-                    </td>
-                    <td className="py-4 px-6">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-sm text-neutral-600">
-                          <Mail className="w-4 h-4" />
-                          <span className="truncate max-w-[200px]">{customer.email}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-neutral-600">
-                          <Phone className="w-4 h-4" />
-                          <span>{customer.phone}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6">
-                      {customer.business_name ? (
-                        <div className="flex items-center gap-2 text-sm text-neutral-700">
-                          <Building2 className="w-4 h-4 text-neutral-400" />
-                          <span>{customer.business_name}</span>
-                        </div>
-                      ) : (
-                        <span className="text-sm text-neutral-400">—</span>
-                      )}
-                    </td>
-                    <td className="py-4 px-6">
-                      {getSegmentBadge(customer.segment)}
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="text-sm text-neutral-900 font-medium">{customer.total_orders}</span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="text-sm text-neutral-900 font-medium">
-                        {formatCurrency(customer.total_revenue)}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="text-sm text-neutral-600">{formatDate(customer.created_at)}</span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleViewCustomer(customer)}
-                          className="p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition"
-                          title="View Details"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleEditCustomer(customer)}
-                          className="p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition"
-                          title="Edit"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteCustomer(customer.id)}
-                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition"
-                          title="Delete"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                  <CustomerRow
+                    key={customer.id}
+                    customer={customer}
+                    isSelected={selectedCustomers.has(customer.id)}
+                    onSelect={handleSelectCustomer}
+                    onView={handleViewCustomer}
+                    onEdit={handleEditCustomer}
+                    onDelete={handleDeleteCustomer}
+                  />
                 ))
               )}
             </tbody>
@@ -418,17 +465,24 @@ export default function Customers() {
         )}
       </div>
 
-      {/* TODO: Implement modals */}
+      {/* Customer Modal - Lazy Loaded */}
+      {isModalOpen && (
+        <Suspense fallback={<ModalLoader />}>
+          <CustomerModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            onSuccess={handleSaveSuccess}
+            customer={editingCustomer}
+            mode={modalMode}
+          />
+        </Suspense>
+      )}
+
+      {/* TODO: Implement Customer Detail Modal */}
       {/* <CustomerDetailModal
         customer={selectedCustomer}
         isOpen={isDetailModalOpen}
         onClose={() => setIsDetailModalOpen(false)}
-      />
-      <AddEditCustomerModal
-        customer={editingCustomer}
-        isOpen={isAddEditModalOpen}
-        onClose={() => setIsAddEditModalOpen(false)}
-        onSave={handleSaveCustomer}
       /> */}
     </div>
   );

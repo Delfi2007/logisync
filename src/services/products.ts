@@ -45,7 +45,7 @@ export interface CreateProductData {
   description?: string;
   price: number;
   cost: number;
-  stock_quantity: number;
+  stock: number;
   reorder_level: number;
   unit?: string;
   supplier?: string;
@@ -58,6 +58,7 @@ export interface UpdateProductData {
   description?: string;
   price?: number;
   cost?: number;
+  stock?: number;
   reorder_level?: number;
   unit?: string;
   supplier?: string;

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -101,6 +102,7 @@ function QuickAction({ label, icon: Icon, onClick }: QuickActionProps) {
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -178,26 +180,24 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Total Orders"
-          value={stats.total_orders}
-          change={stats.orders_growth}
+          value={stats.orders.total}
           icon={ShoppingCart}
-          subtitle={`${stats.pending_orders} pending`}
+          subtitle={`${stats.orders.pending} pending`}
         />
         <MetricCard
           title="Total Revenue"
-          value={formatCurrency(stats.total_revenue)}
-          change={stats.revenue_growth}
+          value={formatCurrency(stats.orders.total_revenue)}
           icon={IndianRupee}
         />
         <MetricCard
           title="Total Products"
-          value={stats.total_products}
+          value={stats.products.total}
           icon={Package}
-          subtitle={`${stats.low_stock_count} low stock`}
+          subtitle={`${stats.products.low_stock} low stock`}
         />
         <MetricCard
           title="Total Customers"
-          value={stats.total_customers}
+          value={stats.customers.total}
           icon={Warehouse}
           subtitle="Registered customers"
         />
@@ -210,22 +210,22 @@ export default function Dashboard() {
           <QuickAction
             label="Create Order"
             icon={Plus}
-            onClick={() => {/* TODO: Implement create order */}}
+            onClick={() => navigate('/orders')}
           />
           <QuickAction
             label="Add Inventory"
             icon={Package}
-            onClick={() => {/* TODO: Implement add inventory */}}
+            onClick={() => navigate('/inventory')}
           />
           <QuickAction
             label="Find Warehouse"
             icon={Warehouse}
-            onClick={() => {/* TODO: Implement find warehouse */}}
+            onClick={() => navigate('/warehouses')}
           />
           <QuickAction
             label="Book Shipment"
             icon={Truck}
-            onClick={() => {/* TODO: Implement book shipment */}}
+            onClick={() => navigate('/orders')}
           />
         </div>
       </div>
@@ -236,7 +236,7 @@ export default function Dashboard() {
         <div className="card p-6">
           <h3 className="text-lg font-bold text-neutral-900 mb-4">Revenue Trends (7 Days)</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={revenue_chart}>
+            <LineChart data={revenue_chart.data}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
               <XAxis 
                 dataKey="date" 
@@ -267,9 +267,9 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </div>
 
-        {/* Top Products Chart */}
+        {/* Top Customers Chart */}
         <div className="card p-6">
-          <h3 className="text-lg font-bold text-neutral-900 mb-4">Top Selling Products</h3>
+          <h3 className="text-lg font-bold text-neutral-900 mb-4">Top Customers by Revenue</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={top_products}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
@@ -277,6 +277,9 @@ export default function Dashboard() {
                 dataKey="name" 
                 tick={{ fill: '#737373', fontSize: 12 }}
                 stroke="#d4d4d4"
+                angle={-15}
+                textAnchor="end"
+                height={60}
               />
               <YAxis 
                 tick={{ fill: '#737373', fontSize: 12 }}

@@ -7,14 +7,32 @@ import apiClient, { ApiSuccessResponse, handleApiResponse } from './api';
 
 // Types
 export interface DashboardStats {
-  total_products: number;
-  total_orders: number;
-  total_customers: number;
-  total_revenue: number;
-  low_stock_count: number;
-  pending_orders: number;
-  revenue_growth: number;
-  orders_growth: number;
+  orders: {
+    total: number;
+    pending: number;
+    delivered: number;
+    total_revenue: number;
+    delivered_revenue: number;
+    average_order_value: number;
+  };
+  customers: {
+    total: number;
+    premium: number;
+    new: number;
+  };
+  products: {
+    total: number;
+    active: number;
+    low_stock: number;
+    inventory_value: number;
+  };
+  warehouses: {
+    total: number;
+    active: number;
+    total_capacity: number;
+    total_occupied: number;
+    utilization_rate: number;
+  };
 }
 
 export interface RecentOrder {
@@ -29,21 +47,29 @@ export interface RecentOrder {
 export interface RevenueData {
   date: string;
   revenue: number;
-  orders: number;
+  order_count: number;
+  avg_order_value: number;
 }
 
 export interface TopProduct {
   id: number;
   name: string;
-  total_quantity: number;
+  email: string;
+  phone: string;
+  business_name: string;
+  segment: string;
+  total_orders: number;
   total_revenue: number;
-  order_count: number;
+  created_at: string;
 }
 
 export interface DashboardData {
   stats: DashboardStats;
   recent_orders: RecentOrder[];
-  revenue_chart: RevenueData[];
+  revenue_chart: {
+    period: string;
+    data: RevenueData[];
+  };
   top_products: TopProduct[];
 }
 

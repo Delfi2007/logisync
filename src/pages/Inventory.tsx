@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { 
   Plus, 
   Search, 
@@ -8,13 +8,15 @@ import {
   Package,
   AlertTriangle,
   TrendingDown,
-  Edit,
   Trash2,
-  MoreVertical,
   Loader2
 } from 'lucide-react';
-import ProductModal from '@/components/ProductModal';
-import productsService, { Category } from '@/services/products';
+import ModalLoader from '@/components/ModalLoader';
+import ProductRow from '@/components/products/ProductRow';
+import productsService, { Category, Product } from '@/services/products';
+
+// Lazy load the modal component
+const ProductModal = lazy(() => import('@/components/products/ProductModal'));
 
 type TabType = 'products' | 'movements' | 'alerts';
 
@@ -22,18 +24,23 @@ export default function Inventory() {
   const [activeTab, setActiveTab] = useState<TabType>('products');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<any | null>(null);
-  const [products, setProducts] = useState<any[]>([]);
-  const [lowStockProducts, setLowStockProducts] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [lowStockProducts, setLowStockProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  
+  // Bulk selection state
+  const [selectedProducts, setSelectedProducts] = useState<Set<number>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
 
-  // Fetch products
-  const fetchProducts = async () => {
+  // Fetch products (wrapped in useCallback for stable reference)
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -50,27 +57,27 @@ export default function Inventory() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchQuery, selectedCategory]);
 
   // Fetch categories
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const data = await productsService.getCategories();
       setCategories(data);
     } catch (err) {
       console.error('Failed to load categories:', err);
     }
-  };
+  }, []);
 
-  // Fetch low stock products
-  const fetchLowStock = async () => {
+  // Fetch low stock products (wrapped in useCallback for stable reference)
+  const fetchLowStock = useCallback(async () => {
     try {
       const data = await productsService.getLowStock();
       setLowStockProducts(data.products);
     } catch (err) {
       console.error('Failed to load low stock products:', err);
     }
-  };
+  }, []);
 
   // Load data on mount and when filters change
   useEffect(() => {
@@ -82,37 +89,34 @@ export default function Inventory() {
     fetchLowStock();
   }, []);
 
-  // Get stock status
-  const getStockStatus = (product: any): { label: string; color: string } => {
-    if (product.stock === 0) {
-      return { label: 'Out of Stock', color: 'bg-neutral-900 text-white' };
-    } else if (product.stock < product.reorder_level) {
-      return { label: 'Low Stock', color: 'bg-neutral-300 text-neutral-900' };
-    } else {
-      return { label: 'In Stock', color: 'bg-neutral-100 text-neutral-700' };
-    }
-  };
+  // Handle opening modal for create
+  const handleOpenCreateModal = useCallback(() => {
+    setModalMode('create');
+    setEditingProduct(null);
+    setIsModalOpen(true);
+  }, []);
 
-  // Handle product save
-  const handleSaveProduct = async (productData: any) => {
-    try {
-      if (editingProduct) {
-        // Update existing product
-        await productsService.update(editingProduct.id, productData);
-      } else {
-        // Add new product
-        await productsService.create(productData);
-      }
-      setEditingProduct(null);
-      fetchProducts(); // Reload products
-      fetchLowStock(); // Update low stock list
-    } catch (err: any) {
-      alert(err.message || 'Failed to save product');
-    }
-  };
+  // Handle opening modal for edit
+  const handleOpenEditModal = useCallback((product: Product) => {
+    setModalMode('edit');
+    setEditingProduct(product);
+    setIsModalOpen(true);
+  }, []);
+
+  // Handle modal close
+  const handleCloseModal = useCallback(() => {
+    setIsModalOpen(false);
+    setEditingProduct(null);
+  }, []);
+
+  // Handle successful save
+  const handleSaveSuccess = useCallback(() => {
+    fetchProducts(); // Reload products
+    fetchLowStock(); // Update low stock list
+  }, [fetchProducts, fetchLowStock]);
 
   // Handle product delete
-  const handleDeleteProduct = async (productId: number) => {
+  const handleDeleteProduct = useCallback(async (productId: number) => {
     if (confirm('Are you sure you want to delete this product?')) {
       try {
         await productsService.delete(productId);
@@ -122,6 +126,107 @@ export default function Inventory() {
         alert(err.message || 'Failed to delete product');
       }
     }
+  }, [fetchProducts, fetchLowStock]);
+
+  // Bulk selection handlers
+  const handleSelectAll = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      const allIds = new Set(products.map(p => p.id));
+      setSelectedProducts(allIds);
+    } else {
+      setSelectedProducts(new Set());
+    }
+  }, [products]);
+
+  const handleSelectProduct = useCallback((productId: number) => {
+    setSelectedProducts(prev => {
+      const newSelected = new Set(prev);
+      if (newSelected.has(productId)) {
+        newSelected.delete(productId);
+      } else {
+        newSelected.add(productId);
+      }
+      return newSelected;
+    });
+  }, []);
+
+  const handleBulkDelete = async () => {
+    if (selectedProducts.size === 0) return;
+    
+    const count = selectedProducts.size;
+    if (!confirm(`Are you sure you want to delete ${count} product${count > 1 ? 's' : ''}? This action cannot be undone.`)) {
+      return;
+    }
+
+    setBulkDeleting(true);
+    let successCount = 0;
+    let errorCount = 0;
+
+    try {
+      // Delete products one by one (you could batch this if your API supports it)
+      for (const productId of Array.from(selectedProducts)) {
+        try {
+          await productsService.delete(productId);
+          successCount++;
+        } catch (err: any) {
+          console.error(`Failed to delete product ${productId}:`, err);
+          console.error('Error details:', err.response?.data || err.message);
+          errorCount++;
+        }
+      }
+
+      // Show results
+      if (errorCount === 0) {
+        alert(`Successfully deleted ${successCount} product${successCount > 1 ? 's' : ''}`);
+      } else {
+        alert(`Deleted ${successCount} product${successCount > 1 ? 's' : ''}. Failed to delete ${errorCount}.`);
+      }
+
+      // Clear selection and refresh
+      setSelectedProducts(new Set());
+      await fetchProducts();
+      await fetchLowStock();
+    } catch (error: any) {
+      console.error('Bulk delete error:', error);
+      alert('Failed to complete bulk delete operation: ' + (error.message || 'Unknown error'));
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
+
+  const handleExportCSV = () => {
+    const dataToExport = selectedProducts.size > 0
+      ? products.filter(p => selectedProducts.has(p.id))
+      : products;
+
+    // Create CSV content
+    const headers = ['Name', 'SKU', 'Category', 'Price', 'Cost', 'Stock', 'Reorder Level', 'Status'];
+    const rows = dataToExport.map(p => [
+      p.name,
+      p.sku,
+      p.category || '',
+      p.price,
+      p.cost,
+      p.stock,
+      p.reorder_level,
+      p.status
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    // Download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `products_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -144,7 +249,7 @@ export default function Inventory() {
             <span className="hidden sm:inline">Import</span>
           </button>
           <button 
-            onClick={() => setShowAddModal(true)}
+            onClick={handleOpenCreateModal}
             className="btn-primary flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
@@ -301,6 +406,43 @@ export default function Inventory() {
             </button>
           </div>
 
+          {/* Bulk Actions Toolbar */}
+          {selectedProducts.size > 0 && (
+            <div className="card p-4 bg-neutral-50 border-neutral-300">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium text-neutral-900">
+                    {selectedProducts.size} product{selectedProducts.size > 1 ? 's' : ''} selected
+                  </span>
+                  <button
+                    onClick={() => setSelectedProducts(new Set())}
+                    className="text-sm text-neutral-600 hover:text-neutral-900 underline"
+                  >
+                    Clear selection
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={handleExportCSV}
+                    className="btn-secondary flex items-center gap-2 text-sm"
+                    disabled={bulkDeleting}
+                  >
+                    <Download className="w-4 h-4" />
+                    Export CSV
+                  </button>
+                  <button
+                    onClick={handleBulkDelete}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm disabled:opacity-50"
+                    disabled={bulkDeleting}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    {bulkDeleting ? 'Deleting...' : 'Delete Selected'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Error State */}
           {error && (
             <div className="card p-6 bg-red-50 border border-red-200">
@@ -331,6 +473,14 @@ export default function Inventory() {
                 <table className="min-w-full divide-y divide-neutral-200">
                   <thead className="bg-neutral-50">
                     <tr>
+                      <th className="px-6 py-3 text-left">
+                        <input
+                          type="checkbox"
+                          checked={products.length > 0 && selectedProducts.size === products.length}
+                          onChange={handleSelectAll}
+                          className="w-4 h-4 text-neutral-900 border-neutral-300 rounded focus:ring-neutral-900"
+                        />
+                      </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
                         Product
                       </th>
@@ -358,80 +508,16 @@ export default function Inventory() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-neutral-200">
-                    {products.map((product) => {
-                      const status = getStockStatus(product);
-                      return (
-                        <tr key={product.id} className="hover:bg-neutral-50 transition-colors">
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                                <Package className="w-5 h-5 text-neutral-600" />
-                              </div>
-                              <div className="ml-4">
-                                <div className="text-sm font-medium text-neutral-900">
-                                  {product.name}
-                                </div>
-                                {product.description && (
-                                  <div className="text-sm text-neutral-500">
-                                    {product.description.substring(0, 30)}...
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="font-mono text-sm text-neutral-900">{product.sku}</span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="text-sm text-neutral-700">{product.category || 'Uncategorized'}</span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="text-sm font-medium text-neutral-900">
-                              {product.stock} {product.unit || 'units'}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="text-sm text-neutral-600">
-                              {product.reorder_level} {product.unit || 'units'}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="text-sm font-medium text-neutral-900">
-                              ₹{product.price.toLocaleString('en-IN')}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`badge ${status.color}`}>
-                              {status.label}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div className="flex items-center justify-end gap-2">
-                              <button 
-                                onClick={() => {
-                                  setEditingProduct(product);
-                                  setShowAddModal(true);
-                                }}
-                                className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
-                                title="Edit product"
-                              >
-                                <Edit className="w-4 h-4 text-neutral-600" />
-                              </button>
-                              <button 
-                                onClick={() => handleDeleteProduct(product.id)}
-                                className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
-                                title="Delete product"
-                              >
-                                <Trash2 className="w-4 h-4 text-neutral-600" />
-                              </button>
-                              <button className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors">
-                                <MoreVertical className="w-4 h-4 text-neutral-600" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
+                    {products.map((product) => (
+                      <ProductRow
+                        key={product.id}
+                        product={product}
+                        isSelected={selectedProducts.has(product.id)}
+                        onSelect={handleSelectProduct}
+                        onEdit={handleOpenEditModal}
+                        onDelete={handleDeleteProduct}
+                      />
+                    ))}
                   </tbody>
                 </table>
 
@@ -536,16 +622,18 @@ export default function Inventory() {
         </div>
       )}
 
-      {/* Product Modal */}
-      <ProductModal
-        isOpen={showAddModal}
-        onClose={() => {
-          setShowAddModal(false);
-          setEditingProduct(null);
-        }}
-        product={editingProduct || undefined}
-        onSave={handleSaveProduct}
-      />
+      {/* Product Modal - Lazy Loaded */}
+      {isModalOpen && (
+        <Suspense fallback={<ModalLoader />}>
+          <ProductModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            onSuccess={handleSaveSuccess}
+            product={editingProduct}
+            mode={modalMode}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

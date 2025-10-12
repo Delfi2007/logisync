@@ -116,10 +116,10 @@ export default function MainLayout({ children }: LayoutProps) {
               </div>
               <button
                 onClick={handleLogout}
-                className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-red-50 rounded-lg transition-colors"
                 title="Logout"
               >
-                <LogOut className="w-4 h-4 text-neutral-600" />
+                <LogOut className="w-4 h-4 text-red-600" />
               </button>
             </div>
           </div>
@@ -194,10 +194,10 @@ export default function MainLayout({ children }: LayoutProps) {
               </div>
               <button
                 onClick={handleLogout}
-                className="p-2 hover:bg-neutral-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-red-50 rounded-lg transition-colors"
                 title="Logout"
               >
-                <LogOut className="w-4 h-4 text-neutral-600" />
+                <LogOut className="w-4 h-4 text-red-600" />
               </button>
             </div>
           </div>

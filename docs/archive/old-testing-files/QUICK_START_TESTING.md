@@ -1,38 +1,23 @@
-# Quick Start Guide - Testing LogiSync
+# 🚀 Quick Start Testing - LogiSync
+**Last Updated**: October 4, 2025  
+**Status**: ✅ Backend Running | ⏳ Ready for Frontend Testing
 
-## 🚀 How to Run the Application
+---
 
-### Prerequisites
-- Node.js 18+ installed
-- PostgreSQL 14+ running
-- Backend database setup complete
+## 📋 Pre-Testing Checklist
 
-### Step 1: Create Demo User (First Time Only)
-```powershell
-cd backend
-npm run seed:demo
-```
-This creates the demo account: demo@logisync.com / password123
+### ✅ Backend Status
+- [x] Backend server running on http://localhost:5000
+- [x] Database: PostgreSQL (logisync_dev)
+- [x] Demo user created (demo@logisync.com)
+- [x] All API endpoints tested (82.4% success rate)
 
-### Step 2: Start Backend Server
-```powershell
-cd backend
-npm start
-```
-Backend will run on: `http://localhost:5000`
-
-### Step 3: Install Frontend Dependencies (If Not Done)
-```powershell
-cd c:\Mukesh\LogiSync
-npm install
-```
-
-### Step 4: Start Frontend Development Server
+### 🔄 Start Frontend
 ```powershell
 cd c:\Mukesh\LogiSync
 npm run dev
 ```
-Frontend will run on: `http://localhost:5173`
+**Frontend URL**: http://localhost:5173
 
 ---
 
@@ -42,11 +27,11 @@ Frontend will run on: `http://localhost:5173`
 **Email**: `demo@logisync.com`  
 **Password**: `password123`
 
-### Create New Account
-Use the Register page to create a new account with:
+### Or Create New Account
+Use the Register page to create a test account with:
 - Full Name
 - Email address
-- Password (minimum 8 characters)
+- Strong password (shows strength indicator)
 
 ---
 
@@ -57,12 +42,12 @@ Use the Register page to create a new account with:
 - [ ] **Login**: Sign in at `/login`
 - [ ] **Invalid Credentials**: Try wrong password
 - [ ] **Protected Routes**: Access `/dashboard` without login
-- [ ] **Logout**: Click logout button in sidebar
+- [ ] **Logout Button**: Verify appears in red color at bottom of sidebar ✨ NEW
+- [ ] **Logout**: Click logout button and confirm
 
 ### Dashboard Tests (`/dashboard`)
 - [ ] **Stats Cards**: Check if numbers load
 - [ ] **Revenue Chart**: Verify 7-day trend displays
-- [ ] **Top Products**: Check bar chart renders
 - [ ] **Recent Orders**: Verify table with data
 - [ ] **Loading State**: Refresh to see spinner
 - [ ] **Error Handling**: Turn off backend, see error
@@ -70,13 +55,44 @@ Use the Register page to create a new account with:
 ### Inventory Tests (`/inventory`)
 - [ ] **Product List**: Verify products load in table
 - [ ] **Stats Cards**: Check Total Products, Low Stock, etc.
+- [ ] **Delete Button**: Verify appears in red color ✨ NEW
 - [ ] **Search**: Type product name in search box
 - [ ] **Category Filter**: Select different categories
 - [ ] **Pagination**: Navigate between pages
 - [ ] **Create Product**: Click "Add Product" button
 - [ ] **Edit Product**: Click edit icon on any product
 - [ ] **Delete Product**: Click delete icon (with confirmation)
-- [ ] **Low Stock Tab**: Switch to "Low Stock Alerts" tab
+
+### Customers Tests (`/customers`)
+- [ ] **Customer List**: Verify customers load with pagination
+- [ ] **Stats Cards**: Total, VIP, Regular, New counts
+- [ ] **Delete Button**: Verify appears in red color ✨ NEW
+- [ ] **Search**: Search by name, email, or phone
+- [ ] **Segment Filter**: Filter by VIP/Regular/New
+- [ ] **View Details**: Click "View" to see customer details
+- [ ] **Create Customer**: Add new customer
+- [ ] **Delete Customer**: Delete a customer
+
+### Orders Tests (`/orders`)
+- [ ] **Order List**: Verify orders load in table
+- [ ] **Stats Cards**: Total, Pending, Processing, Delivered, Revenue
+- [ ] **Processing Stats**: Verify shows correct number (not "00") ✨ FIXED
+- [ ] **Delete Button**: Verify appears in red color ✨ NEW
+- [ ] **Dual Filters**: Filter by Order Status AND Payment Status
+- [ ] **Search**: Search by order number or customer name
+- [ ] **Quick Status Update**: Hover over status badge → Select new status
+- [ ] **View Details**: Click "View" to see order items and details
+- [ ] **Delete Order**: Delete an order
+
+### Warehouses Tests (`/warehouses`)
+- [ ] **Warehouse List**: Verify warehouses load with stats
+- [ ] **Stats Cards**: Total, Active, Total Capacity, Avg Utilization
+- [ ] **Dual Filters**: Filter by Status AND Verification
+- [ ] **Search**: Search by name, code, or city
+- [ ] **Quick Status Update**: Hover over status → Change to Active/Inactive/Maintenance
+- [ ] **View Details**: Click "View" to see warehouse details and amenities
+- [ ] **Utilization Bars**: Check capacity progress bars display correctly
+- [ ] **Delete Warehouse**: Delete a warehouse
 
 ---
 

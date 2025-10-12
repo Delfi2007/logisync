@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import {
   Plus,
   Search,
@@ -13,68 +13,86 @@ import {
   Truck,
   CheckCircle,
   Clock,
+  XCircle,
+  RotateCcw,
+  DollarSign,
+  User,
+  Calendar
 } from 'lucide-react';
-import { mockOrders } from '@/data/mockData';
-import { Order, OrderStatus } from '@/types';
-import OrderDetailModal from '@/components/OrderDetailModal';
-import CreateOrderModal from '@/components/CreateOrderModal';
+import ModalLoader from '@/components/ModalLoader';
+
+// Lazy load the modal component
+const OrderModal = lazy(() => import('@/components/orders/OrderModal'));
+import ordersService, {
+  Order,
+  OrderStatus,
+  PaymentStatus,
+  OrderStats
+} from '@/services/orders';
 
 export default function Orders() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [stats, setStats] = useState<OrderStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Filters and search
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all');
-  const [orders, setOrders] = useState<Order[]>(mockOrders);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<'all' | OrderStatus>('all');
+  const [paymentStatusFilter, setPaymentStatusFilter] = useState<'all' | PaymentStatus>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalOrders, setTotalOrders] = useState(0);
+  
+  // Modals
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Filter orders
-  const filteredOrders = orders.filter(order => {
-    const matchesSearch = 
-      order.orderNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.customerName?.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+  // Fetch orders
+  useEffect(() => {
+    fetchOrders();
+  }, [currentPage, statusFilter, paymentStatusFilter, searchQuery]);
 
-  // Get status color
-  const getStatusColor = (status: OrderStatus): string => {
-    const colors = {
-      pending: 'bg-neutral-200 text-neutral-900',
-      confirmed: 'bg-neutral-300 text-neutral-900',
-      packed: 'bg-neutral-400 text-white',
-      shipped: 'bg-neutral-700 text-white',
-      delivered: 'bg-neutral-900 text-white',
-      cancelled: 'bg-neutral-100 text-neutral-600',
-    };
-    return colors[status];
+  // Fetch stats
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const filters = {
+        page: currentPage,
+        limit: 10,
+        ...(statusFilter !== 'all' && { status: statusFilter }),
+        ...(paymentStatusFilter !== 'all' && { payment_status: paymentStatusFilter }),
+        ...(searchQuery && { search: searchQuery }),
+        sortBy: 'created_at' as const,
+        order: 'DESC' as const
+      };
+      
+      const response = await ordersService.getAll(filters);
+      setOrders(response.orders);
+      setTotalPages(response.pagination.totalPages);
+      setTotalOrders(response.pagination.total);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load orders');
+      console.error('Error fetching orders:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Get status icon
-  const getStatusIcon = (status: OrderStatus) => {
-    const icons = {
-      pending: Clock,
-      confirmed: CheckCircle,
-      packed: Package,
-      shipped: Truck,
-      delivered: CheckCircle,
-      cancelled: Trash2,
-    };
-    const Icon = icons[status];
-    return <Icon className="w-4 h-4" />;
+  const fetchStats = async () => {
+    try {
+      const statsData = await ordersService.getStats();
+      setStats(statsData);
+    } catch (err: any) {
+      console.error('Error fetching order stats:', err);
+    }
   };
 
-  // Calculate stats
-  const stats = {
-    total: orders.length,
-    pending: orders.filter(o => o.status === 'pending').length,
-    processing: orders.filter(o => ['confirmed', 'packed'].includes(o.status)).length,
-    shipped: orders.filter(o => o.status === 'shipped').length,
-    totalRevenue: orders
-      .filter(o => o.paymentStatus === 'paid')
-      .reduce((sum, o) => sum + o.total, 0),
-  };
-
-  // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -83,391 +101,453 @@ export default function Orders() {
     }).format(amount);
   };
 
-  // Format date
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-IN', {
-      day: '2-digit',
-      month: 'short',
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-IN', {
       year: 'numeric',
-    }).format(new Date(date));
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
-  // Handle create order
-  const handleCreateOrder = (newOrder: Partial<Order>) => {
-    // Calculate estimated delivery based on delivery type
-    const today = new Date();
-    const estimatedDelivery = new Date(today);
-    estimatedDelivery.setDate(today.getDate() + (newOrder.deliveryType === 'express' ? 2 : 5));
-
-    const completeOrder: Order = {
-      ...newOrder,
-      id: `ord-${Date.now()}`,
-      orderNumber: newOrder.orderNumber || `ORD-${Date.now()}`,
-      customerId: newOrder.customerId || '',
-      customerName: newOrder.customerName || '',
-      items: newOrder.items || [],
-      subtotal: newOrder.subtotal || 0,
-      tax: newOrder.tax || 0,
-      shippingCost: newOrder.shippingCost || 0,
-      total: newOrder.total || 0,
-      status: newOrder.status || 'pending',
-      paymentStatus: newOrder.paymentStatus || 'pending',
-      deliveryType: newOrder.deliveryType || 'standard',
-      shippingAddress: newOrder.shippingAddress || {
-        line1: '',
-        line2: '',
-        city: '',
-        state: '',
-        pincode: '',
-      },
-      estimatedDelivery,
-      notes: newOrder.notes,
-      trackingNumber: newOrder.trackingNumber,
-      createdAt: newOrder.createdAt || new Date(),
-      updatedAt: newOrder.updatedAt || new Date(),
+  const getStatusBadge = (status: OrderStatus) => {
+    const styles = {
+      pending: 'bg-neutral-100 text-neutral-700 border-neutral-200',
+      confirmed: 'bg-neutral-200 text-neutral-800 border-neutral-300',
+      processing: 'bg-neutral-300 text-neutral-900 border-neutral-400',
+      shipped: 'bg-neutral-400 text-neutral-900 border-neutral-500',
+      delivered: 'bg-neutral-900 text-white border-neutral-900',
+      cancelled: 'bg-white text-neutral-600 border-neutral-300',
+      returned: 'bg-neutral-50 text-neutral-500 border-neutral-200',
     };
     
-    setOrders([completeOrder, ...orders]);
-    alert('Order created successfully!');
-  };
-
-  // Handle status update
-  const handleUpdateStatus = (orderId: string, newStatus: OrderStatus, note?: string) => {
-    setOrders(prevOrders =>
-      prevOrders.map(order => {
-        if (order.id === orderId) {
-          // Generate tracking number when shipped
-          const trackingNumber = newStatus === 'shipped' && !order.trackingNumber
-            ? `TRK-${Date.now()}`
-            : order.trackingNumber;
-
-          // Update notes if provided
-          const updatedNotes = note
-            ? `${order.notes ? order.notes + '\n\n' : ''}[${new Date().toLocaleString('en-IN')}] Status updated to ${newStatus}: ${note}`
-            : order.notes;
-
-          return {
-            ...order,
-            status: newStatus,
-            trackingNumber,
-            notes: updatedNotes,
-            updatedAt: new Date(),
-          };
-        }
-        return order;
-      })
+    return (
+      <span className={`px-2 py-1 text-xs font-medium border rounded capitalize ${styles[status]}`}>
+        {status}
+      </span>
     );
-
-    // Update selected order if it's the one being updated
-    if (selectedOrder?.id === orderId) {
-      setSelectedOrder(prev => {
-        if (!prev) return null;
-        const trackingNumber = newStatus === 'shipped' && !prev.trackingNumber
-          ? `TRK-${Date.now()}`
-          : prev.trackingNumber;
-        
-        const updatedNotes = note
-          ? `${prev.notes ? prev.notes + '\n\n' : ''}[${new Date().toLocaleString('en-IN')}] Status updated to ${newStatus}: ${note}`
-          : prev.notes;
-
-        return {
-          ...prev,
-          status: newStatus,
-          trackingNumber,
-          notes: updatedNotes,
-          updatedAt: new Date(),
-        };
-      });
-    }
-
-    alert(`Order status updated to ${newStatus}!`);
   };
+
+  const getPaymentStatusBadge = (paymentStatus: PaymentStatus) => {
+    const styles = {
+      pending: 'bg-neutral-100 text-neutral-700 border-neutral-200',
+      paid: 'bg-neutral-900 text-white border-neutral-900',
+      failed: 'bg-white text-neutral-600 border-neutral-300',
+      refunded: 'bg-neutral-50 text-neutral-500 border-neutral-200',
+    };
+    
+    return (
+      <span className={`px-2 py-1 text-xs font-medium border rounded capitalize ${styles[paymentStatus]}`}>
+        {paymentStatus}
+      </span>
+    );
+  };
+
+  const getStatusIcon = (status: OrderStatus) => {
+    const icons = {
+      pending: Clock,
+      confirmed: CheckCircle,
+      processing: Package,
+      shipped: Truck,
+      delivered: CheckCircle,
+      cancelled: XCircle,
+      returned: RotateCcw,
+    };
+    const Icon = icons[status];
+    return <Icon className="w-4 h-4" />;
+  };
+
+  const handleViewOrder = async (order: Order) => {
+    try {
+      // Fetch full order details including items
+      const fullOrder = await ordersService.getById(order.id);
+      // View order details in modal (can be enhanced with a view-only modal later)
+      console.log('Viewing order:', fullOrder);
+      alert(`Order #${fullOrder.id} - Status: ${fullOrder.status}\nCustomer: ${fullOrder.customer_name}\nTotal: ₹${fullOrder.total_amount}`);
+    } catch (err: any) {
+      alert('Failed to load order details: ' + err.message);
+    }
+  };
+
+  const handleOpenCreateModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSaveSuccess = () => {
+    fetchOrders(); // Refresh the list
+    fetchStats(); // Refresh stats
+  };
+
+  const handleDeleteOrder = async (orderId: number) => {
+    if (window.confirm('Are you sure you want to delete this order? This action cannot be undone.')) {
+      try {
+        await ordersService.delete(orderId);
+        fetchOrders(); // Refresh the list
+        fetchStats(); // Refresh stats
+      } catch (err: any) {
+        alert('Failed to delete order: ' + err.message);
+      }
+    }
+  };
+
+  const handleUpdateStatus = async (orderId: number, newStatus: OrderStatus) => {
+    try {
+      await ordersService.updateStatus(orderId, { status: newStatus });
+      fetchOrders(); // Refresh the list
+      fetchStats(); // Refresh stats
+      alert(`Order status updated to ${newStatus}!`);
+    } catch (err: any) {
+      alert('Failed to update order status: ' + err.message);
+    }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCurrentPage(1); // Reset to first page on search
+    fetchOrders();
+  };
+
+  if (loading && orders.length === 0) {
+    return (
+      <div className="p-6 flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-neutral-900"></div>
+          <p className="mt-4 text-neutral-600">Loading orders...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
+    <div className="p-6 space-y-6">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-neutral-900">Order Management</h1>
-          <p className="text-neutral-600 mt-1">
-            Track and manage all your orders in one place
-          </p>
+          <p className="text-neutral-600 mt-1">Track and manage all your orders in one place</p>
         </div>
         <div className="flex items-center gap-3">
           <button className="btn-secondary flex items-center gap-2">
             <Download className="w-4 h-4" />
             <span className="hidden sm:inline">Export</span>
           </button>
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
+          <button 
+            onClick={handleOpenCreateModal} 
             className="btn-primary flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Create Order</span>
+            Create Order
           </button>
         </div>
       </div>
 
+      {/* Error Message */}
+      {error && (
+        <div className="bg-neutral-50 border border-neutral-300 text-neutral-900 px-4 py-3 rounded">
+          {error}
+        </div>
+      )}
+
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="card p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-neutral-600">Total Orders</p>
-              <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.total}</p>
-            </div>
-            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
-              <ShoppingCart className="w-6 h-6 text-neutral-700" />
+      {stats && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          <div className="card p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-neutral-600">Total Orders</p>
+                <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.total_orders}</p>
+              </div>
+              <div className="p-3 bg-neutral-100 rounded-lg">
+                <ShoppingCart className="w-6 h-6 text-neutral-700" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="card p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-neutral-600">Pending</p>
-              <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.pending}</p>
-            </div>
-            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
-              <Clock className="w-6 h-6 text-neutral-700" />
+          <div className="card p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-neutral-600">Pending</p>
+                <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.pending_orders}</p>
+              </div>
+              <div className="p-3 bg-neutral-100 rounded-lg">
+                <Clock className="w-6 h-6 text-neutral-700" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="card p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-neutral-600">Processing</p>
-              <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.processing}</p>
-            </div>
-            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
-              <Package className="w-6 h-6 text-neutral-700" />
+          <div className="card p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-neutral-600">Processing</p>
+                <p className="text-2xl font-bold text-neutral-900 mt-1">
+                  {(Number(stats.confirmed_orders) || 0) + (Number(stats.processing_orders) || 0)}
+                </p>
+              </div>
+              <div className="p-3 bg-neutral-100 rounded-lg">
+                <Package className="w-6 h-6 text-neutral-700" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="card p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-neutral-600">Shipped</p>
-              <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.shipped}</p>
-            </div>
-            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
-              <Truck className="w-6 h-6 text-neutral-700" />
+          <div className="card p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-neutral-600">Delivered</p>
+                <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.delivered_orders}</p>
+              </div>
+              <div className="p-3 bg-neutral-100 rounded-lg">
+                <CheckCircle className="w-6 h-6 text-neutral-700" />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="card p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-neutral-600">Revenue</p>
-              <p className="text-xl font-bold text-neutral-900 mt-1">
-                {formatCurrency(stats.totalRevenue)}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-neutral-700" />
+          <div className="card p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-neutral-600">Revenue</p>
+                <p className="text-xl font-bold text-neutral-900 mt-1">
+                  {formatCurrency(stats.total_revenue)}
+                </p>
+              </div>
+              <div className="p-3 bg-neutral-100 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-neutral-700" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Filters and Search */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-neutral-400" />
-          <input
-            type="text"
-            placeholder="Search by order number or customer..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="input pl-10"
-          />
-        </div>
+      <div className="card p-6">
+        <div className="flex flex-col lg:flex-row gap-4">
+          {/* Search */}
+          <form onSubmit={handleSearch} className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-neutral-400" />
+              <input
+                type="text"
+                placeholder="Search by order number or customer name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+              />
+            </div>
+          </form>
 
-        <div className="sm:w-48">
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as OrderStatus | 'all')}
-            className="input"
-          >
-            <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="packed">Packed</option>
-            <option value="shipped">Shipped</option>
-            <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </div>
+          {/* Status Filter */}
+          <div className="flex items-center gap-2">
+            <Filter className="w-5 h-5 text-neutral-600" />
+            <select
+              value={statusFilter}
+              onChange={(e) => {
+                setStatusFilter(e.target.value as any);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+            >
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="processing">Processing</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="returned">Returned</option>
+            </select>
+          </div>
 
-        <button className="btn-secondary flex items-center gap-2 justify-center">
-          <Filter className="w-4 h-4" />
-          More Filters
-        </button>
+          {/* Payment Status Filter */}
+          <div className="flex items-center gap-2">
+            <DollarSign className="w-5 h-5 text-neutral-600" />
+            <select
+              value={paymentStatusFilter}
+              onChange={(e) => {
+                setPaymentStatusFilter(e.target.value as any);
+                setCurrentPage(1);
+              }}
+              className="px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-neutral-900 focus:border-transparent"
+            >
+              <option value="all">All Payments</option>
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="failed">Failed</option>
+              <option value="refunded">Refunded</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* Orders Table */}
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-neutral-200">
-            <thead className="bg-neutral-50">
+          <table className="w-full">
+            <thead className="bg-neutral-50 border-b border-neutral-200">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                  Order
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                  Customer
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                  Items
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                  Amount
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                  Payment
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-neutral-600 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="text-left py-3 px-6 text-sm font-medium text-neutral-600">Order</th>
+                <th className="text-left py-3 px-6 text-sm font-medium text-neutral-600">Customer</th>
+                <th className="text-left py-3 px-6 text-sm font-medium text-neutral-600">Status</th>
+                <th className="text-left py-3 px-6 text-sm font-medium text-neutral-600">Payment</th>
+                <th className="text-left py-3 px-6 text-sm font-medium text-neutral-600">Amount</th>
+                <th className="text-left py-3 px-6 text-sm font-medium text-neutral-600">Date</th>
+                <th className="text-right py-3 px-6 text-sm font-medium text-neutral-600">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-neutral-200">
-              {filteredOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-neutral-50 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 bg-neutral-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <ShoppingCart className="w-5 h-5 text-neutral-600" />
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-medium text-neutral-900 font-mono">
-                          {order.orderNumber}
-                        </div>
-                        <div className="text-sm text-neutral-500">
-                          {order.deliveryType}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-neutral-900">
-                      {order.customerName}
-                    </div>
-                    <div className="text-sm text-neutral-500">
-                      {order.shippingAddress.city}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-neutral-900">
-                      {formatDate(order.createdAt)}
-                    </div>
-                    <div className="text-sm text-neutral-500">
-                      {new Date(order.createdAt).toLocaleTimeString('en-IN', { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-medium text-neutral-900">
-                      {order.items.length} item{order.items.length > 1 ? 's' : ''}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-bold text-neutral-900">
-                      {formatCurrency(order.total)}
-                    </div>
-                    <div className="text-xs text-neutral-500">
-                      incl. tax
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`badge ${
-                        order.paymentStatus === 'paid'
-                          ? 'bg-neutral-900 text-white'
-                          : order.paymentStatus === 'partial'
-                          ? 'bg-neutral-300 text-neutral-900'
-                          : 'bg-neutral-100 text-neutral-700'
-                      }`}
-                    >
-                      {order.paymentStatus}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`badge ${getStatusColor(order.status)} flex items-center gap-1 w-fit`}>
-                      {getStatusIcon(order.status)}
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <div className="flex items-center justify-end gap-2">
-                      <button 
-                        onClick={() => {
-                          setSelectedOrder(order);
-                          setIsDetailModalOpen(true);
-                        }}
-                        className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
-                        title="View details"
-                      >
-                        <Eye className="w-4 h-4 text-neutral-600" />
-                      </button>
-                      <button 
-                        className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
-                        title="Edit order"
-                      >
-                        <Edit className="w-4 h-4 text-neutral-600" />
-                      </button>
-                      <button 
-                        className="p-1.5 hover:bg-neutral-100 rounded-lg transition-colors"
-                        title="Delete order"
-                      >
-                        <Trash2 className="w-4 h-4 text-neutral-600" />
-                      </button>
-                    </div>
+            <tbody className="divide-y divide-neutral-200">
+              {orders.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-neutral-500">
+                    No orders found. {searchQuery || statusFilter !== 'all' || paymentStatusFilter !== 'all' 
+                      ? 'Try adjusting your filters.' 
+                      : 'Create your first order to get started.'}
                   </td>
                 </tr>
-              ))}
+              ) : (
+                orders.map((order) => (
+                  <tr key={order.id} className="hover:bg-neutral-50">
+                    <td className="py-4 px-6">
+                      <div>
+                        <p className="font-medium text-neutral-900">{order.order_number}</p>
+                        {order.notes && (
+                          <p className="text-xs text-neutral-500 mt-1 truncate max-w-[200px]">
+                            {order.notes}
+                          </p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="space-y-1">
+                        {order.customer_name && (
+                          <div className="flex items-center gap-2 text-sm text-neutral-900">
+                            <User className="w-4 h-4 text-neutral-400" />
+                            <span className="font-medium">{order.customer_name}</span>
+                          </div>
+                        )}
+                        {order.customer_email && (
+                          <p className="text-xs text-neutral-500 truncate max-w-[200px]">
+                            {order.customer_email}
+                          </p>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2">
+                        {getStatusIcon(order.status)}
+                        {getStatusBadge(order.status)}
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      {getPaymentStatusBadge(order.payment_status)}
+                    </td>
+                    <td className="py-4 px-6">
+                      <span className="text-sm text-neutral-900 font-medium">
+                        {formatCurrency(order.total_amount)}
+                      </span>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-2 text-sm text-neutral-600">
+                        <Calendar className="w-4 h-4 text-neutral-400" />
+                        <span>{formatDate(order.created_at)}</span>
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleViewOrder(order)}
+                          className="p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition"
+                          title="View Details"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        
+                        {/* Quick Status Update Menu */}
+                        <div className="relative group">
+                          <button
+                            className="p-2 text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100 rounded-lg transition"
+                            title="Update Status"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <div className="hidden group-hover:block absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 z-10">
+                            <div className="py-1">
+                              {['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'].map((status) => (
+                                <button
+                                  key={status}
+                                  onClick={() => handleUpdateStatus(order.id, status as OrderStatus)}
+                                  className="w-full text-left px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-50 capitalize"
+                                >
+                                  {status}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => handleDeleteOrder(order.id)}
+                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* Empty State */}
-        {filteredOrders.length === 0 && (
-          <div className="text-center py-12">
-            <ShoppingCart className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
-            <h3 className="text-lg font-medium text-neutral-900 mb-1">No orders found</h3>
-            <p className="text-neutral-600">Try adjusting your search or filters</p>
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="border-t border-neutral-200 px-6 py-4 flex items-center justify-between">
+            <div className="text-sm text-neutral-600">
+              Page {currentPage} of {totalPages} ({totalOrders} total orders)
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Order Detail Modal */}
-      <OrderDetailModal
-        isOpen={isDetailModalOpen}
-        onClose={() => {
-          setIsDetailModalOpen(false);
-          setSelectedOrder(null);
-        }}
-        order={selectedOrder}
-        onUpdateStatus={handleUpdateStatus}
-      />
+      {/* Order Modal - Lazy Loaded */}
+      {isModalOpen && (
+        <Suspense fallback={<ModalLoader />}>
+          <OrderModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            onSuccess={handleSaveSuccess}
+            mode="create"
+          />
+        </Suspense>
+      )}
 
-      {/* Create Order Modal */}
-      <CreateOrderModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onSubmit={handleCreateOrder}
-      />
+      {/* TODO: Implement Order Detail Modal */}
+      {/* <OrderDetailModal
+        order={selectedOrder}
+        isOpen={isDetailModalOpen}
+        onClose={() => setIsDetailModalOpen(false)}
+        onStatusUpdate={handleUpdateStatus}
+      /> */}
     </div>
   );
 }
