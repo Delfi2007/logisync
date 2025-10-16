@@ -26,6 +26,9 @@ export default {
     '**/?(*.)+(spec|test).ts'
   ],
   
+  // Pass with no tests (important for CI/CD)
+  passWithNoTests: true,
+  
   // Transform files with ts-jest
   transform: {
     '^.+\\.ts$': 'ts-jest'
@@ -46,8 +49,8 @@ export default {
     '!src/**/*.spec.ts'
   ],
   
-  // Coverage thresholds
-  coverageThresholds: {
+  // Coverage threshold (singular, not plural!)
+  coverageThreshold: {
     global: {
       branches: 70,
       functions: 70,
