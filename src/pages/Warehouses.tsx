@@ -14,6 +14,7 @@ import {
 import ModalLoader from '@/components/ModalLoader';
 import { warehousesService, Warehouse, WarehouseStatus } from '@/services/warehouses';
 import WarehouseRow from '@/components/warehouses/WarehouseRow';
+import { useDebounce } from '@/hooks/useDebounce';
 
 // Lazy load the modal component
 const WarehouseModal = lazy(() => import('@/components/warehouses/WarehouseModal'));
@@ -38,6 +39,9 @@ export default function Warehouses() {
   const [selectedWarehouses, setSelectedWarehouses] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
 
+  // Debounce search term to reduce API calls
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   // Stats state
   const [stats, setStats] = useState({
     total: 0,
@@ -58,7 +62,7 @@ export default function Warehouses() {
       const filters: any = {
         page: currentPage,
         limit: itemsPerPage,
-        search: searchTerm || undefined,
+        search: debouncedSearchTerm || undefined,
       };
 
       if (statusFilter !== 'all') {
@@ -101,24 +105,11 @@ export default function Warehouses() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, itemsPerPage, searchTerm, statusFilter, verifiedFilter]);
+  }, [currentPage, itemsPerPage, debouncedSearchTerm, statusFilter, verifiedFilter]);
 
   useEffect(() => {
     fetchWarehouses();
   }, [fetchWarehouses]);
-
-  // Trigger search with debounce
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (currentPage === 1) {
-        fetchWarehouses();
-      } else {
-        setCurrentPage(1); // Reset to first page on search
-      }
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
 
   const handleViewDetails = useCallback(async (warehouse: Warehouse) => {
     try {

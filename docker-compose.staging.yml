@@ -1,0 +1,23 @@
+# Docker Compose Override for Staging
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.staging.yml up -d
+
+version: '3.9'
+
+services:
+  postgres:
+    ports:
+      - "5433:5432"  # Different port for staging
+    restart: unless-stopped
+
+  backend:
+    environment:
+      NODE_ENV: staging
+      LOG_LEVEL: debug
+    ports:
+      - "5001:5000"  # Different port for staging
+    restart: unless-stopped
+
+  frontend:
+    ports:
+      - "3001:80"  # Different port for staging
+    restart: unless-stopped

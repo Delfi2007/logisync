@@ -1,0 +1,60 @@
+# .dockerignore for Backend
+# Ignore node_modules (will be installed in container)
+node_modules/
+npm-debug.log
+
+# Ignore build artifacts
+dist/
+build/
+*.tsbuildinfo
+
+# Ignore test files
+tests/
+*.test.ts
+*.spec.ts
+coverage/
+.nyc_output/
+
+# Ignore development files
+.env
+.env.local
+.env.*.local
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore uploads and temp files
+uploads/
+temp/
+*.tmp
+
+# Ignore git files
+.git/
+.gitignore
+.gitattributes
+
+# Ignore editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Ignore documentation
+docs/
+README.md
+*.md
+
+# Ignore CI/CD files
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore TypeScript source (already built)
+src/
+tsconfig.json

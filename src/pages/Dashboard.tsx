@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   TrendingUp, 
@@ -125,13 +125,15 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
+  // Memoize currency formatter to avoid recreating on every render
+  const formatCurrency = useMemo(() => {
+    const formatter = new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
       maximumFractionDigits: 0,
-    }).format(amount);
-  };
+    });
+    return (amount: number) => formatter.format(amount);
+  }, []);
 
   // Loading state
   if (loading) {

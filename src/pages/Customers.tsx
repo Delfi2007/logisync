@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense, useCallback } from 'react';
+import { useState, useEffect, lazy, Suspense, useCallback, useMemo } from 'react';
 import { 
   Users, 
   TrendingUp, 
@@ -11,6 +11,7 @@ import ModalLoader from '@/components/ModalLoader';
 import customersService, { 
   Customer
 } from '@/services/customers';
+import { useDebounce } from '@/hooks/useDebounce';
 
 // Lazy load the modal component
 const CustomerModal = lazy(() => import('@/components/customers/CustomerModal'));
@@ -36,6 +37,9 @@ export default function Customers() {
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
 
+  // Debounce search term to reduce API calls
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   // Fetch customers wrapped in useCallback
   const fetchCustomers = useCallback(async () => {
     try {
@@ -46,7 +50,7 @@ export default function Customers() {
         page: currentPage,
         limit: 10,
         ...(segmentFilter !== 'all' && { segment: segmentFilter }),
-        ...(searchTerm && { search: searchTerm }),
+        ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
         sortBy: 'created_at' as const,
         order: 'DESC' as const
       };
@@ -61,29 +65,38 @@ export default function Customers() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, segmentFilter, searchTerm]);
+  }, [currentPage, segmentFilter, debouncedSearchTerm]);
 
   // Fetch customers
   useEffect(() => {
     fetchCustomers();
   }, [fetchCustomers]);
 
-  // Calculate statistics from current customers
-  const stats = {
-    total: totalCustomers || 0,
-    premium: customers.filter(c => c.segment === 'premium').length,
-    regular: customers.filter(c => c.segment === 'regular').length,
-    new: customers.filter(c => c.segment === 'new').length,
-    totalRevenue: customers.reduce((sum, c) => sum + (c.total_revenue || 0), 0),
-  };
+  // Memoize statistics calculations - Only recalculate when customers array changes
+  const stats = useMemo(() => {
+    const premium = customers.filter(c => c.segment === 'premium').length;
+    const regular = customers.filter(c => c.segment === 'regular').length;
+    const newCustomers = customers.filter(c => c.segment === 'new').length;
+    const totalRevenue = customers.reduce((sum, c) => sum + (c.total_revenue || 0), 0);
+    
+    return {
+      total: totalCustomers || 0,
+      premium,
+      regular,
+      new: newCustomers,
+      totalRevenue,
+    };
+  }, [customers, totalCustomers]);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
+  // Memoize currency formatter to avoid recreating on every render
+  const formatCurrency = useMemo(() => {
+    const formatter = new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
       maximumFractionDigits: 0,
-    }).format(amount);
-  };
+    });
+    return (amount: number) => formatter.format(amount);
+  }, []);
 
   const handleViewCustomer = useCallback(async (customer: Customer) => {
     try {

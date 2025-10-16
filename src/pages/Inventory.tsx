@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import { useState, useEffect, lazy, Suspense, useCallback, useMemo } from 'react';
 import { 
   Plus, 
   Search, 
@@ -14,6 +14,7 @@ import {
 import ModalLoader from '@/components/ModalLoader';
 import ProductRow from '@/components/products/ProductRow';
 import productsService, { Category, Product } from '@/services/products';
+import { useDebounce } from '@/hooks/useDebounce';
 
 // Lazy load the modal component
 const ProductModal = lazy(() => import('@/components/products/ProductModal'));
@@ -39,6 +40,9 @@ export default function Inventory() {
   const [selectedProducts, setSelectedProducts] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
 
+  // Debounce search query to reduce API calls
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
   // Fetch products (wrapped in useCallback for stable reference)
   const fetchProducts = useCallback(async () => {
     try {
@@ -47,7 +51,7 @@ export default function Inventory() {
       const data = await productsService.getAll({
         page: currentPage,
         limit: 20,
-        search: searchQuery || undefined,
+        search: debouncedSearchQuery || undefined,
         category: selectedCategory !== 'all' ? selectedCategory : undefined,
       });
       setProducts(data.products);
@@ -57,7 +61,7 @@ export default function Inventory() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, searchQuery, selectedCategory]);
+  }, [currentPage, debouncedSearchQuery, selectedCategory]);
 
   // Fetch categories
   const fetchCategories = useCallback(async () => {
@@ -82,12 +86,25 @@ export default function Inventory() {
   // Load data on mount and when filters change
   useEffect(() => {
     fetchProducts();
-  }, [currentPage, searchQuery, selectedCategory]);
+  }, [fetchProducts]);
 
   useEffect(() => {
     fetchCategories();
     fetchLowStock();
-  }, []);
+  }, [fetchCategories, fetchLowStock]);
+
+  // Memoized calculations for stats cards - Only recalculate when products array changes
+  const outOfStockCount = useMemo(() => {
+    return products.filter(p => p.stock === 0).length;
+  }, [products]);
+
+  const totalStockValue = useMemo(() => {
+    return products.reduce((sum, p) => sum + (p.stock * p.cost), 0);
+  }, [products]);
+
+  const formattedStockValue = useMemo(() => {
+    return totalStockValue.toLocaleString('en-IN');
+  }, [totalStockValue]);
 
   // Handle opening modal for create
   const handleOpenCreateModal = useCallback(() => {
@@ -302,11 +319,11 @@ export default function Inventory() {
                 <div className="h-8 w-16 bg-neutral-200 animate-pulse rounded mt-1" />
               ) : (
                 <p className="text-2xl font-bold text-neutral-900 mt-1">
-                  {products.filter(p => p.stock === 0).length}
+                  {outOfStockCount}
                 </p>
               )}
             </div>
-            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-neutral-100 rounded-lg flex items-center justify-between">
               <AlertTriangle className="w-6 h-6 text-neutral-700" />
             </div>
           </div>
@@ -320,7 +337,7 @@ export default function Inventory() {
                 <div className="h-8 w-24 bg-neutral-200 animate-pulse rounded mt-1" />
               ) : (
                 <p className="text-2xl font-bold text-neutral-900 mt-1">
-                  ₹{products.reduce((sum, p) => sum + (p.stock * p.cost), 0).toLocaleString('en-IN')}
+                  ₹{formattedStockValue}
                 </p>
               )}
             </div>

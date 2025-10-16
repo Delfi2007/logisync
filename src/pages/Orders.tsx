@@ -20,6 +20,7 @@ import {
   Calendar
 } from 'lucide-react';
 import ModalLoader from '@/components/ModalLoader';
+import { useDebounce } from '@/hooks/useDebounce';
 
 // Lazy load the modal component
 const OrderModal = lazy(() => import('@/components/orders/OrderModal'));
@@ -44,13 +45,16 @@ export default function Orders() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalOrders, setTotalOrders] = useState(0);
   
+  // Debounce search query to reduce API calls
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  
   // Modals
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Fetch orders
   useEffect(() => {
     fetchOrders();
-  }, [currentPage, statusFilter, paymentStatusFilter, searchQuery]);
+  }, [currentPage, statusFilter, paymentStatusFilter, debouncedSearchQuery]);
 
   // Fetch stats
   useEffect(() => {
@@ -67,7 +71,7 @@ export default function Orders() {
         limit: 10,
         ...(statusFilter !== 'all' && { status: statusFilter }),
         ...(paymentStatusFilter !== 'all' && { payment_status: paymentStatusFilter }),
-        ...(searchQuery && { search: searchQuery }),
+        ...(debouncedSearchQuery && { search: debouncedSearchQuery }),
         sortBy: 'created_at' as const,
         order: 'DESC' as const
       };
