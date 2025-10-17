@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import pool from '../config/database.js';
+import emailService from './email.service.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'your-refresh-secret-change-in-production';
@@ -271,18 +272,17 @@ class AuthService {
       [user.id, resetToken, expiresAt]
     );
 
-    // TODO: Send email with reset link
-    // For now, return token (in production, only send via email)
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    // Send password reset email
+    try {
+      await emailService.sendPasswordResetEmail(user, resetToken);
+      console.log(`Password reset email sent to ${user.email}`);
+    } catch (emailError) {
+      console.error('Failed to send password reset email:', emailError);
+      // Continue even if email fails - token is still saved
+    }
 
     return {
-      message: 'If an account exists, a reset link will be sent.',
-      // Remove these in production:
-      debug: {
-        email: user.email,
-        resetToken,
-        resetLink
-      }
+      message: 'If an account exists, a reset link will be sent.'
     };
   }
 
@@ -344,6 +344,22 @@ class AuthService {
       );
 
       await client.query('COMMIT');
+
+      // Get user info for email
+      const userResult = await client.query(
+        'SELECT id, email, first_name, last_name FROM users WHERE id = $1',
+        [tokenRecord.user_id]
+      );
+      const user = userResult.rows[0];
+
+      // Send password changed notification email
+      try {
+        await emailService.sendPasswordChangedEmail(user);
+        console.log(`Password changed email sent to ${user.email}`);
+      } catch (emailError) {
+        console.error('Failed to send password changed email:', emailError);
+        // Don't fail the password reset if email fails
+      }
 
       return { message: 'Password has been reset successfully' };
 
