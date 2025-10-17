@@ -61,7 +61,26 @@ class AuthService {
       // Get user with roles
       const userWithRoles = await this.getUserWithRoles(user.id, client);
 
+      // Generate verification token
+      const verificationToken = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      // Store verification token
+      await client.query(
+        `INSERT INTO email_verification_tokens (user_id, token, expires_at)
+         VALUES ($1, $2, $3)`,
+        [user.id, verificationToken, expiresAt]
+      );
+
       await client.query('COMMIT');
+
+      // Send verification email (don't fail registration if email fails)
+      try {
+        await emailService.sendVerificationEmail(user, verificationToken);
+      } catch (emailError) {
+        console.error('Failed to send verification email:', emailError);
+        // Continue with registration - user can request resend later
+      }
 
       // Generate tokens
       const tokens = await this.generateTokens(userWithRoles);
@@ -546,6 +565,144 @@ class AuthService {
 
   /**
    * Cleanup expired tokens (run periodically)
+   */
+  /**
+   * Verify email with token
+   */
+  async verifyEmail(token) {
+    const client = await pool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      // Find verification token
+      const tokenResult = await client.query(
+        `SELECT evt.*, u.email, u.first_name, u.is_verified
+         FROM email_verification_tokens evt
+         JOIN users u ON evt.user_id = u.id
+         WHERE evt.token = $1 AND evt.verified_at IS NULL`,
+        [token]
+      );
+
+      if (tokenResult.rows.length === 0) {
+        throw new Error('Invalid or expired verification token');
+      }
+
+      const tokenData = tokenResult.rows[0];
+
+      // Check if already verified
+      if (tokenData.is_verified) {
+        throw new Error('Email already verified');
+      }
+
+      // Check if token expired
+      if (new Date(tokenData.expires_at) < new Date()) {
+        throw new Error('Invalid or expired verification token');
+      }
+
+      // Mark token as used
+      await client.query(
+        `UPDATE email_verification_tokens 
+         SET verified_at = CURRENT_TIMESTAMP 
+         WHERE id = $1`,
+        [tokenData.id]
+      );
+
+      // Update user verification status
+      await client.query(
+        `UPDATE users 
+         SET is_verified = true 
+         WHERE id = $1`,
+        [tokenData.user_id]
+      );
+
+      await client.query('COMMIT');
+
+      // Send welcome email
+      try {
+        const user = {
+          email: tokenData.email,
+          first_name: tokenData.first_name
+        };
+        await emailService.sendWelcomeEmail(user);
+      } catch (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+        // Don't fail verification if welcome email fails
+      }
+
+      return {
+        message: 'Email verified successfully',
+        verified: true
+      };
+
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Resend verification email
+   */
+  async resendVerificationEmail(email) {
+    const client = await pool.connect();
+
+    try {
+      // Get user
+      const userResult = await client.query(
+        `SELECT id, email, first_name, is_verified 
+         FROM users 
+         WHERE email = $1`,
+        [email.toLowerCase()]
+      );
+
+      if (userResult.rows.length === 0) {
+        throw new Error('User not found');
+      }
+
+      const user = userResult.rows[0];
+
+      // Check if already verified
+      if (user.is_verified) {
+        throw new Error('Email already verified');
+      }
+
+      // Generate new verification token
+      const verificationToken = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+      // Delete old tokens
+      await client.query(
+        `DELETE FROM email_verification_tokens 
+         WHERE user_id = $1`,
+        [user.id]
+      );
+
+      // Create new token
+      await client.query(
+        `INSERT INTO email_verification_tokens (user_id, token, expires_at)
+         VALUES ($1, $2, $3)`,
+        [user.id, verificationToken, expiresAt]
+      );
+
+      // Send verification email
+      await emailService.sendVerificationEmail(user, verificationToken);
+
+      return {
+        message: 'Verification email sent successfully'
+      };
+
+    } catch (error) {
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Clean up expired tokens (refresh, reset, verification)
    */
   async cleanupExpiredTokens() {
     const client = await pool.connect();

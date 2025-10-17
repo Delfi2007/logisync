@@ -168,6 +168,58 @@ export const authService = {
   isAuthenticated: (): boolean => {
     return !!localStorage.getItem('authToken');
   },
+
+  /**
+   * Verify email with token
+   * @param token Verification token from email
+   * @returns Verification result
+   */
+  verifyEmail: async (token: string): Promise<{ message: string; verified: boolean }> => {
+    const response = await apiClient.get<ApiSuccessResponse<{ message: string; verified: boolean }>>(
+      `/auth/verify-email/${token}`
+    );
+    return handleApiResponse(response);
+  },
+
+  /**
+   * Resend verification email
+   * @param email User email address
+   * @returns Success message
+   */
+  resendVerification: async (email: string): Promise<{ message: string }> => {
+    const response = await apiClient.post<ApiSuccessResponse<{ message: string }>>(
+      '/auth/resend-verification',
+      { email }
+    );
+    return handleApiResponse(response);
+  },
+
+  /**
+   * Request password reset
+   * @param email User email address
+   * @returns Success message
+   */
+  forgotPassword: async (email: string): Promise<{ message: string }> => {
+    const response = await apiClient.post<ApiSuccessResponse<{ message: string }>>(
+      '/auth/forgot-password',
+      { email }
+    );
+    return handleApiResponse(response);
+  },
+
+  /**
+   * Reset password with token
+   * @param token Reset token from email
+   * @param newPassword New password
+   * @returns Success message
+   */
+  resetPassword: async (token: string, newPassword: string): Promise<{ message: string }> => {
+    const response = await apiClient.post<ApiSuccessResponse<{ message: string }>>(
+      '/auth/reset-password',
+      { token, newPassword }
+    );
+    return handleApiResponse(response);
+  },
 };
 
 export default authService;

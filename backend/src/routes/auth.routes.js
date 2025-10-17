@@ -131,4 +131,25 @@ router.get(
   authController.getActivity
 );
 
+/**
+ * @route   GET /api/auth/verify-email/:token
+ * @desc    Verify email address with token
+ * @access  Public
+ */
+router.get(
+  '/verify-email/:token',
+  logActivity('email_verified'),
+  authController.verifyEmail
+);
+
+/**
+ * @route   POST /api/auth/resend-verification
+ * @desc    Resend verification email
+ * @access  Public
+ */
+router.post(
+  '/resend-verification',
+  authController.resendVerification
+);
+
 export default router;

@@ -6,7 +6,7 @@
 import { useState, FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, AlertCircle, Loader2, Package, CheckCircle, ArrowLeft } from 'lucide-react';
-import { apiClient } from '@/services/api';
+import authService from '@/services/auth';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -34,7 +34,7 @@ export default function ForgotPassword() {
       setLoading(true);
       
       // Call forgot password endpoint
-      await apiClient.post('/auth/forgot-password', { email });
+      await authService.forgotPassword(email);
       
       // Show success state
       setSuccess(true);

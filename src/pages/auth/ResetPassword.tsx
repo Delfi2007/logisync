@@ -6,7 +6,7 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Lock, AlertCircle, Loader2, Package, CheckCircle, X, Check } from 'lucide-react';
-import { apiClient } from '@/services/api';
+import authService from '@/services/auth';
 
 export default function ResetPassword() {
   const navigate = useNavigate();
@@ -87,10 +87,7 @@ export default function ResetPassword() {
       setLoading(true);
 
       // Call reset password endpoint
-      await apiClient.post('/auth/reset-password', {
-        token,
-        password
-      });
+      await authService.resetPassword(token, password);
 
       // Show success state
       setSuccess(true);

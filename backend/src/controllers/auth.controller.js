@@ -398,6 +398,102 @@ class AuthController {
       });
     }
   }
+
+  /**
+   * Verify email address
+   * GET /api/auth/verify-email/:token
+   */
+  async verifyEmail(req, res) {
+    try {
+      const { token } = req.params;
+
+      if (!token) {
+        return res.status(400).json({
+          success: false,
+          message: 'Verification token is required'
+        });
+      }
+
+      // Verify the email
+      const result = await authService.verifyEmail(token);
+
+      res.json({
+        success: true,
+        message: 'Email verified successfully',
+        data: result
+      });
+
+    } catch (error) {
+      console.error('Email verification error:', error);
+
+      // Handle specific error cases
+      if (error.message === 'Invalid or expired verification token') {
+        return res.status(400).json({
+          success: false,
+          message: error.message
+        });
+      }
+
+      if (error.message === 'Email already verified') {
+        return res.status(400).json({
+          success: false,
+          message: error.message
+        });
+      }
+
+      res.status(500).json({
+        success: false,
+        message: 'Failed to verify email'
+      });
+    }
+  }
+
+  /**
+   * Resend verification email
+   * POST /api/auth/resend-verification
+   */
+  async resendVerification(req, res) {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          message: 'Email is required'
+        });
+      }
+
+      await authService.resendVerificationEmail(email);
+
+      res.json({
+        success: true,
+        message: 'Verification email sent successfully'
+      });
+
+    } catch (error) {
+      console.error('Resend verification error:', error);
+
+      if (error.message === 'User not found') {
+        // Don't reveal if email exists
+        return res.json({
+          success: true,
+          message: 'If an account exists, a verification email will be sent'
+        });
+      }
+
+      if (error.message === 'Email already verified') {
+        return res.status(400).json({
+          success: false,
+          message: error.message
+        });
+      }
+
+      res.status(500).json({
+        success: false,
+        message: 'Failed to send verification email'
+      });
+    }
+  }
 }
 
 export default new AuthController();
