@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
 
 // Import routes
-import authRoutes from './routes/auth.js';
+import authRoutes from './routes/auth.routes.js';
 import productRoutes from './routes/products.js';
 import customerRoutes from './routes/customers.js';
 import orderRoutes from './routes/orders.js';

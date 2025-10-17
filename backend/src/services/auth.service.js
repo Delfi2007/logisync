@@ -37,12 +37,13 @@ class AuthService {
       const saltRounds = 10;
       const passwordHash = await bcrypt.hash(password, saltRounds);
 
-      // Create user
+      // Create user (include full_name for backward compatibility)
+      const fullName = `${firstName} ${lastName}`.trim();
       const userResult = await client.query(
-        `INSERT INTO users (email, password_hash, first_name, last_name, phone)
-         VALUES ($1, $2, $3, $4, $5)
+        `INSERT INTO users (email, password_hash, first_name, last_name, full_name, phone)
+         VALUES ($1, $2, $3, $4, $5, $6)
          RETURNING id, email, first_name, last_name, phone, is_active, is_verified, created_at`,
-        [email.toLowerCase(), passwordHash, firstName, lastName, phone]
+        [email.toLowerCase(), passwordHash, firstName, lastName, fullName, phone]
       );
 
       const user = userResult.rows[0];
@@ -87,7 +88,7 @@ class AuthService {
       // Get user with password
       const result = await client.query(
         `SELECT id, email, password_hash, first_name, last_name, phone, 
-                avatar_url, is_active, is_verified
+                is_active, is_verified
          FROM users 
          WHERE email = $1`,
         [email.toLowerCase()]
@@ -182,16 +183,24 @@ class AuthService {
         throw new Error('Refresh token has expired');
       }
 
+      // Revoke old refresh token BEFORE generating new ones
+      await pool.query(
+        `UPDATE refresh_tokens 
+         SET revoked_at = CURRENT_TIMESTAMP
+         WHERE id = $1`,
+        [tokenRecord.id]
+      );
+
       // Get user with roles
       const user = await this.getUserWithRoles(tokenRecord.user_id);
 
       // Generate new tokens
       const tokens = await this.generateTokens(user);
 
-      // Revoke old refresh token
+      // Update the revoked token with the new token reference
       await pool.query(
         `UPDATE refresh_tokens 
-         SET revoked_at = CURRENT_TIMESTAMP, replaced_by_token = $1
+         SET replaced_by_token = $1
          WHERE id = $2`,
         [tokens.refreshToken, tokenRecord.id]
       );
@@ -402,7 +411,8 @@ class AuthService {
       userId: user.id,
       email: user.email,
       roles: user.roles.map(r => r.name),
-      permissions: user.permissions
+      permissions: user.permissions,
+      jti: `${user.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` // Unique ID
     };
 
     // Generate access token
@@ -413,7 +423,8 @@ class AuthService {
     // Generate refresh token
     const refreshTokenPayload = {
       userId: user.id,
-      tokenType: 'refresh'
+      tokenType: 'refresh',
+      jti: `${user.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}` // Unique ID
     };
 
     const refreshToken = jwt.sign(refreshTokenPayload, JWT_REFRESH_SECRET, {
@@ -450,7 +461,6 @@ class AuthService {
         u.first_name,
         u.last_name,
         u.phone,
-        u.avatar_url,
         u.is_active,
         u.is_verified,
         u.last_login,
@@ -459,7 +469,7 @@ class AuthService {
           json_build_object(
             'id', r.id,
             'name', r.name,
-            'displayName', r.display_name,
+            'description', r.description,
             'permissions', r.permissions
           )
         ) as roles
