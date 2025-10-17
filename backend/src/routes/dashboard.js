@@ -1,6 +1,6 @@
 import express from 'express';
 import { query } from 'express-validator';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate } from '../middleware/auth.middleware.js';
 import { validate } from '../middleware/validator.js';
 import {
   getDashboardStats,

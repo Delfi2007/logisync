@@ -41,7 +41,9 @@ apiClient.interceptors.response.use(
     // Return the data directly for successful responses
     return response;
   },
-  (error: AxiosError<ApiErrorResponse>) => {
+  async (error: AxiosError<ApiErrorResponse>) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+    
     // Handle different error scenarios
     if (error.response) {
       // Server responded with error status
@@ -49,11 +51,39 @@ apiClient.interceptors.response.use(
       
       switch (status) {
         case 401:
-          // Unauthorized - clear token and redirect to login
+          // Unauthorized - try to refresh token
+          if (!originalRequest._retry) {
+            originalRequest._retry = true;
+            
+            try {
+              // Dynamically import authService to avoid circular dependency
+              const { default: authService } = await import('./auth');
+              const tokens = await authService.refreshAccessToken();
+              
+              if (tokens && originalRequest.headers) {
+                // Update Authorization header with new token
+                originalRequest.headers.Authorization = `Bearer ${tokens.accessToken}`;
+                // Retry the original request
+                return apiClient(originalRequest);
+              }
+            } catch (refreshError) {
+              // Refresh failed, redirect to login
+              localStorage.removeItem('authToken');
+              localStorage.removeItem('refreshToken');
+              localStorage.removeItem('user');
+              
+              if (!window.location.pathname.includes('/login')) {
+                window.location.href = '/login';
+              }
+              return Promise.reject(refreshError);
+            }
+          }
+          
+          // If retry failed or already retried, clear auth and redirect
           localStorage.removeItem('authToken');
+          localStorage.removeItem('refreshToken');
           localStorage.removeItem('user');
           
-          // Only redirect if not already on login page
           if (!window.location.pathname.includes('/login')) {
             window.location.href = '/login';
           }

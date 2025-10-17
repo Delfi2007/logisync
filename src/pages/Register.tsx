@@ -77,8 +77,15 @@ export default function Register() {
 
     try {
       setLoading(true);
+      
+      // Split full name into first and last name
+      const nameParts = fullName.trim().split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || nameParts[0]; // Use first name as last if only one word
+      
       await register({ 
-        full_name: fullName, 
+        firstName,
+        lastName,
         email, 
         password 
       });

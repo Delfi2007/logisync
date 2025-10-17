@@ -61,10 +61,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
    */
   const login = async (credentials: LoginCredentials) => {
     try {
-      const { user: loggedInUser } = await authService.login(credentials);
-      setUser(loggedInUser);
+      const response = await authService.login(credentials);
+      setUser(response.user);
       return Promise.resolve();
     } catch (error: any) {
+      console.error('Login error:', error);
       throw new Error(error.message || 'Login failed');
     }
   };
@@ -75,10 +76,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
    */
   const register = async (data: RegisterData) => {
     try {
-      const { user: newUser } = await authService.register(data);
-      setUser(newUser);
+      const response = await authService.register(data);
+      setUser(response.user);
       return Promise.resolve();
     } catch (error: any) {
+      console.error('Registration error:', error);
       throw new Error(error.message || 'Registration failed');
     }
   };

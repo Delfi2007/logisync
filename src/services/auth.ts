@@ -9,8 +9,17 @@ import apiClient, { ApiSuccessResponse, handleApiResponse } from './api';
 export interface User {
   id: number;
   email: string;
-  full_name: string;
-  role: 'admin' | 'user' | 'manager';
+  first_name: string;
+  last_name: string;
+  phone?: string;
+  is_active: boolean;
+  is_verified: boolean;
+  roles: Array<{
+    id: number;
+    name: string;
+    description: string;
+    permissions: string[];
+  }>;
   created_at: string;
 }
 
@@ -20,14 +29,20 @@ export interface LoginCredentials {
 }
 
 export interface RegisterData {
-  full_name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   password: string;
+  phone?: string;
 }
 
 export interface AuthResponse {
-  token: string;
   user: User;
+  tokens: {
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: string;
+  };
 }
 
 // Authentication API calls
@@ -44,8 +59,9 @@ export const authService = {
     );
     const data = handleApiResponse<AuthResponse>(response);
     
-    // Store token and user in localStorage
-    localStorage.setItem('authToken', data.token);
+    // Store tokens and user in localStorage
+    localStorage.setItem('authToken', data.tokens.accessToken);
+    localStorage.setItem('refreshToken', data.tokens.refreshToken);
     localStorage.setItem('user', JSON.stringify(data.user));
     
     return data;
@@ -63,8 +79,9 @@ export const authService = {
     );
     const data = handleApiResponse<AuthResponse>(response);
     
-    // Store token and user in localStorage
-    localStorage.setItem('authToken', data.token);
+    // Store tokens and user in localStorage
+    localStorage.setItem('authToken', data.tokens.accessToken);
+    localStorage.setItem('refreshToken', data.tokens.refreshToken);
     localStorage.setItem('user', JSON.stringify(data.user));
     
     return data;
@@ -76,6 +93,7 @@ export const authService = {
    */
   logout: () => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
   },
 
@@ -101,6 +119,46 @@ export const authService = {
    */
   getToken: (): string | null => {
     return localStorage.getItem('authToken');
+  },
+
+  /**
+   * Get refresh token
+   * @returns Refresh token or null
+   */
+  getRefreshToken: (): string | null => {
+    return localStorage.getItem('refreshToken');
+  },
+
+  /**
+   * Refresh access token using refresh token
+   * @returns New tokens
+   */
+  refreshAccessToken: async (): Promise<{ accessToken: string; refreshToken: string } | null> => {
+    try {
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) {
+        return null;
+      }
+
+      const response = await apiClient.post<ApiSuccessResponse<{ tokens: { accessToken: string; refreshToken: string; expiresIn: string } }>>(
+        '/auth/refresh-token',
+        { refreshToken }
+      );
+      const data = handleApiResponse(response);
+      
+      // Update tokens in localStorage
+      localStorage.setItem('authToken', data.tokens.accessToken);
+      localStorage.setItem('refreshToken', data.tokens.refreshToken);
+      
+      return {
+        accessToken: data.tokens.accessToken,
+        refreshToken: data.tokens.refreshToken
+      };
+    } catch (error) {
+      // If refresh fails, logout user
+      authService.logout();
+      return null;
+    }
   },
 
   /**
