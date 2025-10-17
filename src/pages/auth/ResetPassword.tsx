@@ -87,6 +87,9 @@ export default function ResetPassword() {
       setLoading(true);
 
       // Call reset password endpoint
+      if (!token) {
+        throw new Error('Reset token is missing');
+      }
       await authService.resetPassword(token, password);
 
       // Show success state
