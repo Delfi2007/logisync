@@ -100,13 +100,19 @@ export default function ResetPassword() {
         navigate('/login');
       }, 3000);
     } catch (err: any) {
-      const errorMessage = err.message || 'Failed to reset password';
+      console.error('Reset password error:', err);
+      
+      // Get error message from response
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to reset password';
       
       if (errorMessage.includes('expired')) {
         setError('This reset link has expired. Please request a new one.');
         setTokenValid(false);
-      } else if (errorMessage.includes('invalid')) {
+      } else if (errorMessage.includes('invalid') || errorMessage.includes('Invalid')) {
         setError('This reset link is invalid. Please request a new one.');
+        setTokenValid(false);
+      } else if (errorMessage.includes('used')) {
+        setError('This reset link has already been used. Please request a new one.');
         setTokenValid(false);
       } else {
         setError(errorMessage);

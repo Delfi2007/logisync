@@ -111,7 +111,7 @@ apiClient.interceptors.response.use(
       // Return formatted error
       return Promise.reject({
         status,
-        message: data.error || 'An error occurred',
+        message: data.message || data.error || 'An error occurred',
         errors: data.errors || [],
       });
     } else if (error.request) {
