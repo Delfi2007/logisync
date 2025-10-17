@@ -5,6 +5,7 @@
 
 import authService from '../services/auth.service.js';
 import { validationResult } from 'express-validator';
+import pool from '../config/database.js';
 
 class AuthController {
   /**
