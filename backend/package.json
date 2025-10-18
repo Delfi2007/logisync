@@ -1,6 +1,10 @@
 {
   "name": "logisync-backend",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Delfi2007/log-sync.git"
+  },
   "description": "LogiSync Backend API - Node.js + Express + PostgreSQL",
   "main": "src/server.js",
   "type": "module",
