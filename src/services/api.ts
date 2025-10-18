@@ -137,7 +137,8 @@ apiClient.interceptors.response.use(
 // Types
 export interface ApiErrorResponse {
   success: false;
-  error: string;
+  message?: string;  // Backend can return either message or error
+  error?: string;
   errors?: Array<{
     field: string;
     message: string;

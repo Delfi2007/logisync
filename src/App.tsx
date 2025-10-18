@@ -19,6 +19,7 @@ const Register = lazy(() => import('@/pages/Register'));
 const ForgotPassword = lazy(() => import('@/pages/auth/ForgotPassword'));
 const ResetPassword = lazy(() => import('@/pages/auth/ResetPassword'));
 const VerifyEmail = lazy(() => import('@/pages/auth/VerifyEmail'));
+const UserManagement = lazy(() => import('@/pages/admin/UserManagement'));
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
                       <Route path="/customers" element={<Customers />} />
                       <Route path="/warehouses" element={<Warehouses />} />
                       <Route path="/settings" element={<Settings />} />
+                      <Route path="/admin/users" element={<UserManagement />} />
                     </Routes>
                   </MainLayout>
                 </ProtectedRoute>
