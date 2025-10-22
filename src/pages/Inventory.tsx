@@ -9,7 +9,13 @@ import {
   AlertTriangle,
   TrendingDown,
   Trash2,
-  Loader2
+  Loader2,
+  ArrowUpCircle,
+  ArrowDownCircle,
+  Calendar,
+  User,
+  FileText,
+  TrendingUp
 } from 'lucide-react';
 import ModalLoader from '@/components/ModalLoader';
 import ProductRow from '@/components/products/ProductRow';
@@ -20,6 +26,498 @@ import { useDebounce } from '@/hooks/useDebounce';
 const ProductModal = lazy(() => import('@/components/products/ProductModal'));
 
 type TabType = 'products' | 'movements' | 'alerts';
+
+// Stock Movement Types
+interface StockMovement {
+  id: number;
+  product_id: number;
+  product_name: string;
+  product_sku: string;
+  type: 'in' | 'out' | 'adjustment';
+  quantity: number;
+  previous_stock: number;
+  new_stock: number;
+  reference_number: string;
+  notes: string;
+  created_by: string;
+  created_at: string;
+  warehouse?: string;
+}
+
+// Stock Movements Tab Component
+function StockMovementsTab({ products }: { products: Product[] }) {
+  const [movements, setMovements] = useState<StockMovement[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState<'all' | 'in' | 'out' | 'adjustment'>('all');
+  const [dateFilter, setDateFilter] = useState<'7days' | '30days' | '90days' | 'all'>('30days');
+  
+  const debouncedSearch = useDebounce(searchQuery, 300);
+
+  useEffect(() => {
+    fetchMovements();
+  }, [debouncedSearch, typeFilter, dateFilter]);
+
+  const fetchMovements = () => {
+    setLoading(true);
+    
+    setTimeout(() => {
+      // STATIC MOCK DATA - Stock movements history
+      const mockMovements: StockMovement[] = [
+        {
+          id: 1,
+          product_id: 1,
+          product_name: 'Industrial Pump XL-2000',
+          product_sku: 'PUMP-XL-2000',
+          type: 'in',
+          quantity: 50,
+          previous_stock: 125,
+          new_stock: 175,
+          reference_number: 'PO-2025-0234',
+          notes: 'Restocking from supplier - Acme Industries',
+          created_by: 'John Manager',
+          created_at: '2025-10-21T14:30:00Z',
+          warehouse: 'Mumbai Central Warehouse'
+        },
+        {
+          id: 2,
+          product_id: 2,
+          product_name: 'Medical Supplies Kit Pro',
+          product_sku: 'MED-KIT-PRO',
+          type: 'out',
+          quantity: 25,
+          previous_stock: 89,
+          new_stock: 64,
+          reference_number: 'ORD-2025-001',
+          notes: 'Fulfilled order for Apollo Hospitals',
+          created_by: 'System',
+          created_at: '2025-10-21T10:15:00Z',
+          warehouse: 'Delhi Medical Hub'
+        },
+        {
+          id: 3,
+          product_id: 1,
+          product_name: 'Industrial Pump XL-2000',
+          product_sku: 'PUMP-XL-2000',
+          type: 'out',
+          quantity: 15,
+          previous_stock: 175,
+          new_stock: 160,
+          reference_number: 'ORD-2025-002',
+          notes: 'Sales order to construction company',
+          created_by: 'System',
+          created_at: '2025-10-20T16:45:00Z',
+          warehouse: 'Mumbai Central Warehouse'
+        },
+        {
+          id: 4,
+          product_id: 3,
+          product_name: 'Electronic Component Set',
+          product_sku: 'ELEC-COMP-001',
+          type: 'adjustment',
+          quantity: -5,
+          previous_stock: 234,
+          new_stock: 229,
+          reference_number: 'ADJ-2025-012',
+          notes: 'Stock adjustment - damaged items removed',
+          created_by: 'Sarah Warehouse',
+          created_at: '2025-10-20T09:20:00Z',
+          warehouse: 'Bangalore Tech Center'
+        },
+        {
+          id: 5,
+          product_id: 4,
+          product_name: 'Construction Materials Bundle',
+          product_sku: 'CONST-MAT-B01',
+          type: 'in',
+          quantity: 100,
+          previous_stock: 45,
+          new_stock: 145,
+          reference_number: 'PO-2025-0235',
+          notes: 'Bulk purchase for Q4 demand',
+          created_by: 'Mike Procurement',
+          created_at: '2025-10-19T11:00:00Z',
+          warehouse: 'Pune Distribution Center'
+        },
+        {
+          id: 6,
+          product_id: 2,
+          product_name: 'Medical Supplies Kit Pro',
+          product_sku: 'MED-KIT-PRO',
+          type: 'out',
+          quantity: 18,
+          previous_stock: 64,
+          new_stock: 46,
+          reference_number: 'ORD-2025-003',
+          notes: 'Emergency shipment to clinic',
+          created_by: 'System',
+          created_at: '2025-10-19T08:30:00Z',
+          warehouse: 'Delhi Medical Hub'
+        },
+        {
+          id: 7,
+          product_id: 5,
+          product_name: 'Office Furniture Set',
+          product_sku: 'OFF-FURN-S01',
+          type: 'in',
+          quantity: 30,
+          previous_stock: 12,
+          new_stock: 42,
+          reference_number: 'PO-2025-0236',
+          notes: 'New stock from manufacturer',
+          created_by: 'John Manager',
+          created_at: '2025-10-18T15:20:00Z',
+          warehouse: 'Chennai Furniture Depot'
+        },
+        {
+          id: 8,
+          product_id: 3,
+          product_name: 'Electronic Component Set',
+          product_sku: 'ELEC-COMP-001',
+          type: 'out',
+          quantity: 45,
+          previous_stock: 229,
+          new_stock: 184,
+          reference_number: 'ORD-2025-004',
+          notes: 'Large order for electronics manufacturer',
+          created_by: 'System',
+          created_at: '2025-10-18T13:10:00Z',
+          warehouse: 'Bangalore Tech Center'
+        },
+        {
+          id: 9,
+          product_id: 1,
+          product_name: 'Industrial Pump XL-2000',
+          product_sku: 'PUMP-XL-2000',
+          type: 'adjustment',
+          quantity: 3,
+          previous_stock: 160,
+          new_stock: 163,
+          reference_number: 'ADJ-2025-013',
+          notes: 'Stock count correction - found extra units',
+          created_by: 'Sarah Warehouse',
+          created_at: '2025-10-17T10:45:00Z',
+          warehouse: 'Mumbai Central Warehouse'
+        },
+        {
+          id: 10,
+          product_id: 4,
+          product_name: 'Construction Materials Bundle',
+          product_sku: 'CONST-MAT-B01',
+          type: 'out',
+          quantity: 35,
+          previous_stock: 145,
+          new_stock: 110,
+          reference_number: 'ORD-2025-005',
+          notes: 'Delivered to construction site',
+          created_by: 'System',
+          created_at: '2025-10-17T07:30:00Z',
+          warehouse: 'Pune Distribution Center'
+        },
+        {
+          id: 11,
+          product_id: 5,
+          product_name: 'Office Furniture Set',
+          product_sku: 'OFF-FURN-S01',
+          type: 'out',
+          quantity: 12,
+          previous_stock: 42,
+          new_stock: 30,
+          reference_number: 'ORD-2025-006',
+          notes: 'Corporate office setup order',
+          created_by: 'System',
+          created_at: '2025-10-16T14:00:00Z',
+          warehouse: 'Chennai Furniture Depot'
+        },
+        {
+          id: 12,
+          product_id: 2,
+          product_name: 'Medical Supplies Kit Pro',
+          product_sku: 'MED-KIT-PRO',
+          type: 'in',
+          quantity: 75,
+          previous_stock: 46,
+          new_stock: 121,
+          reference_number: 'PO-2025-0237',
+          notes: 'Quarterly restocking from certified supplier',
+          created_by: 'Mike Procurement',
+          created_at: '2025-10-15T09:15:00Z',
+          warehouse: 'Delhi Medical Hub'
+        }
+      ];
+
+      // Apply filters
+      let filtered = mockMovements;
+
+      if (debouncedSearch) {
+        filtered = filtered.filter(m =>
+          m.product_name.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+          m.product_sku.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+          m.reference_number.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
+          m.notes.toLowerCase().includes(debouncedSearch.toLowerCase())
+        );
+      }
+
+      if (typeFilter !== 'all') {
+        filtered = filtered.filter(m => m.type === typeFilter);
+      }
+
+      // Date filtering
+      const now = new Date();
+      if (dateFilter !== 'all') {
+        const daysMap = { '7days': 7, '30days': 30, '90days': 90 };
+        const days = daysMap[dateFilter];
+        const cutoffDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+        filtered = filtered.filter(m => new Date(m.created_at) >= cutoffDate);
+      }
+
+      setMovements(filtered);
+      setLoading(false);
+    }, 100);
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('en-IN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  };
+
+  const getTypeIcon = (type: string) => {
+    switch (type) {
+      case 'in':
+        return <ArrowUpCircle className="h-5 w-5 text-green-600" />;
+      case 'out':
+        return <ArrowDownCircle className="h-5 w-5 text-red-600" />;
+      case 'adjustment':
+        return <TrendingUp className="h-5 w-5 text-amber-600" />;
+      default:
+        return <Package className="h-5 w-5 text-neutral-600" />;
+    }
+  };
+
+  const getTypeBadge = (type: string) => {
+    const styles = {
+      in: 'bg-green-50 text-green-700 border-green-200',
+      out: 'bg-red-50 text-red-700 border-red-200',
+      adjustment: 'bg-amber-50 text-amber-700 border-amber-200'
+    };
+    const labels = { in: 'Stock In', out: 'Stock Out', adjustment: 'Adjustment' };
+    
+    return (
+      <span className={`px-2 py-1 rounded-full text-xs font-medium border ${styles[type as keyof typeof styles]}`}>
+        {labels[type as keyof typeof labels]}
+      </span>
+    );
+  };
+
+  // Calculate summary stats
+  const stats = useMemo(() => {
+    const totalIn = movements.filter(m => m.type === 'in').reduce((sum, m) => sum + m.quantity, 0);
+    const totalOut = movements.filter(m => m.type === 'out').reduce((sum, m) => sum + Math.abs(m.quantity), 0);
+    const adjustments = movements.filter(m => m.type === 'adjustment').length;
+    
+    return { totalIn, totalOut, adjustments, total: movements.length };
+  }, [movements]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 text-neutral-400 animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="card p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-neutral-600">Total Movements</p>
+              <p className="text-2xl font-bold text-neutral-900 mt-1">{stats.total}</p>
+            </div>
+            <FileText className="h-8 w-8 text-neutral-400" />
+          </div>
+        </div>
+        
+        <div className="card p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-neutral-600">Stock In</p>
+              <p className="text-2xl font-bold text-green-600 mt-1">{stats.totalIn}</p>
+            </div>
+            <ArrowUpCircle className="h-8 w-8 text-green-400" />
+          </div>
+        </div>
+        
+        <div className="card p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-neutral-600">Stock Out</p>
+              <p className="text-2xl font-bold text-red-600 mt-1">{stats.totalOut}</p>
+            </div>
+            <ArrowDownCircle className="h-8 w-8 text-red-400" />
+          </div>
+        </div>
+        
+        <div className="card p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-neutral-600">Adjustments</p>
+              <p className="text-2xl font-bold text-amber-600 mt-1">{stats.adjustments}</p>
+            </div>
+            <TrendingUp className="h-8 w-8 text-amber-400" />
+          </div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="card p-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400" />
+            <input
+              type="text"
+              placeholder="Search movements..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="input pl-10"
+            />
+          </div>
+
+          {/* Type Filter */}
+          <select
+            value={typeFilter}
+            onChange={(e) => setTypeFilter(e.target.value as any)}
+            className="input"
+          >
+            <option value="all">All Types</option>
+            <option value="in">Stock In</option>
+            <option value="out">Stock Out</option>
+            <option value="adjustment">Adjustments</option>
+          </select>
+
+          {/* Date Filter */}
+          <select
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value as any)}
+            className="input"
+          >
+            <option value="7days">Last 7 Days</option>
+            <option value="30days">Last 30 Days</option>
+            <option value="90days">Last 90 Days</option>
+            <option value="all">All Time</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Movements List */}
+      <div className="card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-neutral-200">
+            <thead className="bg-neutral-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                  Type
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                  Product
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                  Quantity
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                  Stock Change
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                  Reference
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                  Warehouse
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-600 uppercase tracking-wider">
+                  By
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-neutral-200">
+              {movements.map((movement) => (
+                <tr key={movement.id} className="hover:bg-neutral-50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      {getTypeIcon(movement.type)}
+                      {getTypeBadge(movement.type)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div>
+                      <p className="text-sm font-medium text-neutral-900">{movement.product_name}</p>
+                      <p className="text-xs text-neutral-500">{movement.product_sku}</p>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`text-sm font-semibold ${
+                      movement.type === 'in' ? 'text-green-600' :
+                      movement.type === 'out' ? 'text-red-600' :
+                      movement.quantity > 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {movement.type === 'in' ? '+' : movement.type === 'out' ? '-' : movement.quantity > 0 ? '+' : ''}{Math.abs(movement.quantity)}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-neutral-900">
+                      {movement.previous_stock} → {movement.new_stock}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div>
+                      <p className="text-sm font-medium text-neutral-900">{movement.reference_number}</p>
+                      <p className="text-xs text-neutral-500">{movement.notes}</p>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <p className="text-sm text-neutral-700">{movement.warehouse}</p>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-1 text-sm text-neutral-600">
+                      <Calendar className="h-4 w-4" />
+                      {formatDate(movement.created_at)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-1 text-sm text-neutral-600">
+                      <User className="h-4 w-4" />
+                      {movement.created_by}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Empty State */}
+          {movements.length === 0 && (
+            <div className="text-center py-12">
+              <Package className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
+              <h3 className="text-lg font-medium text-neutral-900 mb-1">No movements found</h3>
+              <p className="text-neutral-600">Try adjusting your filters</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Inventory() {
   const [activeTab, setActiveTab] = useState<TabType>('products');
@@ -577,12 +1075,7 @@ export default function Inventory() {
 
       {/* Stock Movements Tab */}
       {activeTab === 'movements' && (
-        <div className="card p-8 text-center">
-          <Package className="w-16 h-16 text-neutral-300 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-neutral-900 mb-2">Stock Movements</h3>
-          <p className="text-neutral-600">Track all stock in/out transactions with detailed history</p>
-          <p className="text-sm text-neutral-500 mt-4">Coming in next iteration...</p>
-        </div>
+        <StockMovementsTab products={products} />
       )}
 
       {/* Low Stock Alerts Tab */}
