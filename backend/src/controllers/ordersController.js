@@ -19,6 +19,194 @@ export const getAllOrders = async (req, res, next) => {
       order = 'DESC'
     } = req.query;
 
+    // MOCK_DB mode - return mock orders
+    if (process.env.MOCK_DB === 'true') {
+      const mockOrders = [
+        {
+          id: 1,
+          order_number: 'ORD-2025-001',
+          customer_id: 1,
+          customer_name: 'Acme Corp',
+          customer_email: 'contact@acme.com',
+          customer_phone: '+91 98765 43210',
+          status: 'processing',
+          payment_status: 'paid',
+          total_amount: 45600,
+          shipping_address: '123 Business Park, Mumbai, Maharashtra 400001',
+          notes: 'Urgent delivery required',
+          created_at: '2025-10-20T10:30:00Z',
+          updated_at: '2025-10-20T14:20:00Z',
+          delivered_at: null,
+          item_count: 5
+        },
+        {
+          id: 2,
+          order_number: 'ORD-2025-002',
+          customer_id: 2,
+          customer_name: 'TechHub Solutions',
+          customer_email: 'info@techhub.com',
+          customer_phone: '+91 98765 43211',
+          status: 'pending',
+          payment_status: 'pending',
+          total_amount: 78900,
+          shipping_address: '456 Tech Street, Bangalore, Karnataka 560001',
+          notes: 'Standard delivery',
+          created_at: '2025-10-19T09:15:00Z',
+          updated_at: '2025-10-19T09:15:00Z',
+          delivered_at: null,
+          item_count: 3
+        },
+        {
+          id: 3,
+          order_number: 'ORD-2025-003',
+          customer_id: 3,
+          customer_name: 'Global Industries',
+          customer_email: 'orders@global.com',
+          customer_phone: '+91 98765 43212',
+          status: 'delivered',
+          payment_status: 'paid',
+          total_amount: 123400,
+          shipping_address: '789 Industrial Area, Delhi, Delhi 110001',
+          notes: 'Delivered successfully',
+          created_at: '2025-10-18T08:00:00Z',
+          updated_at: '2025-10-21T16:30:00Z',
+          delivered_at: '2025-10-21T16:30:00Z',
+          item_count: 8
+        },
+        {
+          id: 4,
+          order_number: 'ORD-2025-004',
+          customer_id: 4,
+          customer_name: 'Metro Supplies',
+          customer_email: 'sales@metro.com',
+          customer_phone: '+91 98765 43213',
+          status: 'completed',
+          payment_status: 'paid',
+          total_amount: 34200,
+          shipping_address: '321 Metro Plaza, Pune, Maharashtra 411001',
+          notes: 'Order completed',
+          created_at: '2025-10-17T11:45:00Z',
+          updated_at: '2025-10-20T10:00:00Z',
+          delivered_at: '2025-10-19T14:20:00Z',
+          item_count: 4
+        },
+        {
+          id: 5,
+          order_number: 'ORD-2025-005',
+          customer_id: 5,
+          customer_name: 'Prime Logistics',
+          customer_email: 'contact@prime.com',
+          customer_phone: '+91 98765 43214',
+          status: 'processing',
+          payment_status: 'paid',
+          total_amount: 56700,
+          shipping_address: '654 Logistics Hub, Hyderabad, Telangana 500001',
+          notes: 'In transit',
+          created_at: '2025-10-16T14:30:00Z',
+          updated_at: '2025-10-18T09:15:00Z',
+          delivered_at: null,
+          item_count: 6
+        },
+        {
+          id: 6,
+          order_number: 'ORD-2025-006',
+          customer_id: 1,
+          customer_name: 'Acme Corp',
+          customer_email: 'contact@acme.com',
+          customer_phone: '+91 98765 43210',
+          status: 'pending',
+          payment_status: 'pending',
+          total_amount: 28900,
+          shipping_address: '123 Business Park, Mumbai, Maharashtra 400001',
+          notes: 'Awaiting payment confirmation',
+          created_at: '2025-10-15T16:00:00Z',
+          updated_at: '2025-10-15T16:00:00Z',
+          delivered_at: null,
+          item_count: 2
+        },
+        {
+          id: 7,
+          order_number: 'ORD-2025-007',
+          customer_id: 3,
+          customer_name: 'Global Industries',
+          customer_email: 'orders@global.com',
+          customer_phone: '+91 98765 43212',
+          status: 'shipped',
+          payment_status: 'paid',
+          total_amount: 95600,
+          shipping_address: '789 Industrial Area, Delhi, Delhi 110001',
+          notes: 'Out for delivery',
+          created_at: '2025-10-14T10:20:00Z',
+          updated_at: '2025-10-21T08:45:00Z',
+          delivered_at: null,
+          item_count: 7
+        }
+      ];
+
+      // Apply filters
+      let filteredOrders = [...mockOrders];
+
+      if (status) {
+        filteredOrders = filteredOrders.filter(o => o.status === status);
+      }
+
+      if (payment_status) {
+        filteredOrders = filteredOrders.filter(o => o.payment_status === payment_status);
+      }
+
+      if (customer_id) {
+        filteredOrders = filteredOrders.filter(o => o.customer_id === parseInt(customer_id));
+      }
+
+      if (search) {
+        const searchLower = search.toLowerCase();
+        filteredOrders = filteredOrders.filter(o => 
+          o.order_number.toLowerCase().includes(searchLower) ||
+          o.customer_name.toLowerCase().includes(searchLower) ||
+          o.customer_email.toLowerCase().includes(searchLower)
+        );
+      }
+
+      // Apply sorting
+      filteredOrders.sort((a, b) => {
+        const sortField = sortBy === 'created_at' ? 'created_at' : sortBy;
+        const aVal = a[sortField];
+        const bVal = b[sortField];
+        
+        if (order === 'ASC') {
+          return aVal > bVal ? 1 : -1;
+        } else {
+          return aVal < bVal ? 1 : -1;
+        }
+      });
+
+      // Apply pagination
+      const offset = (page - 1) * limit;
+      const paginatedOrders = filteredOrders.slice(offset, offset + parseInt(limit));
+
+      // Set cache control headers to prevent stale data
+      res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Surrogate-Control': 'no-store'
+      });
+
+      return res.json({
+        success: true,
+        data: {
+          orders: paginatedOrders,
+          pagination: {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            total: filteredOrders.length,
+            totalItems: filteredOrders.length,
+            totalPages: Math.ceil(filteredOrders.length / limit)
+          }
+        }
+      });
+    }
+
     const offset = (page - 1) * limit;
     const user_id = req.user.id;
 
@@ -94,6 +282,14 @@ export const getAllOrders = async (req, res, next) => {
     queryParams.push(limit, offset);
     const result = await pool.query(ordersQuery, queryParams);
 
+    // Set cache control headers to prevent stale data
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store'
+    });
+
     res.json({
       success: true,
       data: {
@@ -101,6 +297,7 @@ export const getAllOrders = async (req, res, next) => {
         pagination: {
           page: parseInt(page),
           limit: parseInt(limit),
+          total: totalItems,
           totalItems,
           totalPages: Math.ceil(totalItems / limit)
         }
@@ -553,6 +750,31 @@ export const deleteOrder = async (req, res, next) => {
 export const getOrderStats = async (req, res, next) => {
   try {
     const user_id = req.user.id;
+
+    // MOCK_DB mode - return mock stats
+    if (process.env.MOCK_DB === 'true') {
+      // Set cache control headers
+      res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+      
+      return res.json({
+        success: true,
+        data: {
+          total_orders: '7',
+          pending_orders: '2',
+          confirmed_orders: '0',
+          processing_orders: '2',
+          shipped_orders: '1',
+          delivered_orders: '1',
+          cancelled_orders: '0',
+          total_revenue: '463300',
+          average_order_value: '66185.71'
+        }
+      });
+    }
 
     const query = `
       SELECT 

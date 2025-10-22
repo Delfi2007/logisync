@@ -6,6 +6,10 @@ import viteCompression from 'vite-plugin-compression'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    port: 5173, // Fixed port
+    strictPort: false, // Allow fallback if port is busy
+  },
   plugins: [
     react(),
     // Generate gzip compressed files

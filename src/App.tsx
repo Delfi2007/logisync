@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { AuthProvider } from '@/context/AuthContext';
-import ProtectedRoute from '@/components/ProtectedRoute';
 import MainLayout from '@/components/layout/MainLayout';
 import PageLoader from '@/components/PageLoader';
 
@@ -21,6 +20,19 @@ const ResetPassword = lazy(() => import('@/pages/auth/ResetPassword'));
 const VerifyEmail = lazy(() => import('@/pages/auth/VerifyEmail'));
 const UserManagement = lazy(() => import('@/pages/admin/UserManagement'));
 
+// AI/ML Features
+const DemandForecasting = lazy(() => import('@/pages/ai/DemandForecasting'));
+const RouteOptimization = lazy(() => import('@/pages/ai/RouteOptimization'));
+const FraudDetection = lazy(() => import('@/pages/ai/FraudDetection'));
+const ProductRecommendations = lazy(() => import('@/pages/ai/ProductRecommendations'));
+const DynamicPricing = lazy(() => import('@/pages/ai/DynamicPricing'));
+const ComputerVisionQC = lazy(() => import('@/pages/ai/ComputerVisionQC'));
+const NLPInterface = lazy(() => import('@/pages/ai/NLPInterface'));
+
+// Blockchain Features
+const BlockchainTracking = lazy(() => import('@/pages/blockchain/BlockchainTracking'));
+const NFTDigitalTwins = lazy(() => import('@/pages/blockchain/NFTDigitalTwins'));
+
 function App() {
   return (
     <BrowserRouter>
@@ -34,26 +46,37 @@ function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
 
-            {/* Protected Routes */}
+            {/* All Routes - No Authentication Required */}
             <Route
               path="/*"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <Routes>
-                      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/inventory" element={<Inventory />} />
-                      <Route path="/orders" element={<Orders />} />
-                      <Route path="/marketplace" element={<Marketplace />} />
-                      <Route path="/analytics" element={<Analytics />} />
-                      <Route path="/customers" element={<Customers />} />
-                      <Route path="/warehouses" element={<Warehouses />} />
-                      <Route path="/settings" element={<Settings />} />
-                      <Route path="/admin/users" element={<UserManagement />} />
-                    </Routes>
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <Routes>
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/inventory" element={<Inventory />} />
+                    <Route path="/orders" element={<Orders />} />
+                    <Route path="/marketplace" element={<Marketplace />} />
+                    <Route path="/analytics" element={<Analytics />} />
+                    <Route path="/customers" element={<Customers />} />
+                    <Route path="/warehouses" element={<Warehouses />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/admin/users" element={<UserManagement />} />
+                    
+                    {/* AI/ML Features */}
+                    <Route path="/ai/demand-forecasting" element={<DemandForecasting />} />
+                    <Route path="/ai/route-optimization" element={<RouteOptimization />} />
+                    <Route path="/ai/fraud-detection" element={<FraudDetection />} />
+                    <Route path="/ai/recommendations" element={<ProductRecommendations />} />
+                    <Route path="/ai/dynamic-pricing" element={<DynamicPricing />} />
+                    <Route path="/ai/vision-qc" element={<ComputerVisionQC />} />
+                    <Route path="/ai/nlp-interface" element={<NLPInterface />} />
+                    
+                    {/* Blockchain Features */}
+                    <Route path="/blockchain/tracking" element={<BlockchainTracking />} />
+                    <Route path="/blockchain/nft-twins" element={<NFTDigitalTwins />} />
+                  </Routes>
+                </MainLayout>
               }
             />
           </Routes>

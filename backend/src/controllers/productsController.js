@@ -18,6 +18,51 @@ export const getAllProducts = async (req, res, next) => {
       order = 'DESC'
     } = req.query;
 
+    // MOCK_DB mode - return mock products
+    if (process.env.MOCK_DB === 'true') {
+      const mockProducts = [
+        { id: 1, name: 'Laptop - Dell XPS 15', sku: 'DELL-XPS-15', category: 'Electronics', description: 'High-performance laptop', price: 125000, cost: 95000, stock: 15, reorder_level: 5, supplier: 'Dell India', status: 'active', needs_reorder: false, created_at: '2024-01-15T10:00:00Z' },
+        { id: 2, name: 'Office Chair - Ergonomic', sku: 'CHAIR-ERG-01', category: 'Furniture', description: 'Comfortable office chair', price: 15000, cost: 9000, stock: 25, reorder_level: 10, supplier: 'Office Pro', status: 'active', needs_reorder: false, created_at: '2024-02-01T10:00:00Z' },
+        { id: 3, name: 'Wireless Mouse', sku: 'MOUSE-WL-02', category: 'Electronics', description: 'Bluetooth mouse', price: 1200, cost: 600, stock: 3, reorder_level: 10, supplier: 'Tech Supplies', status: 'active', needs_reorder: true, created_at: '2024-02-10T10:00:00Z' },
+        { id: 4, name: 'Standing Desk', sku: 'DESK-STD-01', category: 'Furniture', description: 'Adjustable height desk', price: 35000, cost: 22000, stock: 8, reorder_level: 3, supplier: 'Office Pro', status: 'active', needs_reorder: false, created_at: '2024-03-01T10:00:00Z' },
+        { id: 5, name: 'Monitor - 27 inch 4K', sku: 'MON-4K-27', category: 'Electronics', description: '4K UHD monitor', price: 32000, cost: 24000, stock: 12, reorder_level: 5, supplier: 'Tech Supplies', status: 'active', needs_reorder: false, created_at: '2024-03-15T10:00:00Z' }
+      ];
+
+      let filtered = [...mockProducts];
+      if (category) filtered = filtered.filter(p => p.category === category);
+      if (status) filtered = filtered.filter(p => p.status === status);
+      if (search) {
+        const s = search.toLowerCase();
+        filtered = filtered.filter(p => 
+          p.name.toLowerCase().includes(s) || 
+          p.sku.toLowerCase().includes(s) || 
+          p.description.toLowerCase().includes(s)
+        );
+      }
+
+      const offset = (page - 1) * limit;
+      const paginated = filtered.slice(offset, offset + parseInt(limit));
+
+      res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+
+      return res.json({
+        success: true,
+        data: {
+          products: paginated,
+          pagination: {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            totalItems: filtered.length,
+            totalPages: Math.ceil(filtered.length / limit)
+          }
+        }
+      });
+    }
+
     const offset = (page - 1) * limit;
     const user_id = req.user.id;
 

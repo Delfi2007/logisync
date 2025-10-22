@@ -105,51 +105,45 @@ class AuthService {
   async login({ email, password, ipAddress, userAgent }) {
     // Mock login for development without a database
     if (MOCK_DB) {
-      const demoEmail = 'demo@logisync.com';
-      const demoPassword = 'password123';
+      // Accept ANY email and password in MOCK_DB mode
+      const userWithRoles = {
+        id: 1,
+        email: email.toLowerCase(),
+        first_name: 'Demo',
+        last_name: 'User',
+        phone: null,
+        is_active: true,
+        is_verified: true,
+        roles: [{ id: 1, name: 'admin', description: 'Administrator', permissions: [] }],
+        permissions: []
+      };
 
-      if (email.toLowerCase() === demoEmail && password === demoPassword) {
-        const userWithRoles = {
-          id: 1,
-          email: demoEmail,
-          first_name: 'Demo',
-          last_name: 'User',
-          phone: null,
-          is_active: true,
-          is_verified: true,
-          roles: [{ id: 1, name: 'admin', description: 'Administrator', permissions: [] }],
-          permissions: []
-        };
+      const accessTokenPayload = {
+        userId: userWithRoles.id,
+        email: userWithRoles.email,
+        roles: userWithRoles.roles.map(r => r.name),
+        permissions: userWithRoles.permissions,
+        jti: `${userWithRoles.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      };
 
-        const accessTokenPayload = {
-          userId: userWithRoles.id,
-          email: userWithRoles.email,
-          roles: userWithRoles.roles.map(r => r.name),
-          permissions: userWithRoles.permissions,
-          jti: `${userWithRoles.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-        };
+      const accessToken = jwt.sign(accessTokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 
-        const accessToken = jwt.sign(accessTokenPayload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+      const refreshTokenPayload = {
+        userId: userWithRoles.id,
+        tokenType: 'refresh',
+        jti: `${userWithRoles.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      };
 
-        const refreshTokenPayload = {
-          userId: userWithRoles.id,
-          tokenType: 'refresh',
-          jti: `${userWithRoles.id}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-        };
+      const refreshToken = jwt.sign(refreshTokenPayload, JWT_REFRESH_SECRET, { expiresIn: JWT_REFRESH_EXPIRES_IN });
 
-        const refreshToken = jwt.sign(refreshTokenPayload, JWT_REFRESH_SECRET, { expiresIn: JWT_REFRESH_EXPIRES_IN });
-
-        return {
-          user: userWithRoles,
-          tokens: {
-            accessToken,
-            refreshToken,
-            expiresIn: JWT_EXPIRES_IN
-          }
-        };
-      }
-
-      throw new Error('Invalid email or password');
+      return {
+        user: userWithRoles,
+        tokens: {
+          accessToken,
+          refreshToken,
+          expiresIn: JWT_EXPIRES_IN
+        }
+      };
     }
   }
 

@@ -399,6 +399,79 @@ export const getAllDashboardData = async (req, res, next) => {
   try {
     const user_id = req.user.id;
 
+    // MOCK_DB mode - return mock data
+    if (process.env.MOCK_DB === 'true') {
+      const mockDashboardData = {
+        stats: {
+          orders: {
+            total: 156,
+            pending: 12,
+            delivered: 128,
+            total_revenue: 2845600,
+            delivered_revenue: 2534200,
+            average_order_value: 18240
+          },
+          customers: {
+            total: 42,
+            premium: 8,
+            new: 5
+          },
+          products: {
+            total: 89,
+            active: 76,
+            low_stock: 7,
+            inventory_value: 4567800
+          },
+          warehouses: {
+            total: 3,
+            active: 3,
+            total_capacity: 150000,
+            total_occupied: 98500,
+            utilization_rate: 65.67
+          }
+        },
+        recent_orders: [
+          { id: 1, order_number: 'ORD-2025-001', customer_name: 'Acme Corp', email: 'contact@acme.com', total_amount: 45600, status: 'processing', created_at: new Date('2025-10-20').toISOString(), item_count: 5 },
+          { id: 2, order_number: 'ORD-2025-002', customer_name: 'TechHub Solutions', email: 'info@techhub.com', total_amount: 78900, status: 'pending', created_at: new Date('2025-10-19').toISOString(), item_count: 3 },
+          { id: 3, order_number: 'ORD-2025-003', customer_name: 'Global Industries', email: 'orders@global.com', total_amount: 123400, status: 'delivered', created_at: new Date('2025-10-18').toISOString(), item_count: 8 },
+          { id: 4, order_number: 'ORD-2025-004', customer_name: 'Metro Supplies', email: 'sales@metro.com', total_amount: 34200, status: 'completed', created_at: new Date('2025-10-17').toISOString(), item_count: 4 },
+          { id: 5, order_number: 'ORD-2025-005', customer_name: 'Prime Logistics', email: 'contact@prime.com', total_amount: 56700, status: 'processing', created_at: new Date('2025-10-16').toISOString(), item_count: 6 }
+        ],
+        revenue_chart: {
+          period: '7days',
+          data: [
+            { date: '2025-10-16', order_count: 8, revenue: 156800, avg_order_value: 19600 },
+            { date: '2025-10-17', order_count: 12, revenue: 234500, avg_order_value: 19540 },
+            { date: '2025-10-18', order_count: 15, revenue: 287300, avg_order_value: 19150 },
+            { date: '2025-10-19', order_count: 10, revenue: 198700, avg_order_value: 19870 },
+            { date: '2025-10-20', order_count: 18, revenue: 342600, avg_order_value: 19030 },
+            { date: '2025-10-21', order_count: 14, revenue: 276400, avg_order_value: 19740 },
+            { date: '2025-10-22', order_count: 9, revenue: 178900, avg_order_value: 19880 }
+          ]
+        },
+        top_products: [
+          { id: 1, name: 'Acme Corp', email: 'contact@acme.com', phone: '+91 98765 43210', business_name: 'Acme Corporation', segment: 'premium', total_orders: 45, total_revenue: 892000, created_at: new Date('2024-01-15').toISOString() },
+          { id: 2, name: 'TechHub Solutions', email: 'info@techhub.com', phone: '+91 98765 43211', business_name: 'TechHub Pvt Ltd', segment: 'premium', total_orders: 38, total_revenue: 756000, created_at: new Date('2024-02-20').toISOString() },
+          { id: 3, name: 'Global Industries', email: 'orders@global.com', phone: '+91 98765 43212', business_name: 'Global Industries Inc', segment: 'enterprise', total_orders: 52, total_revenue: 1045000, created_at: new Date('2024-03-10').toISOString() },
+          { id: 4, name: 'Metro Supplies', email: 'sales@metro.com', phone: '+91 98765 43213', business_name: 'Metro Supplies Ltd', segment: 'standard', total_orders: 28, total_revenue: 445000, created_at: new Date('2024-04-05').toISOString() },
+          { id: 5, name: 'Prime Logistics', email: 'contact@prime.com', phone: '+91 98765 43214', business_name: 'Prime Logistics Co', segment: 'premium', total_orders: 35, total_revenue: 678000, created_at: new Date('2024-05-12').toISOString() }
+        ]
+      };
+
+      // Set cache control headers
+      res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Surrogate-Control': 'no-store'
+      });
+
+      return res.json({
+        success: true,
+        data: mockDashboardData
+      });
+    }
+
     // Execute all queries in parallel for better performance
     const [statsResult, recentOrdersResult, revenueChartResult, topCustomersResult] = await Promise.all([
       // Stats
@@ -526,6 +599,14 @@ export const getAllDashboardData = async (req, res, next) => {
       },
       top_products: topCustomersResult.rows // Note: Currently using customers, can be changed to products if needed
     };
+
+    // Set cache control headers
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'Surrogate-Control': 'no-store'
+    });
 
     res.json({
       success: true,

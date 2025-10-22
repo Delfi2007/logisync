@@ -19,6 +19,50 @@ export const getAllWarehouses = async (req, res, next) => {
       order = 'DESC'
     } = req.query;
 
+    // MOCK_DB mode - return mock warehouses
+    if (process.env.MOCK_DB === 'true') {
+      const mockWarehouses = [
+        { id: 1, name: 'Mumbai Central Warehouse', code: 'WH-MUM-001', city: 'Mumbai', state: 'Maharashtra', pincode: '400001', capacity: 50000, occupied: 32500, utilization_rate: 65.00, status: 'active', is_verified: true, created_at: '2024-01-10T10:00:00Z' },
+        { id: 2, name: 'Delhi North Hub', code: 'WH-DEL-002', city: 'Delhi', state: 'Delhi', pincode: '110001', capacity: 60000, occupied: 42000, utilization_rate: 70.00, status: 'active', is_verified: true, created_at: '2024-02-15T10:00:00Z' },
+        { id: 3, name: 'Bangalore Tech Park Storage', code: 'WH-BLR-003', city: 'Bangalore', state: 'Karnataka', pincode: '560001', capacity: 40000, occupied: 24000, utilization_rate: 60.00, status: 'active', is_verified: true, created_at: '2024-03-20T10:00:00Z' }
+      ];
+
+      let filtered = [...mockWarehouses];
+      if (status) filtered = filtered.filter(w => w.status === status);
+      if (is_verified !== undefined) filtered = filtered.filter(w => w.is_verified === (is_verified === 'true'));
+      if (search) {
+        const s = search.toLowerCase();
+        filtered = filtered.filter(w => 
+          w.name.toLowerCase().includes(s) || 
+          w.code.toLowerCase().includes(s) || 
+          w.city.toLowerCase().includes(s) ||
+          w.state.toLowerCase().includes(s)
+        );
+      }
+
+      const offset = (page - 1) * limit;
+      const paginated = filtered.slice(offset, offset + parseInt(limit));
+
+      res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+
+      return res.json({
+        success: true,
+        data: {
+          warehouses: paginated,
+          pagination: {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            totalItems: filtered.length,
+            totalPages: Math.ceil(filtered.length / limit)
+          }
+        }
+      });
+    }
+
     const offset = (page - 1) * limit;
     const user_id = req.user.id;
 

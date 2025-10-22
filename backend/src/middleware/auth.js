@@ -1,6 +1,8 @@
 import { verifyToken } from '../utils/jwt.js';
 import { query } from '../config/database.js';
 
+const MOCK_DB = process.env.MOCK_DB === 'true';
+
 /**
  * Authentication middleware
  * Verifies JWT token and attaches user info to request
@@ -30,7 +32,19 @@ export const authenticate = async (req, res, next) => {
       });
     }
     
-    // Check if user still exists
+    // MOCK_DB mode: Use mock user data
+    if (MOCK_DB) {
+      req.user = {
+        id: decoded.userId,
+        email: 'demo@logisync.com',
+        full_name: 'Demo User',
+        role: 'admin',
+        created_at: new Date().toISOString()
+      };
+      return next();
+    }
+    
+    // Check if user still exists in database
     const result = await query(
       'SELECT id, email, full_name, role, created_at FROM users WHERE id = $1',
       [decoded.userId]
@@ -93,13 +107,24 @@ export const optionalAuthenticate = async (req, res, next) => {
       
       try {
         const decoded = verifyToken(token);
-        const result = await query(
-          'SELECT id, email, full_name, role FROM users WHERE id = $1',
-          [decoded.userId]
-        );
         
-        if (result.rows.length > 0) {
-          req.user = result.rows[0];
+        // MOCK_DB mode: Use mock user data
+        if (MOCK_DB) {
+          req.user = {
+            id: decoded.userId,
+            email: 'demo@logisync.com',
+            full_name: 'Demo User',
+            role: 'admin'
+          };
+        } else {
+          const result = await query(
+            'SELECT id, email, full_name, role FROM users WHERE id = $1',
+            [decoded.userId]
+          );
+          
+          if (result.rows.length > 0) {
+            req.user = result.rows[0];
+          }
         }
       } catch (error) {
         // Silently ignore invalid tokens for optional auth

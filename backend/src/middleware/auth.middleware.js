@@ -11,6 +11,21 @@ import pool from '../config/database.js';
  */
 export const authenticate = async (req, res, next) => {
   try {
+    // MOCK_DB mode - bypass authentication
+    if (process.env.MOCK_DB === 'true') {
+      req.user = {
+        id: 1,
+        email: 'demo@logisync.com',
+        name: 'Demo User',
+        is_active: true,
+        is_verified: true,
+        roles: [{ id: 1, name: 'admin', display_name: 'Administrator' }],
+        permissions: ['*']
+      };
+      req.userId = 1;
+      return next();
+    }
+
     // Get token from Authorization header
     const authHeader = req.headers.authorization;
 
@@ -64,6 +79,21 @@ export const authenticate = async (req, res, next) => {
  */
 export const optionalAuth = async (req, res, next) => {
   try {
+    // MOCK_DB mode - add mock user
+    if (process.env.MOCK_DB === 'true') {
+      req.user = {
+        id: 1,
+        email: 'demo@logisync.com',
+        name: 'Demo User',
+        is_active: true,
+        is_verified: true,
+        roles: [{ id: 1, name: 'admin', display_name: 'Administrator' }],
+        permissions: ['*']
+      };
+      req.userId = 1;
+      return next();
+    }
+
     const authHeader = req.headers.authorization;
 
     if (authHeader && authHeader.startsWith('Bearer ')) {

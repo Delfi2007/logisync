@@ -9,6 +9,7 @@ import { dirname, join } from 'path';
 
 // Import middleware
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import noCache from './middleware/cacheControl.js';
 
 // Import routes
 import authRoutes from './routes/auth.routes.js';
@@ -35,6 +36,9 @@ app.use(cors({
 app.use(morgan('dev')); // HTTP request logging
 app.use(express.json()); // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+
+// Disable client-side caching for API responses to avoid 304 stale responses
+app.use(noCache);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

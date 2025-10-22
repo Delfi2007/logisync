@@ -17,6 +17,51 @@ export const getAllCustomers = async (req, res, next) => {
       order = 'DESC'
     } = req.query;
 
+    // MOCK_DB mode - return mock customers
+    if (process.env.MOCK_DB === 'true') {
+      const mockCustomers = [
+        { id: 1, name: 'Acme Corp', email: 'contact@acme.com', phone: '+91 98765 43210', business_name: 'Acme Corporation', segment: 'premium', total_orders: 45, total_revenue: 892000, address_count: 3, order_count: 45, created_at: '2024-01-15T10:00:00Z' },
+        { id: 2, name: 'TechHub Solutions', email: 'info@techhub.com', phone: '+91 98765 43211', business_name: 'TechHub Pvt Ltd', segment: 'premium', total_orders: 38, total_revenue: 756000, address_count: 2, order_count: 38, created_at: '2024-02-20T10:00:00Z' },
+        { id: 3, name: 'Global Industries', email: 'orders@global.com', phone: '+91 98765 43212', business_name: 'Global Industries Inc', segment: 'enterprise', total_orders: 52, total_revenue: 1045000, address_count: 5, order_count: 52, created_at: '2024-03-10T10:00:00Z' },
+        { id: 4, name: 'Metro Supplies', email: 'sales@metro.com', phone: '+91 98765 43213', business_name: 'Metro Supplies Ltd', segment: 'standard', total_orders: 28, total_revenue: 445000, address_count: 2, order_count: 28, created_at: '2024-04-05T10:00:00Z' },
+        { id: 5, name: 'Prime Logistics', email: 'contact@prime.com', phone: '+91 98765 43214', business_name: 'Prime Logistics Co', segment: 'premium', total_orders: 35, total_revenue: 678000, address_count: 4, order_count: 35, created_at: '2024-05-12T10:00:00Z' }
+      ];
+
+      let filtered = [...mockCustomers];
+      if (segment) filtered = filtered.filter(c => c.segment === segment);
+      if (search) {
+        const s = search.toLowerCase();
+        filtered = filtered.filter(c => 
+          c.name.toLowerCase().includes(s) || 
+          c.email.toLowerCase().includes(s) || 
+          c.phone.includes(s) ||
+          c.business_name.toLowerCase().includes(s)
+        );
+      }
+
+      const offset = (page - 1) * limit;
+      const paginated = filtered.slice(offset, offset + parseInt(limit));
+
+      res.set({
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      });
+
+      return res.json({
+        success: true,
+        data: {
+          customers: paginated,
+          pagination: {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            totalItems: filtered.length,
+            totalPages: Math.ceil(filtered.length / limit)
+          }
+        }
+      });
+    }
+
     const offset = (page - 1) * limit;
     const user_id = req.user.id;
 

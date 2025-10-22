@@ -51,47 +51,243 @@ export default function Orders() {
   // Modals
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Fetch orders
+  // Fetch orders - USING STATIC DATA
   useEffect(() => {
     fetchOrders();
   }, [currentPage, statusFilter, paymentStatusFilter, debouncedSearchQuery]);
 
-  // Fetch stats
+  // Fetch stats - USING STATIC DATA
   useEffect(() => {
     fetchStats();
   }, []);
 
   const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+    setLoading(true);
+    setError(null);
+    
+    // Simulate small delay then show static data
+    setTimeout(() => {
+      // STATIC MOCK DATA - NO API CALL
+      const mockOrders: Order[] = [
+        {
+          id: 1,
+          user_id: 1,
+          customer_id: 1,
+          order_number: 'ORD-2025-001',
+          status: 'processing',
+          payment_status: 'paid',
+          payment_method: 'card',
+          subtotal: 42000,
+          tax_amount: 3600,
+          shipping_cost: 0,
+          discount_amount: 0,
+          total_amount: 45600,
+          shipping_street: '123 Business Park',
+          shipping_city: 'Mumbai',
+          shipping_state: 'Maharashtra',
+          shipping_pincode: '400001',
+          notes: 'Urgent delivery required',
+          created_at: '2025-10-20T10:30:00Z',
+          updated_at: '2025-10-20T14:20:00Z',
+          customer_name: 'Acme Corp',
+          customer_email: 'contact@acme.com',
+          customer_phone: '+91 98765 43210'
+        },
+        {
+          id: 2,
+          user_id: 1,
+          customer_id: 2,
+          order_number: 'ORD-2025-002',
+          status: 'pending',
+          payment_status: 'pending',
+          payment_method: 'upi',
+          subtotal: 72000,
+          tax_amount: 6900,
+          shipping_cost: 0,
+          discount_amount: 0,
+          total_amount: 78900,
+          shipping_street: '456 Tech Street',
+          shipping_city: 'Bangalore',
+          shipping_state: 'Karnataka',
+          shipping_pincode: '560001',
+          notes: 'Standard delivery',
+          created_at: '2025-10-19T09:15:00Z',
+          updated_at: '2025-10-19T09:15:00Z',
+          customer_name: 'TechHub Solutions',
+          customer_email: 'info@techhub.com',
+          customer_phone: '+91 98765 43211'
+        },
+        {
+          id: 3,
+          user_id: 1,
+          customer_id: 3,
+          order_number: 'ORD-2025-003',
+          status: 'delivered',
+          payment_status: 'paid',
+          payment_method: 'netbanking',
+          subtotal: 115000,
+          tax_amount: 8400,
+          shipping_cost: 0,
+          discount_amount: 0,
+          total_amount: 123400,
+          shipping_street: '789 Industrial Area',
+          shipping_city: 'Delhi',
+          shipping_state: 'Delhi',
+          shipping_pincode: '110001',
+          notes: 'Delivered successfully',
+          created_at: '2025-10-18T08:00:00Z',
+          updated_at: '2025-10-21T16:30:00Z',
+          delivered_at: '2025-10-21T16:30:00Z',
+          customer_name: 'Global Industries',
+          customer_email: 'orders@global.com',
+          customer_phone: '+91 98765 43212'
+        },
+        {
+          id: 4,
+          user_id: 1,
+          customer_id: 4,
+          order_number: 'ORD-2025-004',
+          status: 'delivered',
+          payment_status: 'paid',
+          payment_method: 'card',
+          subtotal: 31500,
+          tax_amount: 2700,
+          shipping_cost: 0,
+          discount_amount: 0,
+          total_amount: 34200,
+          shipping_street: '321 Metro Plaza',
+          shipping_city: 'Pune',
+          shipping_state: 'Maharashtra',
+          shipping_pincode: '411001',
+          notes: 'Order completed',
+          created_at: '2025-10-17T11:45:00Z',
+          updated_at: '2025-10-20T10:00:00Z',
+          delivered_at: '2025-10-19T14:20:00Z',
+          customer_name: 'Metro Supplies',
+          customer_email: 'sales@metro.com',
+          customer_phone: '+91 98765 43213'
+        },
+        {
+          id: 5,
+          user_id: 1,
+          customer_id: 5,
+          order_number: 'ORD-2025-005',
+          status: 'processing',
+          payment_status: 'paid',
+          payment_method: 'upi',
+          subtotal: 52000,
+          tax_amount: 4700,
+          shipping_cost: 0,
+          discount_amount: 0,
+          total_amount: 56700,
+          shipping_street: '654 Logistics Hub',
+          shipping_city: 'Hyderabad',
+          shipping_state: 'Telangana',
+          shipping_pincode: '500001',
+          notes: 'In transit',
+          created_at: '2025-10-16T14:30:00Z',
+          updated_at: '2025-10-18T09:15:00Z',
+          customer_name: 'Prime Logistics',
+          customer_email: 'contact@prime.com',
+          customer_phone: '+91 98765 43214'
+        },
+        {
+          id: 6,
+          user_id: 1,
+          customer_id: 1,
+          order_number: 'ORD-2025-006',
+          status: 'pending',
+          payment_status: 'pending',
+          payment_method: 'cash',
+          subtotal: 26500,
+          tax_amount: 2400,
+          shipping_cost: 0,
+          discount_amount: 0,
+          total_amount: 28900,
+          shipping_street: '123 Business Park',
+          shipping_city: 'Mumbai',
+          shipping_state: 'Maharashtra',
+          shipping_pincode: '400001',
+          notes: 'Awaiting payment confirmation',
+          created_at: '2025-10-15T16:00:00Z',
+          updated_at: '2025-10-15T16:00:00Z',
+          customer_name: 'Acme Corp',
+          customer_email: 'contact@acme.com',
+          customer_phone: '+91 98765 43210'
+        },
+        {
+          id: 7,
+          user_id: 1,
+          customer_id: 3,
+          order_number: 'ORD-2025-007',
+          status: 'shipped',
+          payment_status: 'paid',
+          payment_method: 'card',
+          subtotal: 88000,
+          tax_amount: 7600,
+          shipping_cost: 0,
+          discount_amount: 0,
+          total_amount: 95600,
+          shipping_street: '789 Industrial Area',
+          shipping_city: 'Delhi',
+          shipping_state: 'Delhi',
+          shipping_pincode: '110001',
+          notes: 'Out for delivery',
+          created_at: '2025-10-14T10:20:00Z',
+          updated_at: '2025-10-21T08:45:00Z',
+          customer_name: 'Global Industries',
+          customer_email: 'orders@global.com',
+          customer_phone: '+91 98765 43212'
+        }
+      ];
+
+      // Apply filters
+      let filtered = [...mockOrders];
       
-      const filters = {
-        page: currentPage,
-        limit: 10,
-        ...(statusFilter !== 'all' && { status: statusFilter }),
-        ...(paymentStatusFilter !== 'all' && { payment_status: paymentStatusFilter }),
-        ...(debouncedSearchQuery && { search: debouncedSearchQuery }),
-        sortBy: 'created_at' as const,
-        order: 'DESC' as const
-      };
+      if (statusFilter !== 'all') {
+        filtered = filtered.filter(o => o.status === statusFilter);
+      }
       
-      const response = await ordersService.getAll(filters);
-      setOrders(response.orders);
-      setTotalPages(response.pagination.totalPages);
-      setTotalOrders(response.pagination.total);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load orders');
-      console.error('Error fetching orders:', err);
-    } finally {
+      if (paymentStatusFilter !== 'all') {
+        filtered = filtered.filter(o => o.payment_status === paymentStatusFilter);
+      }
+      
+      if (debouncedSearchQuery) {
+        const search = debouncedSearchQuery.toLowerCase();
+        filtered = filtered.filter(o => 
+          o.order_number.toLowerCase().includes(search) ||
+          o.customer_name?.toLowerCase().includes(search) ||
+          o.customer_email?.toLowerCase().includes(search)
+        );
+      }
+      
+      // Pagination
+      const startIndex = (currentPage - 1) * 10;
+      const paginatedOrders = filtered.slice(startIndex, startIndex + 10);
+      
+      setOrders(paginatedOrders);
+      setTotalPages(Math.ceil(filtered.length / 10));
+      setTotalOrders(filtered.length);
       setLoading(false);
-    }
+    }, 100);
   };
 
   const fetchStats = async () => {
     try {
-      const statsData = await ordersService.getStats();
-      setStats(statsData);
+      // STATIC MOCK STATS
+      const mockStats: OrderStats = {
+        total_orders: 7,
+        pending_orders: 2,
+        confirmed_orders: 0,
+        processing_orders: 2,
+        shipped_orders: 1,
+        delivered_orders: 1,
+        cancelled_orders: 0,
+        returned_orders: 0,
+        total_revenue: 463300,
+        average_order_value: 66185.71
+      };
+      setStats(mockStats);
     } catch (err: any) {
       console.error('Error fetching order stats:', err);
     }
