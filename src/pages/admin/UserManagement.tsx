@@ -1,494 +1,495 @@
-import { useState, useEffect, lazy, Suspense, useCallback, useMemo } from 'react';
-import { 
-  Users, 
-  Shield, 
-  Search, 
-  Filter,
-  Activity,
-  AlertCircle,
-  CheckCircle2,
-  XCircle
-} from 'lucide-react';
-import ModalLoader from '@/components/ModalLoader';
-import { userService, roleService } from '@/services/users';
-import { UserDetailed, Role, ROLE_COLORS } from '@/types/user';
-import { useDebounce } from '@/hooks/useDebounce';
-
-// Lazy load modals
-const AssignRoleModal = lazy(() => import('@/components/admin/AssignRoleModal'));
-const ActivityLogModal = lazy(() => import('@/components/admin/ActivityLogModal'));
-
-export default function UserManagement() {
-  const [users, setUsers] = useState<UserDetailed[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  
-  // Filters and search
-  const [searchTerm, setSearchTerm] = useState('');
-  const [roleFilter, setRoleFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalUsers, setTotalUsers] = useState(0);
-  
-  // Modals
-  const [isAssignRoleModalOpen, setIsAssignRoleModalOpen] = useState(false);
-  const [isActivityModalOpen, setIsActivityModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserDetailed | null>(null);
-
-  // Debounce search term to reduce API calls
-  const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
-  // Fetch roles once on mount
-  useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const rolesData = await roleService.getAll();
-        setRoles(rolesData);
-      } catch (err: any) {
-        console.error('Error fetching roles:', err);
-      }
-    };
-    fetchRoles();
-  }, []);
-
-  // Fetch users
-  const fetchUsers = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const filters = {
-        page: currentPage,
-        limit: 10,
-        ...(roleFilter !== 'all' && { role: roleFilter }),
-        ...(statusFilter !== 'all' && { status: statusFilter }),
-        ...(debouncedSearchTerm && { search: debouncedSearchTerm }),
-        sortBy: 'created_at' as const,
-        sortOrder: 'DESC' as const
-      };
-      
-      const response = await userService.getAll(filters);
-      setUsers(response.users);
-      setTotalPages(response.pagination.totalPages);
-      setTotalUsers(response.pagination.total);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load users');
-      console.error('Error fetching users:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [currentPage, roleFilter, statusFilter, debouncedSearchTerm]);
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
-
-  // Calculate statistics
-  const stats = useMemo(() => {
-    const activeUsers = users.filter(u => u.is_active).length;
-    const inactiveUsers = users.filter(u => !u.is_active).length;
-    const roleStats = roles.map(role => ({
-      name: role.name,
-      count: users.filter(u => u.roles.some(r => r.id === role.id)).length
-    }));
-    
-    return {
-      total: totalUsers || 0,
-      active: activeUsers,
-      inactive: inactiveUsers,
-      roleStats
-    };
-  }, [users, totalUsers, roles]);
-
-  // Handle status toggle
-  const handleToggleStatus = async (user: UserDetailed) => {
-    try {
-      const updatedUser = await userService.updateStatus(user.id, !user.is_active);
-      setUsers(prev => prev.map(u => u.id === user.id ? updatedUser : u));
-    } catch (err: any) {
-      alert(err.message || 'Failed to update user status');
-    }
-  };
-
-  // Handle assign role
-  const handleAssignRole = (user: UserDetailed) => {
-    setSelectedUser(user);
-    setIsAssignRoleModalOpen(true);
-  };
-
-  // Handle view activity
-  const handleViewActivity = (user: UserDetailed) => {
-    setSelectedUser(user);
-    setIsActivityModalOpen(true);
-  };
-
-  // Handle role assignment save
-  const handleRoleAssignmentSave = async (userId: number, roleIds: number[]) => {
-    try {
-      const updatedUser = await userService.assignRoles(userId, roleIds);
-      setUsers(prev => prev.map(u => u.id === userId ? updatedUser : u));
-      setIsAssignRoleModalOpen(false);
-      setSelectedUser(null);
-    } catch (err: any) {
-      throw err; // Let modal handle the error
-    }
-  };
-
-  // Reset to page 1 when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [debouncedSearchTerm, roleFilter, statusFilter]);
-
-  // Get role color
-  const getRoleColor = (roleName: string): string => {
-    return ROLE_COLORS[roleName as keyof typeof ROLE_COLORS] || 'bg-gray-100 text-gray-800';
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-600 mt-1">Manage users and their roles</p>
-        </div>
-      </div>
-
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Users</p>
-              <p className="text-2xl font-bold text-gray-900 mt-2">{stats.total}</p>
-            </div>
-            <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="h-6 w-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Active Users</p>
-              <p className="text-2xl font-bold text-green-600 mt-2">{stats.active}</p>
-            </div>
-            <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Inactive Users</p>
-              <p className="text-2xl font-bold text-red-600 mt-2">{stats.inactive}</p>
-            </div>
-            <div className="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center">
-              <XCircle className="h-6 w-6 text-red-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Roles</p>
-              <p className="text-2xl font-bold text-purple-600 mt-2">{roles.length}</p>
-            </div>
-            <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Shield className="h-6 w-6 text-purple-600" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters and Search */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex flex-col md:flex-row gap-4">
-            {/* Search */}
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <input
-                  type="text"
-                  placeholder="Search by name or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-
-            {/* Role Filter */}
-            <div className="w-full md:w-48">
-              <div className="relative">
-                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <select
-                  value={roleFilter}
-                  onChange={(e) => setRoleFilter(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-                >
-                  <option value="all">All Roles</option>
-                  {roles.map(role => (
-                    <option key={role.id} value={role.name}>{role.name}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* Status Filter */}
-            <div className="w-full md:w-48">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'inactive')}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
-              >
-                <option value="all">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Users Table */}
-        <div className="overflow-x-auto">
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            </div>
-          ) : error ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-                <p className="text-red-600 font-medium">{error}</p>
-                <button
-                  onClick={fetchUsers}
-                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Try Again
-                </button>
-              </div>
-            </div>
-          ) : users.length === 0 ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">No users found</p>
-              </div>
-            </div>
-          ) : (
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    User
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Roles
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Last Active
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="h-10 w-10 flex-shrink-0">
-                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold">
-                            {user.first_name[0]}{user.last_name[0]}
-                          </div>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
-                            {user.first_name} {user.last_name}
-                          </div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex flex-wrap gap-1">
-                        {user.roles.length > 0 ? (
-                          user.roles.map((role) => (
-                            <span
-                              key={role.id}
-                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRoleColor(role.name)}`}
-                            >
-                              {role.name}
-                            </span>
-                          ))
-                        ) : (
-                          <span className="text-sm text-gray-400">No roles</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => handleToggleStatus(user)}
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                          user.is_active
-                            ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                            : 'bg-red-100 text-red-800 hover:bg-red-200'
-                        }`}
-                      >
-                        {user.is_active ? (
-                          <>
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Active
-                          </>
-                        ) : (
-                          <>
-                            <XCircle className="h-3 w-3 mr-1" />
-                            Inactive
-                          </>
-                        )}
-                      </button>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.last_login ? new Date(user.last_login).toLocaleDateString() : 'Never'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => handleAssignRole(user)}
-                          className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-                        >
-                          <Shield className="h-4 w-4 mr-1" />
-                          Roles
-                        </button>
-                        <button
-                          onClick={() => handleViewActivity(user)}
-                          className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-                        >
-                          <Activity className="h-4 w-4 mr-1" />
-                          Activity
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-
-        {/* Pagination */}
-        {!loading && !error && totalPages > 1 && (
-          <div className="bg-white px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-            <div className="flex-1 flex justify-between sm:hidden">
-              <button
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </div>
-            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">{(currentPage - 1) * 10 + 1}</span> to{' '}
-                  <span className="font-medium">{Math.min(currentPage * 10, totalUsers)}</span> of{' '}
-                  <span className="font-medium">{totalUsers}</span> users
-                </p>
-              </div>
-              <div>
-                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Previous
-                  </button>
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    let pageNum;
-                    if (totalPages <= 5) {
-                      pageNum = i + 1;
-                    } else if (currentPage <= 3) {
-                      pageNum = i + 1;
-                    } else if (currentPage >= totalPages - 2) {
-                      pageNum = totalPages - 4 + i;
-                    } else {
-                      pageNum = currentPage - 2 + i;
-                    }
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                          currentPage === pageNum
-                            ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                            : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                        }`}
-                      >
-                        {pageNum}
-                      </button>
-                    );
-                  })}
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Next
-                  </button>
-                </nav>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Modals */}
-      <Suspense fallback={<ModalLoader />}>
-        {isAssignRoleModalOpen && selectedUser && (
-          <AssignRoleModal
-            isOpen={isAssignRoleModalOpen}
-            onClose={() => {
-              setIsAssignRoleModalOpen(false);
-              setSelectedUser(null);
-            }}
-            user={selectedUser}
-            allRoles={roles}
-            onSave={handleRoleAssignmentSave}
-          />
-        )}
-
-        {isActivityModalOpen && selectedUser && (
-          <ActivityLogModal
-            isOpen={isActivityModalOpen}
-            onClose={() => {
-              setIsActivityModalOpen(false);
-              setSelectedUser(null);
-            }}
-            user={selectedUser}
-          />
-        )}
-      </Suspense>
-    </div>
-  );
-}
+$i$m$p$o$r$t$ ${$ $u$s$e$S$t$a$t$e$,$ $u$s$e$E$f$f$e$c$t$,$ $l$a$z$y$,$ $S$u$s$p$e$n$s$e$,$ $u$s$e$C$a$l$l$b$a$c$k$,$ $u$s$e$M$e$m$o$ $}$ $f$r$o$m$ $'$r$e$a$c$t$'$;$$
+$i$m$p$o$r$t$ ${$ $$
+$ $ $U$s$e$r$s$,$ $$
+$ $ $S$h$i$e$l$d$,$ $$
+$ $ $S$e$a$r$c$h$,$ $$
+$ $ $F$i$l$t$e$r$,$$
+$ $ $A$c$t$i$v$i$t$y$,$$
+$ $ $A$l$e$r$t$C$i$r$c$l$e$,$$
+$ $ $C$h$e$c$k$C$i$r$c$l$e$2$,$$
+$ $ $X$C$i$r$c$l$e$$
+$}$ $f$r$o$m$ $'$l$u$c$i$d$e$-$r$e$a$c$t$'$;$$
+$i$m$p$o$r$t$ $M$o$d$a$l$L$o$a$d$e$r$ $f$r$o$m$ $'$@$/$c$o$m$p$o$n$e$n$t$s$/$M$o$d$a$l$L$o$a$d$e$r$'$;$$
+$i$m$p$o$r$t$ ${$ $u$s$e$r$S$e$r$v$i$c$e$,$ $r$o$l$e$S$e$r$v$i$c$e$ $}$ $f$r$o$m$ $'$@$/$s$e$r$v$i$c$e$s$/$u$s$e$r$s$'$;$$
+$i$m$p$o$r$t$ ${$ $U$s$e$r$D$e$t$a$i$l$e$d$,$ $R$o$l$e$,$ $R$O$L$E$_$C$O$L$O$R$S$ $}$ $f$r$o$m$ $'$@$/$t$y$p$e$s$/$u$s$e$r$'$;$$
+$i$m$p$o$r$t$ ${$ $u$s$e$D$e$b$o$u$n$c$e$ $}$ $f$r$o$m$ $'$@$/$h$o$o$k$s$/$u$s$e$D$e$b$o$u$n$c$e$'$;$$
+$$
+$/$/$ $L$a$z$y$ $l$o$a$d$ $m$o$d$a$l$s$$
+$c$o$n$s$t$ $A$s$s$i$g$n$R$o$l$e$M$o$d$a$l$ $=$ $l$a$z$y$($($)$ $=$>$ $i$m$p$o$r$t$($'$@$/$c$o$m$p$o$n$e$n$t$s$/$a$d$m$i$n$/$A$s$s$i$g$n$R$o$l$e$M$o$d$a$l$'$)$)$;$$
+$c$o$n$s$t$ $A$c$t$i$v$i$t$y$L$o$g$M$o$d$a$l$ $=$ $l$a$z$y$($($)$ $=$>$ $i$m$p$o$r$t$($'$@$/$c$o$m$p$o$n$e$n$t$s$/$a$d$m$i$n$/$A$c$t$i$v$i$t$y$L$o$g$M$o$d$a$l$'$)$)$;$$
+$$
+$e$x$p$o$r$t$ $d$e$f$a$u$l$t$ $f$u$n$c$t$i$o$n$ $U$s$e$r$M$a$n$a$g$e$m$e$n$t$($)$ ${$$
+$ $ $c$o$n$s$t$ $[$u$s$e$r$s$,$ $s$e$t$U$s$e$r$s$]$ $=$ $u$s$e$S$t$a$t$e$<$U$s$e$r$D$e$t$a$i$l$e$d$[$]$>$($[$]$)$;$$
+$ $ $c$o$n$s$t$ $[$r$o$l$e$s$,$ $s$e$t$R$o$l$e$s$]$ $=$ $u$s$e$S$t$a$t$e$<$R$o$l$e$[$]$>$($[$]$)$;$$
+$ $ $c$o$n$s$t$ $[$l$o$a$d$i$n$g$,$ $s$e$t$L$o$a$d$i$n$g$]$ $=$ $u$s$e$S$t$a$t$e$($t$r$u$e$)$;$$
+$ $ $c$o$n$s$t$ $[$e$r$r$o$r$,$ $s$e$t$E$r$r$o$r$]$ $=$ $u$s$e$S$t$a$t$e$<$s$t$r$i$n$g$ $|$ $n$u$l$l$>$($n$u$l$l$)$;$$
+$ $ $$
+$ $ $/$/$ $F$i$l$t$e$r$s$ $a$n$d$ $s$e$a$r$c$h$$
+$ $ $c$o$n$s$t$ $[$s$e$a$r$c$h$T$e$r$m$,$ $s$e$t$S$e$a$r$c$h$T$e$r$m$]$ $=$ $u$s$e$S$t$a$t$e$($'$'$)$;$$
+$ $ $c$o$n$s$t$ $[$r$o$l$e$F$i$l$t$e$r$,$ $s$e$t$R$o$l$e$F$i$l$t$e$r$]$ $=$ $u$s$e$S$t$a$t$e$<$s$t$r$i$n$g$>$($'$a$l$l$'$)$;$$
+$ $ $c$o$n$s$t$ $[$s$t$a$t$u$s$F$i$l$t$e$r$,$ $s$e$t$S$t$a$t$u$s$F$i$l$t$e$r$]$ $=$ $u$s$e$S$t$a$t$e$<$'$a$l$l$'$ $|$ $'$a$c$t$i$v$e$'$ $|$ $'$i$n$a$c$t$i$v$e$'$>$($'$a$l$l$'$)$;$$
+$ $ $c$o$n$s$t$ $[$c$u$r$r$e$n$t$P$a$g$e$,$ $s$e$t$C$u$r$r$e$n$t$P$a$g$e$]$ $=$ $u$s$e$S$t$a$t$e$($1$)$;$$
+$ $ $c$o$n$s$t$ $[$t$o$t$a$l$P$a$g$e$s$,$ $s$e$t$T$o$t$a$l$P$a$g$e$s$]$ $=$ $u$s$e$S$t$a$t$e$($1$)$;$$
+$ $ $c$o$n$s$t$ $[$t$o$t$a$l$U$s$e$r$s$,$ $s$e$t$T$o$t$a$l$U$s$e$r$s$]$ $=$ $u$s$e$S$t$a$t$e$($0$)$;$$
+$ $ $$
+$ $ $/$/$ $M$o$d$a$l$s$$
+$ $ $c$o$n$s$t$ $[$i$s$A$s$s$i$g$n$R$o$l$e$M$o$d$a$l$O$p$e$n$,$ $s$e$t$I$s$A$s$s$i$g$n$R$o$l$e$M$o$d$a$l$O$p$e$n$]$ $=$ $u$s$e$S$t$a$t$e$($f$a$l$s$e$)$;$$
+$ $ $c$o$n$s$t$ $[$i$s$A$c$t$i$v$i$t$y$M$o$d$a$l$O$p$e$n$,$ $s$e$t$I$s$A$c$t$i$v$i$t$y$M$o$d$a$l$O$p$e$n$]$ $=$ $u$s$e$S$t$a$t$e$($f$a$l$s$e$)$;$$
+$ $ $c$o$n$s$t$ $[$s$e$l$e$c$t$e$d$U$s$e$r$,$ $s$e$t$S$e$l$e$c$t$e$d$U$s$e$r$]$ $=$ $u$s$e$S$t$a$t$e$<$U$s$e$r$D$e$t$a$i$l$e$d$ $|$ $n$u$l$l$>$($n$u$l$l$)$;$$
+$$
+$ $ $/$/$ $D$e$b$o$u$n$c$e$ $s$e$a$r$c$h$ $t$e$r$m$ $t$o$ $r$e$d$u$c$e$ $A$P$I$ $c$a$l$l$s$$
+$ $ $c$o$n$s$t$ $d$e$b$o$u$n$c$e$d$S$e$a$r$c$h$T$e$r$m$ $=$ $u$s$e$D$e$b$o$u$n$c$e$($s$e$a$r$c$h$T$e$r$m$,$ $5$0$0$)$;$$
+$$
+$ $ $/$/$ $F$e$t$c$h$ $r$o$l$e$s$ $o$n$c$e$ $o$n$ $m$o$u$n$t$$
+$ $ $u$s$e$E$f$f$e$c$t$($($)$ $=$>$ ${$$
+$ $ $ $ $c$o$n$s$t$ $f$e$t$c$h$R$o$l$e$s$ $=$ $a$s$y$n$c$ $($)$ $=$>$ ${$$
+$ $ $ $ $ $ $t$r$y$ ${$$
+$ $ $ $ $ $ $ $ $c$o$n$s$t$ $r$o$l$e$s$D$a$t$a$ $=$ $a$w$a$i$t$ $r$o$l$e$S$e$r$v$i$c$e$.$g$e$t$A$l$l$($)$;$$
+$ $ $ $ $ $ $ $ $s$e$t$R$o$l$e$s$($r$o$l$e$s$D$a$t$a$)$;$$
+$ $ $ $ $ $ $}$ $c$a$t$c$h$ $($e$r$r$:$ $a$n$y$)$ ${$$
+$ $ $ $ $ $ $ $ $c$o$n$s$o$l$e$.$e$r$r$o$r$($'$E$r$r$o$r$ $f$e$t$c$h$i$n$g$ $r$o$l$e$s$:$'$,$ $e$r$r$)$;$$
+$ $ $ $ $ $ $}$$
+$ $ $ $ $}$;$$
+$ $ $ $ $f$e$t$c$h$R$o$l$e$s$($)$;$$
+$ $ $}$,$ $[$]$)$;$$
+$$
+$ $ $/$/$ $F$e$t$c$h$ $u$s$e$r$s$$
+$ $ $c$o$n$s$t$ $f$e$t$c$h$U$s$e$r$s$ $=$ $u$s$e$C$a$l$l$b$a$c$k$($a$s$y$n$c$ $($)$ $=$>$ ${$$
+$ $ $ $ $t$r$y$ ${$$
+$ $ $ $ $ $ $s$e$t$L$o$a$d$i$n$g$($t$r$u$e$)$;$$
+$ $ $ $ $ $ $s$e$t$E$r$r$o$r$($n$u$l$l$)$;$$
+$ $ $ $ $ $ $$
+$ $ $ $ $ $ $c$o$n$s$t$ $f$i$l$t$e$r$s$ $=$ ${$$
+$ $ $ $ $ $ $ $ $p$a$g$e$:$ $c$u$r$r$e$n$t$P$a$g$e$,$$
+$ $ $ $ $ $ $ $ $l$i$m$i$t$:$ $1$0$,$$
+$ $ $ $ $ $ $ $ $.$.$.$($r$o$l$e$F$i$l$t$e$r$ $!$=$=$ $'$a$l$l$'$ $&$&$ ${$ $r$o$l$e$:$ $r$o$l$e$F$i$l$t$e$r$ $}$)$,$$
+$ $ $ $ $ $ $ $ $.$.$.$($s$t$a$t$u$s$F$i$l$t$e$r$ $!$=$=$ $'$a$l$l$'$ $&$&$ ${$ $s$t$a$t$u$s$:$ $s$t$a$t$u$s$F$i$l$t$e$r$ $}$)$,$$
+$ $ $ $ $ $ $ $ $.$.$.$($d$e$b$o$u$n$c$e$d$S$e$a$r$c$h$T$e$r$m$ $&$&$ ${$ $s$e$a$r$c$h$:$ $d$e$b$o$u$n$c$e$d$S$e$a$r$c$h$T$e$r$m$ $}$)$,$$
+$ $ $ $ $ $ $ $ $s$o$r$t$B$y$:$ $'$c$r$e$a$t$e$d$_$a$t$'$ $a$s$ $c$o$n$s$t$,$$
+$ $ $ $ $ $ $ $ $s$o$r$t$O$r$d$e$r$:$ $'$D$E$S$C$'$ $a$s$ $c$o$n$s$t$$
+$ $ $ $ $ $ $}$;$$
+$ $ $ $ $ $ $$
+$ $ $ $ $ $ $c$o$n$s$t$ $r$e$s$p$o$n$s$e$ $=$ $a$w$a$i$t$ $u$s$e$r$S$e$r$v$i$c$e$.$g$e$t$A$l$l$($f$i$l$t$e$r$s$)$;$$
+$ $ $ $ $ $ $s$e$t$U$s$e$r$s$($r$e$s$p$o$n$s$e$.$u$s$e$r$s$)$;$$
+$ $ $ $ $ $ $s$e$t$T$o$t$a$l$P$a$g$e$s$($r$e$s$p$o$n$s$e$.$p$a$g$i$n$a$t$i$o$n$.$t$o$t$a$l$P$a$g$e$s$)$;$$
+$ $ $ $ $ $ $s$e$t$T$o$t$a$l$U$s$e$r$s$($r$e$s$p$o$n$s$e$.$p$a$g$i$n$a$t$i$o$n$.$t$o$t$a$l$)$;$$
+$ $ $ $ $}$ $c$a$t$c$h$ $($e$r$r$:$ $a$n$y$)$ ${$$
+$ $ $ $ $ $ $s$e$t$E$r$r$o$r$($e$r$r$.$m$e$s$s$a$g$e$ $|$|$ $'$F$a$i$l$e$d$ $t$o$ $l$o$a$d$ $u$s$e$r$s$'$)$;$$
+$ $ $ $ $ $ $c$o$n$s$o$l$e$.$e$r$r$o$r$($'$E$r$r$o$r$ $f$e$t$c$h$i$n$g$ $u$s$e$r$s$:$'$,$ $e$r$r$)$;$$
+$ $ $ $ $}$ $f$i$n$a$l$l$y$ ${$$
+$ $ $ $ $ $ $s$e$t$L$o$a$d$i$n$g$($f$a$l$s$e$)$;$$
+$ $ $ $ $}$$
+$ $ $}$,$ $[$c$u$r$r$e$n$t$P$a$g$e$,$ $r$o$l$e$F$i$l$t$e$r$,$ $s$t$a$t$u$s$F$i$l$t$e$r$,$ $d$e$b$o$u$n$c$e$d$S$e$a$r$c$h$T$e$r$m$]$)$;$$
+$$
+$ $ $u$s$e$E$f$f$e$c$t$($($)$ $=$>$ ${$$
+$ $ $ $ $f$e$t$c$h$U$s$e$r$s$($)$;$$
+$ $ $}$,$ $[$f$e$t$c$h$U$s$e$r$s$]$)$;$$
+$$
+$ $ $/$/$ $C$a$l$c$u$l$a$t$e$ $s$t$a$t$i$s$t$i$c$s$$
+$ $ $c$o$n$s$t$ $s$t$a$t$s$ $=$ $u$s$e$M$e$m$o$($($)$ $=$>$ ${$$
+$ $ $ $ $c$o$n$s$t$ $a$c$t$i$v$e$U$s$e$r$s$ $=$ $u$s$e$r$s$.$f$i$l$t$e$r$($u$ $=$>$ $u$.$i$s$_$a$c$t$i$v$e$)$.$l$e$n$g$t$h$;$$
+$ $ $ $ $c$o$n$s$t$ $i$n$a$c$t$i$v$e$U$s$e$r$s$ $=$ $u$s$e$r$s$.$f$i$l$t$e$r$($u$ $=$>$ $!$u$.$i$s$_$a$c$t$i$v$e$)$.$l$e$n$g$t$h$;$$
+$ $ $ $ $c$o$n$s$t$ $r$o$l$e$S$t$a$t$s$ $=$ $r$o$l$e$s$.$m$a$p$($r$o$l$e$ $=$>$ $(${$$
+$ $ $ $ $ $ $n$a$m$e$:$ $r$o$l$e$.$n$a$m$e$,$$
+$ $ $ $ $ $ $c$o$u$n$t$:$ $u$s$e$r$s$.$f$i$l$t$e$r$($u$ $=$>$ $u$.$r$o$l$e$s$.$s$o$m$e$($r$ $=$>$ $r$.$i$d$ $=$=$=$ $r$o$l$e$.$i$d$)$)$.$l$e$n$g$t$h$$
+$ $ $ $ $}$)$)$;$$
+$ $ $ $ $$
+$ $ $ $ $r$e$t$u$r$n$ ${$$
+$ $ $ $ $ $ $t$o$t$a$l$:$ $t$o$t$a$l$U$s$e$r$s$ $|$|$ $0$,$$
+$ $ $ $ $ $ $a$c$t$i$v$e$:$ $a$c$t$i$v$e$U$s$e$r$s$,$$
+$ $ $ $ $ $ $i$n$a$c$t$i$v$e$:$ $i$n$a$c$t$i$v$e$U$s$e$r$s$,$$
+$ $ $ $ $ $ $r$o$l$e$S$t$a$t$s$$
+$ $ $ $ $}$;$$
+$ $ $}$,$ $[$u$s$e$r$s$,$ $t$o$t$a$l$U$s$e$r$s$,$ $r$o$l$e$s$]$)$;$$
+$$
+$ $ $/$/$ $H$a$n$d$l$e$ $s$t$a$t$u$s$ $t$o$g$g$l$e$$
+$ $ $c$o$n$s$t$ $h$a$n$d$l$e$T$o$g$g$l$e$S$t$a$t$u$s$ $=$ $a$s$y$n$c$ $($u$s$e$r$:$ $U$s$e$r$D$e$t$a$i$l$e$d$)$ $=$>$ ${$$
+$ $ $ $ $t$r$y$ ${$$
+$ $ $ $ $ $ $c$o$n$s$t$ $u$p$d$a$t$e$d$U$s$e$r$ $=$ $a$w$a$i$t$ $u$s$e$r$S$e$r$v$i$c$e$.$u$p$d$a$t$e$S$t$a$t$u$s$($u$s$e$r$.$i$d$,$ $!$u$s$e$r$.$i$s$_$a$c$t$i$v$e$)$;$$
+$ $ $ $ $ $ $s$e$t$U$s$e$r$s$($p$r$e$v$ $=$>$ $p$r$e$v$.$m$a$p$($u$ $=$>$ $u$.$i$d$ $=$=$=$ $u$s$e$r$.$i$d$ $?$ $u$p$d$a$t$e$d$U$s$e$r$ $:$ $u$)$)$;$$
+$ $ $ $ $}$ $c$a$t$c$h$ $($e$r$r$:$ $a$n$y$)$ ${$$
+$ $ $ $ $ $ $a$l$e$r$t$($e$r$r$.$m$e$s$s$a$g$e$ $|$|$ $'$F$a$i$l$e$d$ $t$o$ $u$p$d$a$t$e$ $u$s$e$r$ $s$t$a$t$u$s$'$)$;$$
+$ $ $ $ $}$$
+$ $ $}$;$$
+$$
+$ $ $/$/$ $H$a$n$d$l$e$ $a$s$s$i$g$n$ $r$o$l$e$$
+$ $ $c$o$n$s$t$ $h$a$n$d$l$e$A$s$s$i$g$n$R$o$l$e$ $=$ $($u$s$e$r$:$ $U$s$e$r$D$e$t$a$i$l$e$d$)$ $=$>$ ${$$
+$ $ $ $ $s$e$t$S$e$l$e$c$t$e$d$U$s$e$r$($u$s$e$r$)$;$$
+$ $ $ $ $s$e$t$I$s$A$s$s$i$g$n$R$o$l$e$M$o$d$a$l$O$p$e$n$($t$r$u$e$)$;$$
+$ $ $}$;$$
+$$
+$ $ $/$/$ $H$a$n$d$l$e$ $v$i$e$w$ $a$c$t$i$v$i$t$y$$
+$ $ $c$o$n$s$t$ $h$a$n$d$l$e$V$i$e$w$A$c$t$i$v$i$t$y$ $=$ $($u$s$e$r$:$ $U$s$e$r$D$e$t$a$i$l$e$d$)$ $=$>$ ${$$
+$ $ $ $ $s$e$t$S$e$l$e$c$t$e$d$U$s$e$r$($u$s$e$r$)$;$$
+$ $ $ $ $s$e$t$I$s$A$c$t$i$v$i$t$y$M$o$d$a$l$O$p$e$n$($t$r$u$e$)$;$$
+$ $ $}$;$$
+$$
+$ $ $/$/$ $H$a$n$d$l$e$ $r$o$l$e$ $a$s$s$i$g$n$m$e$n$t$ $s$a$v$e$$
+$ $ $c$o$n$s$t$ $h$a$n$d$l$e$R$o$l$e$A$s$s$i$g$n$m$e$n$t$S$a$v$e$ $=$ $a$s$y$n$c$ $($u$s$e$r$I$d$:$ $n$u$m$b$e$r$,$ $r$o$l$e$I$d$s$:$ $n$u$m$b$e$r$[$]$)$ $=$>$ ${$$
+$ $ $ $ $t$r$y$ ${$$
+$ $ $ $ $ $ $c$o$n$s$t$ $u$p$d$a$t$e$d$U$s$e$r$ $=$ $a$w$a$i$t$ $u$s$e$r$S$e$r$v$i$c$e$.$a$s$s$i$g$n$R$o$l$e$s$($u$s$e$r$I$d$,$ $r$o$l$e$I$d$s$)$;$$
+$ $ $ $ $ $ $s$e$t$U$s$e$r$s$($p$r$e$v$ $=$>$ $p$r$e$v$.$m$a$p$($u$ $=$>$ $u$.$i$d$ $=$=$=$ $u$s$e$r$I$d$ $?$ $u$p$d$a$t$e$d$U$s$e$r$ $:$ $u$)$)$;$$
+$ $ $ $ $ $ $s$e$t$I$s$A$s$s$i$g$n$R$o$l$e$M$o$d$a$l$O$p$e$n$($f$a$l$s$e$)$;$$
+$ $ $ $ $ $ $s$e$t$S$e$l$e$c$t$e$d$U$s$e$r$($n$u$l$l$)$;$$
+$ $ $ $ $}$ $c$a$t$c$h$ $($e$r$r$:$ $a$n$y$)$ ${$$
+$ $ $ $ $ $ $t$h$r$o$w$ $e$r$r$;$ $/$/$ $L$e$t$ $m$o$d$a$l$ $h$a$n$d$l$e$ $t$h$e$ $e$r$r$o$r$$
+$ $ $ $ $}$$
+$ $ $}$;$$
+$$
+$ $ $/$/$ $R$e$s$e$t$ $t$o$ $p$a$g$e$ $1$ $w$h$e$n$ $f$i$l$t$e$r$s$ $c$h$a$n$g$e$$
+$ $ $u$s$e$E$f$f$e$c$t$($($)$ $=$>$ ${$$
+$ $ $ $ $s$e$t$C$u$r$r$e$n$t$P$a$g$e$($1$)$;$$
+$ $ $}$,$ $[$d$e$b$o$u$n$c$e$d$S$e$a$r$c$h$T$e$r$m$,$ $r$o$l$e$F$i$l$t$e$r$,$ $s$t$a$t$u$s$F$i$l$t$e$r$]$)$;$$
+$$
+$ $ $/$/$ $G$e$t$ $r$o$l$e$ $c$o$l$o$r$$
+$ $ $c$o$n$s$t$ $g$e$t$R$o$l$e$C$o$l$o$r$ $=$ $($r$o$l$e$N$a$m$e$:$ $s$t$r$i$n$g$)$:$ $s$t$r$i$n$g$ $=$>$ ${$$
+$ $ $ $ $r$e$t$u$r$n$ $R$O$L$E$_$C$O$L$O$R$S$[$r$o$l$e$N$a$m$e$ $a$s$ $k$e$y$o$f$ $t$y$p$e$o$f$ $R$O$L$E$_$C$O$L$O$R$S$]$ $|$|$ $'$b$g$-$g$r$a$y$-$1$0$0$ $t$e$x$t$-$g$r$a$y$-$8$0$0$'$;$$
+$ $ $}$;$$
+$$
+$ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$6$"$>$$
+$ $ $ $ $ $ ${$/$*$ $H$e$a$d$e$r$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $i$t$e$m$s$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$h$1$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$g$r$a$y$-$9$0$0$"$>$U$s$e$r$ $M$a$n$a$g$e$m$e$n$t$<$/$h$1$>$$
+$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$g$r$a$y$-$6$0$0$ $m$t$-$1$"$>$M$a$n$a$g$e$ $u$s$e$r$s$ $a$n$d$ $t$h$e$i$r$ $r$o$l$e$s$<$/$p$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $S$t$a$t$i$s$t$i$c$s$ $C$a$r$d$s$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $m$d$:$g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$l$g$ $s$h$a$d$o$w$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$6$0$0$"$>$T$o$t$a$l$ $U$s$e$r$s$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$g$r$a$y$-$9$0$0$ $m$t$-$2$"$>${$s$t$a$t$s$.$t$o$t$a$l$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$h$-$1$2$ $w$-$1$2$ $b$g$-$b$l$u$e$-$1$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$U$s$e$r$s$ $c$l$a$s$s$N$a$m$e$=$"$h$-$6$ $w$-$6$ $t$e$x$t$-$b$l$u$e$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$l$g$ $s$h$a$d$o$w$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$6$0$0$"$>$A$c$t$i$v$e$ $U$s$e$r$s$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$ $m$t$-$2$"$>${$s$t$a$t$s$.$a$c$t$i$v$e$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$h$-$1$2$ $w$-$1$2$ $b$g$-$g$r$e$e$n$-$1$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$h$e$c$k$C$i$r$c$l$e$2$ $c$l$a$s$s$N$a$m$e$=$"$h$-$6$ $w$-$6$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$l$g$ $s$h$a$d$o$w$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$6$0$0$"$>$I$n$a$c$t$i$v$e$ $U$s$e$r$s$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$r$e$d$-$6$0$0$ $m$t$-$2$"$>${$s$t$a$t$s$.$i$n$a$c$t$i$v$e$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$h$-$1$2$ $w$-$1$2$ $b$g$-$r$e$d$-$1$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$X$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$h$-$6$ $w$-$6$ $t$e$x$t$-$r$e$d$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$l$g$ $s$h$a$d$o$w$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$6$0$0$"$>$R$o$l$e$s$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$p$u$r$p$l$e$-$6$0$0$ $m$t$-$2$"$>${$r$o$l$e$s$.$l$e$n$g$t$h$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$h$-$1$2$ $w$-$1$2$ $b$g$-$p$u$r$p$l$e$-$1$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$S$h$i$e$l$d$ $c$l$a$s$s$N$a$m$e$=$"$h$-$6$ $w$-$6$ $t$e$x$t$-$p$u$r$p$l$e$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $F$i$l$t$e$r$s$ $a$n$d$ $S$e$a$r$c$h$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$l$g$ $s$h$a$d$o$w$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$p$-$6$ $b$o$r$d$e$r$-$b$ $b$o$r$d$e$r$-$g$r$a$y$-$2$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $f$l$e$x$-$c$o$l$ $m$d$:$f$l$e$x$-$r$o$w$ $g$a$p$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $S$e$a$r$c$h$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$S$e$a$r$c$h$ $c$l$a$s$s$N$a$m$e$=$"$a$b$s$o$l$u$t$e$ $l$e$f$t$-$3$ $t$o$p$-$1$/$2$ $t$r$a$n$s$f$o$r$m$ $-$t$r$a$n$s$l$a$t$e$-$y$-$1$/$2$ $t$e$x$t$-$g$r$a$y$-$4$0$0$ $h$-$5$ $w$-$5$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$i$n$p$u$t$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$y$p$e$=$"$t$e$x$t$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $p$l$a$c$e$h$o$l$d$e$r$=$"$S$e$a$r$c$h$ $b$y$ $n$a$m$e$ $o$r$ $e$m$a$i$l$.$.$.$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$e$a$r$c$h$T$e$r$m$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$h$a$n$g$e$=${$($e$)$ $=$>$ $s$e$t$S$e$a$r$c$h$T$e$r$m$($e$.$t$a$r$g$e$t$.$v$a$l$u$e$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $p$l$-$1$0$ $p$r$-$4$ $p$y$-$2$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$g$r$a$y$-$3$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$o$c$u$s$:$r$i$n$g$-$2$ $f$o$c$u$s$:$r$i$n$g$-$b$l$u$e$-$5$0$0$ $f$o$c$u$s$:$b$o$r$d$e$r$-$t$r$a$n$s$p$a$r$e$n$t$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $R$o$l$e$ $F$i$l$t$e$r$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $m$d$:$w$-$4$8$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$F$i$l$t$e$r$ $c$l$a$s$s$N$a$m$e$=$"$a$b$s$o$l$u$t$e$ $l$e$f$t$-$3$ $t$o$p$-$1$/$2$ $t$r$a$n$s$f$o$r$m$ $-$t$r$a$n$s$l$a$t$e$-$y$-$1$/$2$ $t$e$x$t$-$g$r$a$y$-$4$0$0$ $h$-$5$ $w$-$5$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$e$l$e$c$t$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$r$o$l$e$F$i$l$t$e$r$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$h$a$n$g$e$=${$($e$)$ $=$>$ $s$e$t$R$o$l$e$F$i$l$t$e$r$($e$.$t$a$r$g$e$t$.$v$a$l$u$e$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $p$l$-$1$0$ $p$r$-$4$ $p$y$-$2$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$g$r$a$y$-$3$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$o$c$u$s$:$r$i$n$g$-$2$ $f$o$c$u$s$:$r$i$n$g$-$b$l$u$e$-$5$0$0$ $f$o$c$u$s$:$b$o$r$d$e$r$-$t$r$a$n$s$p$a$r$e$n$t$ $a$p$p$e$a$r$a$n$c$e$-$n$o$n$e$ $b$g$-$w$h$i$t$e$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$o$p$t$i$o$n$ $v$a$l$u$e$=$"$a$l$l$"$>$A$l$l$ $R$o$l$e$s$<$/$o$p$t$i$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$r$o$l$e$s$.$m$a$p$($r$o$l$e$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$o$p$t$i$o$n$ $k$e$y$=${$r$o$l$e$.$i$d$}$ $v$a$l$u$e$=${$r$o$l$e$.$n$a$m$e$}$>${$r$o$l$e$.$n$a$m$e$}$<$/$o$p$t$i$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$e$l$e$c$t$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $S$t$a$t$u$s$ $F$i$l$t$e$r$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $m$d$:$w$-$4$8$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$e$l$e$c$t$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$t$a$t$u$s$F$i$l$t$e$r$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$h$a$n$g$e$=${$($e$)$ $=$>$ $s$e$t$S$t$a$t$u$s$F$i$l$t$e$r$($e$.$t$a$r$g$e$t$.$v$a$l$u$e$ $a$s$ $'$a$l$l$'$ $|$ $'$a$c$t$i$v$e$'$ $|$ $'$i$n$a$c$t$i$v$e$'$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $p$x$-$4$ $p$y$-$2$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$g$r$a$y$-$3$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$o$c$u$s$:$r$i$n$g$-$2$ $f$o$c$u$s$:$r$i$n$g$-$b$l$u$e$-$5$0$0$ $f$o$c$u$s$:$b$o$r$d$e$r$-$t$r$a$n$s$p$a$r$e$n$t$ $a$p$p$e$a$r$a$n$c$e$-$n$o$n$e$ $b$g$-$w$h$i$t$e$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$o$p$t$i$o$n$ $v$a$l$u$e$=$"$a$l$l$"$>$A$l$l$ $S$t$a$t$u$s$<$/$o$p$t$i$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$o$p$t$i$o$n$ $v$a$l$u$e$=$"$a$c$t$i$v$e$"$>$A$c$t$i$v$e$<$/$o$p$t$i$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$o$p$t$i$o$n$ $v$a$l$u$e$=$"$i$n$a$c$t$i$v$e$"$>$I$n$a$c$t$i$v$e$<$/$o$p$t$i$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$e$l$e$c$t$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ ${$/$*$ $U$s$e$r$s$ $T$a$b$l$e$ $*$/$}$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$o$v$e$r$f$l$o$w$-$x$-$a$u$t$o$"$>$$
+$ $ $ $ $ $ $ $ $ $ ${$l$o$a$d$i$n$g$ $?$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $p$y$-$1$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$a$n$i$m$a$t$e$-$s$p$i$n$ $r$o$u$n$d$e$d$-$f$u$l$l$ $h$-$8$ $w$-$8$ $b$o$r$d$e$r$-$b$-$2$ $b$o$r$d$e$r$-$b$l$u$e$-$6$0$0$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $)$ $:$ $e$r$r$o$r$ $?$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $p$y$-$1$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$A$l$e$r$t$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$h$-$1$2$ $w$-$1$2$ $t$e$x$t$-$r$e$d$-$5$0$0$ $m$x$-$a$u$t$o$ $m$b$-$4$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$r$e$d$-$6$0$0$ $f$o$n$t$-$m$e$d$i$u$m$"$>${$e$r$r$o$r$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$f$e$t$c$h$U$s$e$r$s$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$m$t$-$4$ $p$x$-$4$ $p$y$-$2$ $b$g$-$b$l$u$e$-$6$0$0$ $t$e$x$t$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$l$g$ $h$o$v$e$r$:$b$g$-$b$l$u$e$-$7$0$0$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $T$r$y$ $A$g$a$i$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $)$ $:$ $u$s$e$r$s$.$l$e$n$g$t$h$ $=$=$=$ $0$ $?$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $p$y$-$1$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$U$s$e$r$s$ $c$l$a$s$s$N$a$m$e$=$"$h$-$1$2$ $w$-$1$2$ $t$e$x$t$-$g$r$a$y$-$4$0$0$ $m$x$-$a$u$t$o$ $m$b$-$4$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$g$r$a$y$-$6$0$0$"$>$N$o$ $u$s$e$r$s$ $f$o$u$n$d$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $)$ $:$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$t$a$b$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$e$a$d$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$g$r$a$y$-$5$0$ $b$o$r$d$e$r$-$b$ $b$o$r$d$e$r$-$g$r$a$y$-$2$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$r$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$3$ $t$e$x$t$-$l$e$f$t$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$5$0$0$ $u$p$p$e$r$c$a$s$e$ $t$r$a$c$k$i$n$g$-$w$i$d$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $U$s$e$r$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$3$ $t$e$x$t$-$l$e$f$t$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$5$0$0$ $u$p$p$e$r$c$a$s$e$ $t$r$a$c$k$i$n$g$-$w$i$d$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $R$o$l$e$s$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$3$ $t$e$x$t$-$l$e$f$t$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$5$0$0$ $u$p$p$e$r$c$a$s$e$ $t$r$a$c$k$i$n$g$-$w$i$d$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $S$t$a$t$u$s$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$3$ $t$e$x$t$-$l$e$f$t$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$5$0$0$ $u$p$p$e$r$c$a$s$e$ $t$r$a$c$k$i$n$g$-$w$i$d$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $L$a$s$t$ $A$c$t$i$v$e$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$3$ $t$e$x$t$-$r$i$g$h$t$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$5$0$0$ $u$p$p$e$r$c$a$s$e$ $t$r$a$c$k$i$n$g$-$w$i$d$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $A$c$t$i$o$n$s$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$r$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$e$a$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$b$o$d$y$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $d$i$v$i$d$e$-$y$ $d$i$v$i$d$e$-$g$r$a$y$-$2$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$u$s$e$r$s$.$m$a$p$($($u$s$e$r$)$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$r$ $k$e$y$=${$u$s$e$r$.$i$d$}$ $c$l$a$s$s$N$a$m$e$=$"$h$o$v$e$r$:$b$g$-$g$r$a$y$-$5$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$4$ $w$h$i$t$e$s$p$a$c$e$-$n$o$w$r$a$p$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$h$-$1$0$ $w$-$1$0$ $f$l$e$x$-$s$h$r$i$n$k$-$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$h$-$1$0$ $w$-$1$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$b$r$ $f$r$o$m$-$b$l$u$e$-$4$0$0$ $t$o$-$b$l$u$e$-$6$0$0$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $t$e$x$t$-$w$h$i$t$e$ $f$o$n$t$-$s$e$m$i$b$o$l$d$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$u$s$e$r$.$f$i$r$s$t$_$n$a$m$e$[$0$]$}${$u$s$e$r$.$l$a$s$t$_$n$a$m$e$[$0$]$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$9$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$u$s$e$r$.$f$i$r$s$t$_$n$a$m$e$}$ ${$u$s$e$r$.$l$a$s$t$_$n$a$m$e$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$g$r$a$y$-$5$0$0$"$>${$u$s$e$r$.$e$m$a$i$l$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $f$l$e$x$-$w$r$a$p$ $g$a$p$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$u$s$e$r$.$r$o$l$e$s$.$l$e$n$g$t$h$ $>$ $0$ $?$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $u$s$e$r$.$r$o$l$e$s$.$m$a$p$($($r$o$l$e$)$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $k$e$y$=${$r$o$l$e$.$i$d$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$i$n$l$i$n$e$-$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $p$x$-$2$.$5$ $p$y$-$0$.$5$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $$${$g$e$t$R$o$l$e$C$o$l$o$r$($r$o$l$e$.$n$a$m$e$)$}$`$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$r$o$l$e$.$n$a$m$e$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$)$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$ $:$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$g$r$a$y$-$4$0$0$"$>$N$o$ $r$o$l$e$s$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$4$ $w$h$i$t$e$s$p$a$c$e$-$n$o$w$r$a$p$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $h$a$n$d$l$e$T$o$g$g$l$e$S$t$a$t$u$s$($u$s$e$r$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$i$n$l$i$n$e$-$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $p$x$-$3$ $p$y$-$1$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $$${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $u$s$e$r$.$i$s$_$a$c$t$i$v$e$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$b$g$-$g$r$e$e$n$-$1$0$0$ $t$e$x$t$-$g$r$e$e$n$-$8$0$0$ $h$o$v$e$r$:$b$g$-$g$r$e$e$n$-$2$0$0$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $'$b$g$-$r$e$d$-$1$0$0$ $t$e$x$t$-$r$e$d$-$8$0$0$ $h$o$v$e$r$:$b$g$-$r$e$d$-$2$0$0$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$u$s$e$r$.$i$s$_$a$c$t$i$v$e$ $?$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$h$e$c$k$C$i$r$c$l$e$2$ $c$l$a$s$s$N$a$m$e$=$"$h$-$3$ $w$-$3$ $m$r$-$1$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $A$c$t$i$v$e$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$ $:$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$X$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$h$-$3$ $w$-$3$ $m$r$-$1$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $I$n$a$c$t$i$v$e$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$4$ $w$h$i$t$e$s$p$a$c$e$-$n$o$w$r$a$p$ $t$e$x$t$-$s$m$ $t$e$x$t$-$g$r$a$y$-$5$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$u$s$e$r$.$l$a$s$t$_$l$o$g$i$n$ $?$ $n$e$w$ $D$a$t$e$($u$s$e$r$.$l$a$s$t$_$l$o$g$i$n$)$.$t$o$L$o$c$a$l$e$D$a$t$e$S$t$r$i$n$g$($)$ $:$ $'$N$e$v$e$r$'$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$4$ $w$h$i$t$e$s$p$a$c$e$-$n$o$w$r$a$p$ $t$e$x$t$-$r$i$g$h$t$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$e$n$d$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $h$a$n$d$l$e$A$s$s$i$g$n$R$o$l$e$($u$s$e$r$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$i$n$l$i$n$e$-$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $p$x$-$3$ $p$y$-$1$.$5$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$g$r$a$y$-$3$0$0$ $r$o$u$n$d$e$d$-$l$g$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$7$0$0$ $b$g$-$w$h$i$t$e$ $h$o$v$e$r$:$b$g$-$g$r$a$y$-$5$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$S$h$i$e$l$d$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$ $m$r$-$1$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $R$o$l$e$s$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $h$a$n$d$l$e$V$i$e$w$A$c$t$i$v$i$t$y$($u$s$e$r$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$i$n$l$i$n$e$-$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $p$x$-$3$ $p$y$-$1$.$5$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$g$r$a$y$-$3$0$0$ $r$o$u$n$d$e$d$-$l$g$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$7$0$0$ $b$g$-$w$h$i$t$e$ $h$o$v$e$r$:$b$g$-$g$r$a$y$-$5$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$A$c$t$i$v$i$t$y$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$ $m$r$-$1$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $A$c$t$i$v$i$t$y$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$r$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$b$o$d$y$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$a$b$l$e$>$$
+$ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ ${$/$*$ $P$a$g$i$n$a$t$i$o$n$ $*$/$}$$
+$ $ $ $ $ $ $ $ ${$!$l$o$a$d$i$n$g$ $&$&$ $!$e$r$r$o$r$ $&$&$ $t$o$t$a$l$P$a$g$e$s$ $>$ $1$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $p$x$-$6$ $p$y$-$4$ $b$o$r$d$e$r$-$t$ $b$o$r$d$e$r$-$g$r$a$y$-$2$0$0$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$ $f$l$e$x$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $s$m$:$h$i$d$d$e$n$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$C$u$r$r$e$n$t$P$a$g$e$($p$r$e$v$ $=$>$ $M$a$t$h$.$m$a$x$($1$,$ $p$r$e$v$ $-$ $1$)$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$i$s$a$b$l$e$d$=${$c$u$r$r$e$n$t$P$a$g$e$ $=$=$=$ $1$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$ $i$n$l$i$n$e$-$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $p$x$-$4$ $p$y$-$2$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$g$r$a$y$-$3$0$0$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $r$o$u$n$d$e$d$-$m$d$ $t$e$x$t$-$g$r$a$y$-$7$0$0$ $b$g$-$w$h$i$t$e$ $h$o$v$e$r$:$b$g$-$g$r$a$y$-$5$0$ $d$i$s$a$b$l$e$d$:$o$p$a$c$i$t$y$-$5$0$ $d$i$s$a$b$l$e$d$:$c$u$r$s$o$r$-$n$o$t$-$a$l$l$o$w$e$d$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $P$r$e$v$i$o$u$s$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$C$u$r$r$e$n$t$P$a$g$e$($p$r$e$v$ $=$>$ $M$a$t$h$.$m$i$n$($t$o$t$a$l$P$a$g$e$s$,$ $p$r$e$v$ $+$ $1$)$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$i$s$a$b$l$e$d$=${$c$u$r$r$e$n$t$P$a$g$e$ $=$=$=$ $t$o$t$a$l$P$a$g$e$s$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$3$ $r$e$l$a$t$i$v$e$ $i$n$l$i$n$e$-$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $p$x$-$4$ $p$y$-$2$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$g$r$a$y$-$3$0$0$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $r$o$u$n$d$e$d$-$m$d$ $t$e$x$t$-$g$r$a$y$-$7$0$0$ $b$g$-$w$h$i$t$e$ $h$o$v$e$r$:$b$g$-$g$r$a$y$-$5$0$ $d$i$s$a$b$l$e$d$:$o$p$a$c$i$t$y$-$5$0$ $d$i$s$a$b$l$e$d$:$c$u$r$s$o$r$-$n$o$t$-$a$l$l$o$w$e$d$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $N$e$x$t$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$h$i$d$d$e$n$ $s$m$:$f$l$e$x$-$1$ $s$m$:$f$l$e$x$ $s$m$:$i$t$e$m$s$-$c$e$n$t$e$r$ $s$m$:$j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$g$r$a$y$-$7$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $S$h$o$w$i$n$g$ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>${$($c$u$r$r$e$n$t$P$a$g$e$ $-$ $1$)$ $*$ $1$0$ $+$ $1$}$<$/$s$p$a$n$>$ $t$o${$'$ $'$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>${$M$a$t$h$.$m$i$n$($c$u$r$r$e$n$t$P$a$g$e$ $*$ $1$0$,$ $t$o$t$a$l$U$s$e$r$s$)$}$<$/$s$p$a$n$>$ $o$f${$'$ $'$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>${$t$o$t$a$l$U$s$e$r$s$}$<$/$s$p$a$n$>$ $u$s$e$r$s$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$n$a$v$ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$ $z$-$0$ $i$n$l$i$n$e$-$f$l$e$x$ $r$o$u$n$d$e$d$-$m$d$ $s$h$a$d$o$w$-$s$m$ $-$s$p$a$c$e$-$x$-$p$x$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$C$u$r$r$e$n$t$P$a$g$e$($p$r$e$v$ $=$>$ $M$a$t$h$.$m$a$x$($1$,$ $p$r$e$v$ $-$ $1$)$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$i$s$a$b$l$e$d$=${$c$u$r$r$e$n$t$P$a$g$e$ $=$=$=$ $1$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$ $i$n$l$i$n$e$-$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $p$x$-$2$ $p$y$-$2$ $r$o$u$n$d$e$d$-$l$-$m$d$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$g$r$a$y$-$3$0$0$ $b$g$-$w$h$i$t$e$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$5$0$0$ $h$o$v$e$r$:$b$g$-$g$r$a$y$-$5$0$ $d$i$s$a$b$l$e$d$:$o$p$a$c$i$t$y$-$5$0$ $d$i$s$a$b$l$e$d$:$c$u$r$s$o$r$-$n$o$t$-$a$l$l$o$w$e$d$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $P$r$e$v$i$o$u$s$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$A$r$r$a$y$.$f$r$o$m$(${$ $l$e$n$g$t$h$:$ $M$a$t$h$.$m$i$n$($5$,$ $t$o$t$a$l$P$a$g$e$s$)$ $}$,$ $($_$,$ $i$)$ $=$>$ ${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $l$e$t$ $p$a$g$e$N$u$m$;$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $i$f$ $($t$o$t$a$l$P$a$g$e$s$ $<$=$ $5$)$ ${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $p$a$g$e$N$u$m$ $=$ $i$ $+$ $1$;$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$ $e$l$s$e$ $i$f$ $($c$u$r$r$e$n$t$P$a$g$e$ $<$=$ $3$)$ ${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $p$a$g$e$N$u$m$ $=$ $i$ $+$ $1$;$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$ $e$l$s$e$ $i$f$ $($c$u$r$r$e$n$t$P$a$g$e$ $>$=$ $t$o$t$a$l$P$a$g$e$s$ $-$ $2$)$ ${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $p$a$g$e$N$u$m$ $=$ $t$o$t$a$l$P$a$g$e$s$ $-$ $4$ $+$ $i$;$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$ $e$l$s$e$ ${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $p$a$g$e$N$u$m$ $=$ $c$u$r$r$e$n$t$P$a$g$e$ $-$ $2$ $+$ $i$;$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $k$e$y$=${$i$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$C$u$r$r$e$n$t$P$a$g$e$($p$a$g$e$N$u$m$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$r$e$l$a$t$i$v$e$ $i$n$l$i$n$e$-$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $p$x$-$4$ $p$y$-$2$ $b$o$r$d$e$r$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $$${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$u$r$r$e$n$t$P$a$g$e$ $=$=$=$ $p$a$g$e$N$u$m$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$z$-$1$0$ $b$g$-$b$l$u$e$-$5$0$ $b$o$r$d$e$r$-$b$l$u$e$-$5$0$0$ $t$e$x$t$-$b$l$u$e$-$6$0$0$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $'$b$g$-$w$h$i$t$e$ $b$o$r$d$e$r$-$g$r$a$y$-$3$0$0$ $t$e$x$t$-$g$r$a$y$-$5$0$0$ $h$o$v$e$r$:$b$g$-$g$r$a$y$-$5$0$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$p$a$g$e$N$u$m$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$;$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$C$u$r$r$e$n$t$P$a$g$e$($p$r$e$v$ $=$>$ $M$a$t$h$.$m$i$n$($t$o$t$a$l$P$a$g$e$s$,$ $p$r$e$v$ $+$ $1$)$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$i$s$a$b$l$e$d$=${$c$u$r$r$e$n$t$P$a$g$e$ $=$=$=$ $t$o$t$a$l$P$a$g$e$s$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$ $i$n$l$i$n$e$-$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $p$x$-$2$ $p$y$-$2$ $r$o$u$n$d$e$d$-$r$-$m$d$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$g$r$a$y$-$3$0$0$ $b$g$-$w$h$i$t$e$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$a$y$-$5$0$0$ $h$o$v$e$r$:$b$g$-$g$r$a$y$-$5$0$ $d$i$s$a$b$l$e$d$:$o$p$a$c$i$t$y$-$5$0$ $d$i$s$a$b$l$e$d$:$c$u$r$s$o$r$-$n$o$t$-$a$l$l$o$w$e$d$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $N$e$x$t$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$n$a$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $M$o$d$a$l$s$ $*$/$}$$
+$ $ $ $ $ $ $<$S$u$s$p$e$n$s$e$ $f$a$l$l$b$a$c$k$=${$<$M$o$d$a$l$L$o$a$d$e$r$ $/$>$}$>$$
+$ $ $ $ $ $ $ $ ${$i$s$A$s$s$i$g$n$R$o$l$e$M$o$d$a$l$O$p$e$n$ $&$&$ $s$e$l$e$c$t$e$d$U$s$e$r$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $ $ $<$A$s$s$i$g$n$R$o$l$e$M$o$d$a$l$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$s$O$p$e$n$=${$i$s$A$s$s$i$g$n$R$o$l$e$M$o$d$a$l$O$p$e$n$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$o$s$e$=${$($)$ $=$>$ ${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$e$t$I$s$A$s$s$i$g$n$R$o$l$e$M$o$d$a$l$O$p$e$n$($f$a$l$s$e$)$;$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$e$t$S$e$l$e$c$t$e$d$U$s$e$r$($n$u$l$l$)$;$$
+$ $ $ $ $ $ $ $ $ $ $ $ $}$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $u$s$e$r$=${$s$e$l$e$c$t$e$d$U$s$e$r$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $a$l$l$R$o$l$e$s$=${$r$o$l$e$s$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $o$n$S$a$v$e$=${$h$a$n$d$l$e$R$o$l$e$A$s$s$i$g$n$m$e$n$t$S$a$v$e$}$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $)$}$$
+$$
+$ $ $ $ $ $ $ $ ${$i$s$A$c$t$i$v$i$t$y$M$o$d$a$l$O$p$e$n$ $&$&$ $s$e$l$e$c$t$e$d$U$s$e$r$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $ $ $<$A$c$t$i$v$i$t$y$L$o$g$M$o$d$a$l$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$s$O$p$e$n$=${$i$s$A$c$t$i$v$i$t$y$M$o$d$a$l$O$p$e$n$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$o$s$e$=${$($)$ $=$>$ ${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$e$t$I$s$A$c$t$i$v$i$t$y$M$o$d$a$l$O$p$e$n$($f$a$l$s$e$)$;$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$e$t$S$e$l$e$c$t$e$d$U$s$e$r$($n$u$l$l$)$;$$
+$ $ $ $ $ $ $ $ $ $ $ $ $}$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $u$s$e$r$=${$s$e$l$e$c$t$e$d$U$s$e$r$}$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $<$/$S$u$s$p$e$n$s$e$>$$
+$ $ $ $ $<$/$d$i$v$>$$
+$ $ $)$;$$
+$}$$
+$

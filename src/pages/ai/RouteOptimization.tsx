@@ -1,272 +1,273 @@
-import { useState } from 'react';
-import { MapPin, Truck, Clock, TrendingDown, Zap, Route } from 'lucide-react';
-
-const mockRoutes = [
-  {
-    id: 'RT-001',
-    name: 'Metro Area Distribution',
-    stops: 12,
-    distance: '145 km',
-    optimized: '112 km',
-    timeSaved: '38 min',
-    fuelSaved: '12.5 L',
-    costSaved: '$42',
-    status: 'active',
-    co2Reduced: '29 kg'
-  },
-  {
-    id: 'RT-002',
-    name: 'Industrial Zone Delivery',
-    stops: 8,
-    distance: '98 km',
-    optimized: '76 km',
-    timeSaved: '25 min',
-    fuelSaved: '8.3 L',
-    costSaved: '$28',
-    status: 'active',
-    co2Reduced: '19 kg'
-  },
-  {
-    id: 'RT-003',
-    name: 'Suburban Express',
-    stops: 15,
-    distance: '187 km',
-    optimized: '156 km',
-    timeSaved: '42 min',
-    fuelSaved: '14.8 L',
-    costSaved: '$51',
-    status: 'pending',
-    co2Reduced: '34 kg'
-  }
-];
-
-const trafficFactors = [
-  { time: 'Morning Rush', multiplier: 1.45, recommendation: 'Avoid 7-9 AM' },
-  { time: 'Midday', multiplier: 1.0, recommendation: 'Optimal window' },
-  { time: 'Evening Rush', multiplier: 1.55, recommendation: 'Avoid 5-7 PM' },
-  { time: 'Night', multiplier: 0.85, recommendation: 'Best for long haul' }
-];
-
-export default function RouteOptimization() {
-  const [selectedRoute, setSelectedRoute] = useState(mockRoutes[0]);
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-neutral-900 flex items-center gap-3">
-          <Route className="w-8 h-8 text-blue-600" />
-          AI Route Optimization
-        </h1>
-        <p className="text-neutral-600 mt-2">Reinforcement Learning for real-time routing with traffic & weather integration</p>
-      </div>
-
-      {/* AI Model Info */}
-      <div className="card p-6 bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-100">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Zap className="w-6 h-6 text-white" />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-bold text-neutral-900">Reinforcement Learning Model Active</h3>
-            <p className="text-sm text-neutral-600 mt-1">
-              Deep Q-Network (DQN) continuously learning from real traffic patterns, weather conditions, and delivery outcomes.
-              Average route efficiency: <span className="font-bold text-blue-600">23% improvement</span>
-            </p>
-            <div className="flex gap-4 mt-3 text-xs text-neutral-500">
-              <span>Live traffic integration: âœ“</span>
-              <span>Weather API: Active</span>
-              <span>Learning episodes: 47,231</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="card p-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-neutral-600">Total Distance Saved</span>
-            <TrendingDown className="w-5 h-5 text-green-600" />
-          </div>
-          <div className="text-3xl font-bold text-neutral-900">748 km</div>
-          <div className="text-xs text-green-600 mt-1">This week</div>
-        </div>
-
-        <div className="card p-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-neutral-600">Time Saved</span>
-            <Clock className="w-5 h-5 text-blue-600" />
-          </div>
-          <div className="text-3xl font-bold text-neutral-900">24.5 hrs</div>
-          <div className="text-xs text-blue-600 mt-1">Across all routes</div>
-        </div>
-
-        <div className="card p-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-neutral-600">Fuel Cost Saved</span>
-            <TrendingDown className="w-5 h-5 text-purple-600" />
-          </div>
-          <div className="text-3xl font-bold text-neutral-900">$2,847</div>
-          <div className="text-xs text-purple-600 mt-1">23% reduction</div>
-        </div>
-
-        <div className="card p-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-neutral-600">COâ‚‚ Reduced</span>
-            <MapPin className="w-5 h-5 text-green-600" />
-          </div>
-          <div className="text-3xl font-bold text-neutral-900">892 kg</div>
-          <div className="text-xs text-green-600 mt-1">Environmental impact</div>
-        </div>
-      </div>
-
-      {/* Active Routes */}
-      <div className="card p-6">
-        <h2 className="text-xl font-bold text-neutral-900 mb-4 flex items-center gap-2">
-          <Truck className="w-5 h-5" />
-          Optimized Routes Today
-        </h2>
-        <div className="space-y-3">
-          {mockRoutes.map((route) => (
-            <div
-              key={route.id}
-              onClick={() => setSelectedRoute(route)}
-              className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                selectedRoute.id === route.id
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-neutral-200 hover:border-neutral-300 bg-white'
-              }`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="font-bold text-neutral-900">{route.name}</span>
-                    <span className="text-xs px-2 py-1 bg-neutral-100 rounded-full text-neutral-600">{route.id}</span>
-                    {route.status === 'active' && (
-                      <span className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full font-medium">
-                        Active
-                      </span>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-4 gap-4 text-sm">
-                    <div>
-                      <span className="text-neutral-500">Stops:</span>
-                      <span className="ml-2 font-medium text-neutral-900">{route.stops}</span>
-                    </div>
-                    <div>
-                      <span className="text-neutral-500">Original:</span>
-                      <span className="ml-2 font-medium text-red-600 line-through">{route.distance}</span>
-                    </div>
-                    <div>
-                      <span className="text-neutral-500">Optimized:</span>
-                      <span className="ml-2 font-medium text-green-600">{route.optimized}</span>
-                    </div>
-                    <div>
-                      <span className="text-neutral-500">Saved:</span>
-                      <span className="ml-2 font-medium text-blue-600">{route.timeSaved}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-green-600">{route.costSaved}</div>
-                  <div className="text-xs text-neutral-500">Cost saved</div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Selected Route Details */}
-      {selectedRoute && (
-        <div className="card p-6">
-          <h2 className="text-xl font-bold text-neutral-900 mb-4">Route Details - {selectedRoute.name}</h2>
-          <div className="grid grid-cols-3 gap-6 mb-6">
-            <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-              <div className="text-sm text-neutral-600 mb-1">Distance Reduction</div>
-              <div className="text-2xl font-bold text-green-600">
-                {Math.round(((parseInt(selectedRoute.distance) - parseInt(selectedRoute.optimized)) / parseInt(selectedRoute.distance)) * 100)}%
-              </div>
-              <div className="text-xs text-neutral-500 mt-1">
-                {parseInt(selectedRoute.distance) - parseInt(selectedRoute.optimized)} km saved
-              </div>
-            </div>
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <div className="text-sm text-neutral-600 mb-1">Fuel Savings</div>
-              <div className="text-2xl font-bold text-blue-600">{selectedRoute.fuelSaved}</div>
-              <div className="text-xs text-neutral-500 mt-1">{selectedRoute.costSaved} cost reduction</div>
-            </div>
-            <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-              <div className="text-sm text-neutral-600 mb-1">COâ‚‚ Reduced</div>
-              <div className="text-2xl font-bold text-purple-600">{selectedRoute.co2Reduced}</div>
-              <div className="text-xs text-neutral-500 mt-1">Environmental benefit</div>
-            </div>
-          </div>
-
-          {/* Mock Map Placeholder */}
-          <div className="bg-neutral-100 rounded-lg p-8 text-center mb-4">
-            <MapPin className="w-16 h-16 text-neutral-400 mx-auto mb-3" />
-            <p className="text-neutral-600 font-medium">Interactive Route Map</p>
-            <p className="text-sm text-neutral-500 mt-1">Real-time visualization with traffic overlay</p>
-            <div className="flex gap-2 justify-center mt-4">
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-              <span className="text-xs text-neutral-600">Start</span>
-              <div className="w-8 border-t-2 border-dashed border-blue-500 mt-1.5"></div>
-              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-              <span className="text-xs text-neutral-600">Stops ({selectedRoute.stops})</span>
-              <div className="w-8 border-t-2 border-dashed border-blue-500 mt-1.5"></div>
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <span className="text-xs text-neutral-600">End</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Traffic Intelligence */}
-      <div className="card p-6">
-        <h2 className="text-xl font-bold text-neutral-900 mb-4">Real-Time Traffic Intelligence</h2>
-        <div className="space-y-3">
-          {trafficFactors.map((factor, idx) => (
-            <div key={idx} className="flex items-center justify-between p-4 bg-neutral-50 rounded-lg">
-              <div>
-                <div className="font-medium text-neutral-900">{factor.time}</div>
-                <div className="text-sm text-neutral-600 mt-1">{factor.recommendation}</div>
-              </div>
-              <div className="text-right">
-                <div className={`text-lg font-bold ${
-                  factor.multiplier > 1.2 ? 'text-red-600' : factor.multiplier < 1 ? 'text-green-600' : 'text-neutral-900'
-                }`}>
-                  {factor.multiplier}x
-                </div>
-                <div className="text-xs text-neutral-500">Traffic factor</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* AI Insights */}
-      <div className="card p-6 bg-gradient-to-br from-cyan-50 to-blue-50 border-2 border-cyan-100">
-        <h3 className="text-lg font-bold text-neutral-900 mb-3 flex items-center gap-2">
-          <Zap className="w-5 h-5 text-cyan-600" />
-          AI Insights & Recommendations
-        </h3>
-        <div className="space-y-2 text-sm text-neutral-700">
-          <div className="flex items-start gap-2">
-            <div className="w-2 h-2 bg-cyan-600 rounded-full mt-1.5"></div>
-            <p><span className="font-medium">Weather Alert:</span> Light rain expected 2-4 PM - adding 15% buffer time to afternoon routes automatically</p>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="w-2 h-2 bg-blue-600 rounded-full mt-1.5"></div>
-            <p><span className="font-medium">Pattern Detected:</span> Tuesday deliveries to Industrial Zone are 18% faster when scheduled before 11 AM</p>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="w-2 h-2 bg-purple-600 rounded-full mt-1.5"></div>
-            <p><span className="font-medium">Optimization Opportunity:</span> Combining RT-001 and RT-003 stops could save additional 23 km ($31 fuel savings)</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+$i$m$p$o$r$t$ ${$ $u$s$e$S$t$a$t$e$ $}$ $f$r$o$m$ $'$r$e$a$c$t$'$;$$
+$i$m$p$o$r$t$ ${$ $M$a$p$P$i$n$,$ $T$r$u$c$k$,$ $C$l$o$c$k$,$ $T$r$e$n$d$i$n$g$D$o$w$n$,$ $Z$a$p$,$ $R$o$u$t$e$ $}$ $f$r$o$m$ $'$l$u$c$i$d$e$-$r$e$a$c$t$'$;$$
+$$
+$c$o$n$s$t$ $m$o$c$k$R$o$u$t$e$s$ $=$ $[$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$R$T$-$0$0$1$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$M$e$t$r$o$ $A$r$e$a$ $D$i$s$t$r$i$b$u$t$i$o$n$'$,$$
+$ $ $ $ $s$t$o$p$s$:$ $1$2$,$$
+$ $ $ $ $d$i$s$t$a$n$c$e$:$ $'$1$4$5$ $k$m$'$,$$
+$ $ $ $ $o$p$t$i$m$i$z$e$d$:$ $'$1$1$2$ $k$m$'$,$$
+$ $ $ $ $t$i$m$e$S$a$v$e$d$:$ $'$3$8$ $m$i$n$'$,$$
+$ $ $ $ $f$u$e$l$S$a$v$e$d$:$ $'$1$2$.$5$ $L$'$,$$
+$ $ $ $ $c$o$s$t$S$a$v$e$d$:$ $'$$$4$2$'$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$a$c$t$i$v$e$'$,$$
+$ $ $ $ $c$o$2$R$e$d$u$c$e$d$:$ $'$2$9$ $k$g$'$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$R$T$-$0$0$2$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$I$n$d$u$s$t$r$i$a$l$ $Z$o$n$e$ $D$e$l$i$v$e$r$y$'$,$$
+$ $ $ $ $s$t$o$p$s$:$ $8$,$$
+$ $ $ $ $d$i$s$t$a$n$c$e$:$ $'$9$8$ $k$m$'$,$$
+$ $ $ $ $o$p$t$i$m$i$z$e$d$:$ $'$7$6$ $k$m$'$,$$
+$ $ $ $ $t$i$m$e$S$a$v$e$d$:$ $'$2$5$ $m$i$n$'$,$$
+$ $ $ $ $f$u$e$l$S$a$v$e$d$:$ $'$8$.$3$ $L$'$,$$
+$ $ $ $ $c$o$s$t$S$a$v$e$d$:$ $'$$$2$8$'$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$a$c$t$i$v$e$'$,$$
+$ $ $ $ $c$o$2$R$e$d$u$c$e$d$:$ $'$1$9$ $k$g$'$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$R$T$-$0$0$3$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$S$u$b$u$r$b$a$n$ $E$x$p$r$e$s$s$'$,$$
+$ $ $ $ $s$t$o$p$s$:$ $1$5$,$$
+$ $ $ $ $d$i$s$t$a$n$c$e$:$ $'$1$8$7$ $k$m$'$,$$
+$ $ $ $ $o$p$t$i$m$i$z$e$d$:$ $'$1$5$6$ $k$m$'$,$$
+$ $ $ $ $t$i$m$e$S$a$v$e$d$:$ $'$4$2$ $m$i$n$'$,$$
+$ $ $ $ $f$u$e$l$S$a$v$e$d$:$ $'$1$4$.$8$ $L$'$,$$
+$ $ $ $ $c$o$s$t$S$a$v$e$d$:$ $'$$$5$1$'$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$p$e$n$d$i$n$g$'$,$$
+$ $ $ $ $c$o$2$R$e$d$u$c$e$d$:$ $'$3$4$ $k$g$'$$
+$ $ $}$$
+$]$;$$
+$$
+$c$o$n$s$t$ $t$r$a$f$f$i$c$F$a$c$t$o$r$s$ $=$ $[$$
+$ $ ${$ $t$i$m$e$:$ $'$M$o$r$n$i$n$g$ $R$u$s$h$'$,$ $m$u$l$t$i$p$l$i$e$r$:$ $1$.$4$5$,$ $r$e$c$o$m$m$e$n$d$a$t$i$o$n$:$ $'$A$v$o$i$d$ $7$-$9$ $A$M$'$ $}$,$$
+$ $ ${$ $t$i$m$e$:$ $'$M$i$d$d$a$y$'$,$ $m$u$l$t$i$p$l$i$e$r$:$ $1$.$0$,$ $r$e$c$o$m$m$e$n$d$a$t$i$o$n$:$ $'$O$p$t$i$m$a$l$ $w$i$n$d$o$w$'$ $}$,$$
+$ $ ${$ $t$i$m$e$:$ $'$E$v$e$n$i$n$g$ $R$u$s$h$'$,$ $m$u$l$t$i$p$l$i$e$r$:$ $1$.$5$5$,$ $r$e$c$o$m$m$e$n$d$a$t$i$o$n$:$ $'$A$v$o$i$d$ $5$-$7$ $P$M$'$ $}$,$$
+$ $ ${$ $t$i$m$e$:$ $'$N$i$g$h$t$'$,$ $m$u$l$t$i$p$l$i$e$r$:$ $0$.$8$5$,$ $r$e$c$o$m$m$e$n$d$a$t$i$o$n$:$ $'$B$e$s$t$ $f$o$r$ $l$o$n$g$ $h$a$u$l$'$ $}$$
+$]$;$$
+$$
+$e$x$p$o$r$t$ $d$e$f$a$u$l$t$ $f$u$n$c$t$i$o$n$ $R$o$u$t$e$O$p$t$i$m$i$z$a$t$i$o$n$($)$ ${$$
+$ $ $c$o$n$s$t$ $[$s$e$l$e$c$t$e$d$R$o$u$t$e$,$ $s$e$t$S$e$l$e$c$t$e$d$R$o$u$t$e$]$ $=$ $u$s$e$S$t$a$t$e$($m$o$c$k$R$o$u$t$e$s$[$0$]$)$;$$
+$$
+$ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$6$"$>$$
+$ $ $ $ $ $ ${$/$*$ $H$e$a$d$e$r$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$h$1$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$3$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$R$o$u$t$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$8$ $h$-$8$ $t$e$x$t$-$b$l$u$e$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $A$I$ $R$o$u$t$e$ $O$p$t$i$m$i$z$a$t$i$o$n$$
+$ $ $ $ $ $ $ $ $<$/$h$1$>$$
+$ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$2$"$>$R$e$i$n$f$o$r$c$e$m$e$n$t$ $L$e$a$r$n$i$n$g$ $f$o$r$ $r$e$a$l$-$t$i$m$e$ $r$o$u$t$i$n$g$ $w$i$t$h$ $t$r$a$f$f$i$c$ $&$ $w$e$a$t$h$e$r$ $i$n$t$e$g$r$a$t$i$o$n$<$/$p$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $A$I$ $M$o$d$e$l$ $I$n$f$o$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$r$ $f$r$o$m$-$b$l$u$e$-$5$0$ $t$o$-$c$y$a$n$-$5$0$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$b$l$u$e$-$1$0$0$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$1$2$ $h$-$1$2$ $b$g$-$b$l$u$e$-$6$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $f$l$e$x$-$s$h$r$i$n$k$-$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$Z$a$p$ $c$l$a$s$s$N$a$m$e$=$"$w$-$6$ $h$-$6$ $t$e$x$t$-$w$h$i$t$e$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$R$e$i$n$f$o$r$c$e$m$e$n$t$ $L$e$a$r$n$i$n$g$ $M$o$d$e$l$ $A$c$t$i$v$e$<$/$h$3$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $D$e$e$p$ $Q$-$N$e$t$w$o$r$k$ $($D$Q$N$)$ $c$o$n$t$i$n$u$o$u$s$l$y$ $l$e$a$r$n$i$n$g$ $f$r$o$m$ $r$e$a$l$ $t$r$a$f$f$i$c$ $p$a$t$t$e$r$n$s$,$ $w$e$a$t$h$e$r$ $c$o$n$d$i$t$i$o$n$s$,$ $a$n$d$ $d$e$l$i$v$e$r$y$ $o$u$t$c$o$m$e$s$.$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $A$v$e$r$a$g$e$ $r$o$u$t$e$ $e$f$f$i$c$i$e$n$c$y$:$ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$b$l$u$e$-$6$0$0$"$>$2$3$%$ $i$m$p$r$o$v$e$m$e$n$t$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$4$ $m$t$-$3$ $t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$L$i$v$e$ $t$r$a$f$f$i$c$ $i$n$t$e$g$r$a$t$i$o$n$:$ $â$œ$“$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$W$e$a$t$h$e$r$ $A$P$I$:$ $A$c$t$i$v$e$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$L$e$a$r$n$i$n$g$ $e$p$i$s$o$d$e$s$:$ $4$7$,$2$3$1$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $K$e$y$ $M$e$t$r$i$c$s$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $m$d$:$g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$4$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$T$o$t$a$l$ $D$i$s$t$a$n$c$e$ $S$a$v$e$d$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$T$r$e$n$d$i$n$g$D$o$w$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$7$4$8$ $k$m$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$ $m$t$-$1$"$>$T$h$i$s$ $w$e$e$k$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$T$i$m$e$ $S$a$v$e$d$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$C$l$o$c$k$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$b$l$u$e$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$2$4$.$5$ $h$r$s$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$b$l$u$e$-$6$0$0$ $m$t$-$1$"$>$A$c$r$o$s$s$ $a$l$l$ $r$o$u$t$e$s$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$F$u$e$l$ $C$o$s$t$ $S$a$v$e$d$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$T$r$e$n$d$i$n$g$D$o$w$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$p$u$r$p$l$e$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$$$2$,$8$4$7$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$p$u$r$p$l$e$-$6$0$0$ $m$t$-$1$"$>$2$3$%$ $r$e$d$u$c$t$i$o$n$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$C$O$â$‚$‚$ $R$e$d$u$c$e$d$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$M$a$p$P$i$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$8$9$2$ $k$g$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$ $m$t$-$1$"$>$E$n$v$i$r$o$n$m$e$n$t$a$l$ $i$m$p$a$c$t$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $A$c$t$i$v$e$ $R$o$u$t$e$s$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$T$r$u$c$k$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $O$p$t$i$m$i$z$e$d$ $R$o$u$t$e$s$ $T$o$d$a$y$$
+$ $ $ $ $ $ $ $ $<$/$h$2$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$3$"$>$$
+$ $ $ $ $ $ $ $ $ $ ${$m$o$c$k$R$o$u$t$e$s$.$m$a$p$($($r$o$u$t$e$)$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $k$e$y$=${$r$o$u$t$e$.$i$d$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$S$e$l$e$c$t$e$d$R$o$u$t$e$($r$o$u$t$e$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$p$-$4$ $r$o$u$n$d$e$d$-$l$g$ $b$o$r$d$e$r$-$2$ $c$u$r$s$o$r$-$p$o$i$n$t$e$r$ $t$r$a$n$s$i$t$i$o$n$-$a$l$l$ $$${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$e$l$e$c$t$e$d$R$o$u$t$e$.$i$d$ $=$=$=$ $r$o$u$t$e$.$i$d$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$b$o$r$d$e$r$-$b$l$u$e$-$6$0$0$ $b$g$-$b$l$u$e$-$5$0$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $'$b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $h$o$v$e$r$:$b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$3$0$0$ $b$g$-$w$h$i$t$e$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$3$ $m$b$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$r$o$u$t$e$.$n$a$m$e$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $p$x$-$2$ $p$y$-$1$ $b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>${$r$o$u$t$e$.$i$d$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$r$o$u$t$e$.$s$t$a$t$u$s$ $=$=$=$ $'$a$c$t$i$v$e$'$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $p$x$-$2$ $p$y$-$1$ $b$g$-$g$r$e$e$n$-$1$0$0$ $t$e$x$t$-$g$r$e$e$n$-$7$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $f$o$n$t$-$m$e$d$i$u$m$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $A$c$t$i$v$e$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$4$ $t$e$x$t$-$s$m$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$S$t$o$p$s$:$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$2$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$r$o$u$t$e$.$s$t$o$p$s$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$O$r$i$g$i$n$a$l$:$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$2$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$r$e$d$-$6$0$0$ $l$i$n$e$-$t$h$r$o$u$g$h$"$>${$r$o$u$t$e$.$d$i$s$t$a$n$c$e$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$O$p$t$i$m$i$z$e$d$:$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$2$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$"$>${$r$o$u$t$e$.$o$p$t$i$m$i$z$e$d$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$S$a$v$e$d$:$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$2$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$b$l$u$e$-$6$0$0$"$>${$r$o$u$t$e$.$t$i$m$e$S$a$v$e$d$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$r$i$g$h$t$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$"$>${$r$o$u$t$e$.$c$o$s$t$S$a$v$e$d$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$C$o$s$t$ $s$a$v$e$d$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $S$e$l$e$c$t$e$d$ $R$o$u$t$e$ $D$e$t$a$i$l$s$ $*$/$}$$
+$ $ $ $ $ $ ${$s$e$l$e$c$t$e$d$R$o$u$t$e$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$"$>$R$o$u$t$e$ $D$e$t$a$i$l$s$ $-$ ${$s$e$l$e$c$t$e$d$R$o$u$t$e$.$n$a$m$e$}$<$/$h$2$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$3$ $g$a$p$-$6$ $m$b$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$p$-$4$ $b$g$-$g$r$e$e$n$-$5$0$ $r$o$u$n$d$e$d$-$l$g$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$g$r$e$e$n$-$2$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$b$-$1$"$>$D$i$s$t$a$n$c$e$ $R$e$d$u$c$t$i$o$n$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$M$a$t$h$.$r$o$u$n$d$($($($p$a$r$s$e$I$n$t$($s$e$l$e$c$t$e$d$R$o$u$t$e$.$d$i$s$t$a$n$c$e$)$ $-$ $p$a$r$s$e$I$n$t$($s$e$l$e$c$t$e$d$R$o$u$t$e$.$o$p$t$i$m$i$z$e$d$)$)$ $/$ $p$a$r$s$e$I$n$t$($s$e$l$e$c$t$e$d$R$o$u$t$e$.$d$i$s$t$a$n$c$e$)$)$ $*$ $1$0$0$)$}$%$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$t$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$p$a$r$s$e$I$n$t$($s$e$l$e$c$t$e$d$R$o$u$t$e$.$d$i$s$t$a$n$c$e$)$ $-$ $p$a$r$s$e$I$n$t$($s$e$l$e$c$t$e$d$R$o$u$t$e$.$o$p$t$i$m$i$z$e$d$)$}$ $k$m$ $s$a$v$e$d$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$p$-$4$ $b$g$-$b$l$u$e$-$5$0$ $r$o$u$n$d$e$d$-$l$g$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$b$l$u$e$-$2$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$b$-$1$"$>$F$u$e$l$ $S$a$v$i$n$g$s$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$b$l$u$e$-$6$0$0$"$>${$s$e$l$e$c$t$e$d$R$o$u$t$e$.$f$u$e$l$S$a$v$e$d$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$t$-$1$"$>${$s$e$l$e$c$t$e$d$R$o$u$t$e$.$c$o$s$t$S$a$v$e$d$}$ $c$o$s$t$ $r$e$d$u$c$t$i$o$n$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$p$-$4$ $b$g$-$p$u$r$p$l$e$-$5$0$ $r$o$u$n$d$e$d$-$l$g$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$p$u$r$p$l$e$-$2$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$b$-$1$"$>$C$O$â$‚$‚$ $R$e$d$u$c$e$d$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$p$u$r$p$l$e$-$6$0$0$"$>${$s$e$l$e$c$t$e$d$R$o$u$t$e$.$c$o$2$R$e$d$u$c$e$d$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$t$-$1$"$>$E$n$v$i$r$o$n$m$e$n$t$a$l$ $b$e$n$e$f$i$t$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ ${$/$*$ $M$o$c$k$ $M$a$p$ $P$l$a$c$e$h$o$l$d$e$r$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $r$o$u$n$d$e$d$-$l$g$ $p$-$8$ $t$e$x$t$-$c$e$n$t$e$r$ $m$b$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$M$a$p$P$i$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$1$6$ $h$-$1$6$ $t$e$x$t$-$n$e$u$t$r$a$l$-$4$0$0$ $m$x$-$a$u$t$o$ $m$b$-$3$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $f$o$n$t$-$m$e$d$i$u$m$"$>$I$n$t$e$r$a$c$t$i$v$e$ $R$o$u$t$e$ $M$a$p$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$t$-$1$"$>$R$e$a$l$-$t$i$m$e$ $v$i$s$u$a$l$i$z$a$t$i$o$n$ $w$i$t$h$ $t$r$a$f$f$i$c$ $o$v$e$r$l$a$y$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$2$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $m$t$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$3$ $h$-$3$ $b$g$-$g$r$e$e$n$-$5$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$S$t$a$r$t$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$8$ $b$o$r$d$e$r$-$t$-$2$ $b$o$r$d$e$r$-$d$a$s$h$e$d$ $b$o$r$d$e$r$-$b$l$u$e$-$5$0$0$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$3$ $h$-$3$ $b$g$-$b$l$u$e$-$5$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$S$t$o$p$s$ $(${$s$e$l$e$c$t$e$d$R$o$u$t$e$.$s$t$o$p$s$}$)$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$8$ $b$o$r$d$e$r$-$t$-$2$ $b$o$r$d$e$r$-$d$a$s$h$e$d$ $b$o$r$d$e$r$-$b$l$u$e$-$5$0$0$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$3$ $h$-$3$ $b$g$-$r$e$d$-$5$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$E$n$d$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $)$}$$
+$$
+$ $ $ $ $ $ ${$/$*$ $T$r$a$f$f$i$c$ $I$n$t$e$l$l$i$g$e$n$c$e$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$"$>$R$e$a$l$-$T$i$m$e$ $T$r$a$f$f$i$c$ $I$n$t$e$l$l$i$g$e$n$c$e$<$/$h$2$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$3$"$>$$
+$ $ $ $ $ $ $ $ $ $ ${$t$r$a$f$f$i$c$F$a$c$t$o$r$s$.$m$a$p$($($f$a$c$t$o$r$,$ $i$d$x$)$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$i$d$x$}$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $p$-$4$ $b$g$-$n$e$u$t$r$a$l$-$5$0$ $r$o$u$n$d$e$d$-$l$g$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$f$a$c$t$o$r$.$t$i$m$e$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>${$f$a$c$t$o$r$.$r$e$c$o$m$m$e$n$d$a$t$i$o$n$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$r$i$g$h$t$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=${$`$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $$${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $f$a$c$t$o$r$.$m$u$l$t$i$p$l$i$e$r$ $>$ $1$.$2$ $?$ $'$t$e$x$t$-$r$e$d$-$6$0$0$'$ $:$ $f$a$c$t$o$r$.$m$u$l$t$i$p$l$i$e$r$ $<$ $1$ $?$ $'$t$e$x$t$-$g$r$e$e$n$-$6$0$0$'$ $:$ $'$t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$f$a$c$t$o$r$.$m$u$l$t$i$p$l$i$e$r$}$x$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$T$r$a$f$f$i$c$ $f$a$c$t$o$r$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $A$I$ $I$n$s$i$g$h$t$s$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$b$r$ $f$r$o$m$-$c$y$a$n$-$5$0$ $t$o$-$b$l$u$e$-$5$0$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$c$y$a$n$-$1$0$0$"$>$$
+$ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$3$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$Z$a$p$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$c$y$a$n$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $A$I$ $I$n$s$i$g$h$t$s$ $&$ $R$e$c$o$m$m$e$n$d$a$t$i$o$n$s$$
+$ $ $ $ $ $ $ $ $<$/$h$3$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$2$ $t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$c$y$a$n$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$W$e$a$t$h$e$r$ $A$l$e$r$t$:$<$/$s$p$a$n$>$ $L$i$g$h$t$ $r$a$i$n$ $e$x$p$e$c$t$e$d$ $2$-$4$ $P$M$ $-$ $a$d$d$i$n$g$ $1$5$%$ $b$u$f$f$e$r$ $t$i$m$e$ $t$o$ $a$f$t$e$r$n$o$o$n$ $r$o$u$t$e$s$ $a$u$t$o$m$a$t$i$c$a$l$l$y$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$b$l$u$e$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$P$a$t$t$e$r$n$ $D$e$t$e$c$t$e$d$:$<$/$s$p$a$n$>$ $T$u$e$s$d$a$y$ $d$e$l$i$v$e$r$i$e$s$ $t$o$ $I$n$d$u$s$t$r$i$a$l$ $Z$o$n$e$ $a$r$e$ $1$8$%$ $f$a$s$t$e$r$ $w$h$e$n$ $s$c$h$e$d$u$l$e$d$ $b$e$f$o$r$e$ $1$1$ $A$M$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$p$u$r$p$l$e$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$O$p$t$i$m$i$z$a$t$i$o$n$ $O$p$p$o$r$t$u$n$i$t$y$:$<$/$s$p$a$n$>$ $C$o$m$b$i$n$i$n$g$ $R$T$-$0$0$1$ $a$n$d$ $R$T$-$0$0$3$ $s$t$o$p$s$ $c$o$u$l$d$ $s$a$v$e$ $a$d$d$i$t$i$o$n$a$l$ $2$3$ $k$m$ $($$$3$1$ $f$u$e$l$ $s$a$v$i$n$g$s$)$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $<$/$d$i$v$>$$
+$ $ $)$;$$
+$}$$
+$

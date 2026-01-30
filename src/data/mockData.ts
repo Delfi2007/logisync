@@ -1,563 +1,564 @@
-import { 
-  Product, 
-  Order, 
-  Customer, 
-  Activity, 
-  DashboardMetrics,
-  User,
-  Warehouse
-} from '@/types';
-
-// Current logged-in user
-export const currentUser: User = {
-  id: 'USR-001',
-  name: 'Mukesh Kumar',
-  email: 'mukesh@logisync.in',
-  phone: '+91 98765 43210',
-  role: 'admin',
-  businessName: 'LogiSync Enterprises',
-  gstNumber: '29ABCDE1234F1Z5',
-  subscriptionTier: 'enterprise',
-  createdAt: new Date('2024-01-15'),
-};
-
-// Mock Products
-export const mockProducts: Product[] = [
-  {
-    id: 'PRD-001',
-    sku: 'SKU-2024-001',
-    name: 'Premium Rice (Basmati)',
-    description: '1kg pack of premium quality basmati rice',
-    category: 'Food & Beverages',
-    unitPrice: 180,
-    costPrice: 120,
-    currentStock: 450,
-    reorderLevel: 100,
-    unit: 'kg',
-    locations: [{ warehouseId: 'WH-001', quantity: 450 }],
-    supplier: { name: 'AgriSupply Co.', contact: '+91 98765 00001' },
-    createdAt: new Date('2024-08-01'),
-    updatedAt: new Date('2024-10-01'),
-  },
-  {
-    id: 'PRD-002',
-    sku: 'SKU-2024-002',
-    name: 'Organic Wheat Flour',
-    description: '5kg pack of organic wheat flour',
-    category: 'Food & Beverages',
-    unitPrice: 350,
-    costPrice: 250,
-    currentStock: 85,
-    reorderLevel: 100,
-    unit: 'kg',
-    locations: [{ warehouseId: 'WH-001', quantity: 85 }],
-    supplier: { name: 'Organic Grains Ltd.', contact: '+91 98765 00002' },
-    createdAt: new Date('2024-08-05'),
-    updatedAt: new Date('2024-10-01'),
-  },
-  {
-    id: 'PRD-003',
-    sku: 'SKU-2024-003',
-    name: 'Cotton T-Shirts (Pack of 3)',
-    description: 'Premium quality cotton t-shirts',
-    category: 'Apparel',
-    unitPrice: 899,
-    costPrice: 600,
-    currentStock: 250,
-    reorderLevel: 50,
-    unit: 'pieces',
-    locations: [{ warehouseId: 'WH-002', quantity: 250 }],
-    supplier: { name: 'Textile World', contact: '+91 98765 00003' },
-    createdAt: new Date('2024-09-01'),
-    updatedAt: new Date('2024-10-01'),
-  },
-  {
-    id: 'PRD-004',
-    sku: 'SKU-2024-004',
-    name: 'Mustard Oil',
-    description: 'Pure mustard oil 1L bottle',
-    category: 'Food & Beverages',
-    unitPrice: 220,
-    costPrice: 160,
-    currentStock: 30,
-    reorderLevel: 50,
-    unit: 'liters',
-    locations: [{ warehouseId: 'WH-001', quantity: 30 }],
-    supplier: { name: 'Oil Mills India', contact: '+91 98765 00004' },
-    createdAt: new Date('2024-09-10'),
-    updatedAt: new Date('2024-10-01'),
-  },
-  {
-    id: 'PRD-005',
-    sku: 'SKU-2024-005',
-    name: 'Laptop Backpack',
-    description: 'Water-resistant laptop backpack',
-    category: 'Accessories',
-    unitPrice: 1499,
-    costPrice: 1000,
-    currentStock: 120,
-    reorderLevel: 30,
-    unit: 'pieces',
-    locations: [{ warehouseId: 'WH-002', quantity: 120 }],
-    supplier: { name: 'Bags & Beyond', contact: '+91 98765 00005' },
-    createdAt: new Date('2024-09-15'),
-    updatedAt: new Date('2024-10-01'),
-  },
-];
-
-// Mock Customers
-export const mockCustomers: Customer[] = [
-  {
-    id: 'CUST-001',
-    name: 'Rajesh Sharma',
-    businessName: 'Sharma Retail Store',
-    email: 'rajesh@sharmaretail.com',
-    phone: '+91 98765 11111',
-    gstNumber: '29ABCDE1234F1Z1',
-    billingAddress: {
-      line1: '123 MG Road',
-      city: 'Bangalore',
-      state: 'Karnataka',
-      pincode: '560001',
-    },
-    shippingAddresses: [{
-      line1: '123 MG Road',
-      city: 'Bangalore',
-      state: 'Karnataka',
-      pincode: '560001',
-    }],
-    totalOrders: 45,
-    lifetimeValue: 125000,
-    segment: 'premium',
-    createdAt: new Date('2024-01-10'),
-  },
-  {
-    id: 'CUST-002',
-    name: 'Priya Patel',
-    businessName: 'Patel Groceries',
-    email: 'priya@patelgroceries.com',
-    phone: '+91 98765 22222',
-    billingAddress: {
-      line1: '456 Commercial Street',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400001',
-    },
-    shippingAddresses: [{
-      line1: '456 Commercial Street',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400001',
-    }],
-    totalOrders: 28,
-    lifetimeValue: 78000,
-    segment: 'regular',
-    createdAt: new Date('2024-03-15'),
-  },
-  {
-    id: 'CUST-003',
-    name: 'Amit Singh',
-    email: 'amit.singh@email.com',
-    phone: '+91 98765 33333',
-    billingAddress: {
-      line1: '789 Park Avenue',
-      city: 'Delhi',
-      state: 'Delhi',
-      pincode: '110001',
-    },
-    shippingAddresses: [{
-      line1: '789 Park Avenue',
-      city: 'Delhi',
-      state: 'Delhi',
-      pincode: '110001',
-    }],
-    totalOrders: 3,
-    lifetimeValue: 5400,
-    segment: 'new',
-    createdAt: new Date('2024-09-20'),
-  },
-];
-
-// Mock Orders
-export const mockOrders: Order[] = [
-  {
-    id: 'ORD-001',
-    orderNumber: 'AUTO-ORD-001',
-    customerId: 'CUST-001',
-    customerName: 'Rajesh Sharma',
-    items: [
-      {
-        productId: 'PRD-001',
-        productName: 'Premium Rice (Basmati)',
-        sku: 'SKU-2024-001',
-        quantity: 50,
-        unitPrice: 180,
-        total: 9000,
-      },
-      {
-        productId: 'PRD-002',
-        productName: 'Organic Wheat Flour',
-        sku: 'SKU-2024-002',
-        quantity: 20,
-        unitPrice: 350,
-        total: 7000,
-      },
-    ],
-    subtotal: 16000,
-    tax: 2880, // 18% GST
-    shippingCost: 500,
-    total: 19380,
-    status: 'delivered',
-    paymentStatus: 'paid',
-    shippingAddress: {
-      line1: '123 MG Road',
-      city: 'Bangalore',
-      state: 'Karnataka',
-      pincode: '560001',
-    },
-    deliveryType: 'standard',
-    estimatedDelivery: new Date('2024-10-05'),
-    trackingNumber: 'TRK-123456789',
-    createdAt: new Date('2024-09-28'),
-    updatedAt: new Date('2024-10-01'),
-  },
-  {
-    id: 'ORD-002',
-    orderNumber: 'AUTO-ORD-002',
-    customerId: 'CUST-002',
-    customerName: 'Priya Patel',
-    items: [
-      {
-        productId: 'PRD-003',
-        productName: 'Cotton T-Shirts (Pack of 3)',
-        sku: 'SKU-2024-003',
-        quantity: 10,
-        unitPrice: 899,
-        total: 8990,
-      },
-    ],
-    subtotal: 8990,
-    tax: 449, // 5% GST
-    shippingCost: 300,
-    total: 9739,
-    status: 'shipped',
-    paymentStatus: 'paid',
-    shippingAddress: {
-      line1: '456 Commercial Street',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400001',
-    },
-    deliveryType: 'express',
-    estimatedDelivery: new Date('2024-10-03'),
-    trackingNumber: 'TRK-987654321',
-    createdAt: new Date('2024-10-01'),
-    updatedAt: new Date('2024-10-02'),
-  },
-  {
-    id: 'ORD-003',
-    orderNumber: 'AUTO-ORD-003',
-    customerId: 'CUST-003',
-    customerName: 'Amit Singh',
-    items: [
-      {
-        productId: 'PRD-005',
-        productName: 'Laptop Backpack',
-        sku: 'SKU-2024-005',
-        quantity: 2,
-        unitPrice: 1499,
-        total: 2998,
-      },
-    ],
-    subtotal: 2998,
-    tax: 539, // 18% GST
-    shippingCost: 200,
-    total: 3737,
-    status: 'packed',
-    paymentStatus: 'paid',
-    shippingAddress: {
-      line1: '789 Park Avenue',
-      city: 'Delhi',
-      state: 'Delhi',
-      pincode: '110001',
-    },
-    deliveryType: 'standard',
-    estimatedDelivery: new Date('2024-10-06'),
-    createdAt: new Date('2024-10-02'),
-    updatedAt: new Date('2024-10-02'),
-  },
-  {
-    id: 'ORD-004',
-    orderNumber: 'AUTO-ORD-004',
-    customerId: 'CUST-001',
-    customerName: 'Rajesh Sharma',
-    items: [
-      {
-        productId: 'PRD-004',
-        productName: 'Mustard Oil',
-        sku: 'SKU-2024-004',
-        quantity: 25,
-        unitPrice: 220,
-        total: 5500,
-      },
-    ],
-    subtotal: 5500,
-    tax: 660, // 12% GST
-    shippingCost: 150,
-    total: 6310,
-    status: 'confirmed',
-    paymentStatus: 'pending',
-    shippingAddress: {
-      line1: '123 MG Road',
-      city: 'Bangalore',
-      state: 'Karnataka',
-      pincode: '560001',
-    },
-    deliveryType: 'standard',
-    estimatedDelivery: new Date('2024-10-08'),
-    createdAt: new Date('2024-10-02'),
-    updatedAt: new Date('2024-10-02'),
-  },
-  {
-    id: 'ORD-005',
-    orderNumber: 'AUTO-ORD-005',
-    customerId: 'CUST-002',
-    customerName: 'Priya Patel',
-    items: [
-      {
-        productId: 'PRD-001',
-        productName: 'Premium Rice (Basmati)',
-        sku: 'SKU-2024-001',
-        quantity: 30,
-        unitPrice: 180,
-        total: 5400,
-      },
-    ],
-    subtotal: 5400,
-    tax: 972, // 18% GST
-    shippingCost: 250,
-    total: 6622,
-    status: 'pending',
-    paymentStatus: 'pending',
-    shippingAddress: {
-      line1: '456 Commercial Street',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400001',
-    },
-    deliveryType: 'standard',
-    estimatedDelivery: new Date('2024-10-09'),
-    createdAt: new Date('2024-10-02'),
-    updatedAt: new Date('2024-10-02'),
-  },
-];
-
-// Mock Activities
-export const mockActivities: Activity[] = [
-  {
-    id: 'ACT-001',
-    type: 'order',
-    action: 'created',
-    description: 'New order AUTO-ORD-005 placed by Priya Patel',
-    timestamp: new Date('2024-10-02T14:30:00'),
-    userId: currentUser.id,
-    userName: currentUser.name,
-  },
-  {
-    id: 'ACT-002',
-    type: 'order',
-    action: 'updated',
-    description: 'Order AUTO-ORD-004 confirmed',
-    timestamp: new Date('2024-10-02T13:15:00'),
-    userId: currentUser.id,
-    userName: currentUser.name,
-  },
-  {
-    id: 'ACT-003',
-    type: 'shipment',
-    action: 'dispatched',
-    description: 'Shipment TRK-987654321 dispatched for order AUTO-ORD-002',
-    timestamp: new Date('2024-10-02T11:00:00'),
-  },
-  {
-    id: 'ACT-004',
-    type: 'order',
-    action: 'packed',
-    description: 'Order AUTO-ORD-003 packed and ready for shipment',
-    timestamp: new Date('2024-10-02T10:45:00'),
-  },
-  {
-    id: 'ACT-005',
-    type: 'inventory',
-    action: 'alert',
-    description: 'Low stock alert: Mustard Oil below reorder level',
-    timestamp: new Date('2024-10-02T09:30:00'),
-  },
-  {
-    id: 'ACT-006',
-    type: 'order',
-    action: 'delivered',
-    description: 'Order AUTO-ORD-001 delivered to Rajesh Sharma',
-    timestamp: new Date('2024-10-01T16:20:00'),
-  },
-  {
-    id: 'ACT-007',
-    type: 'customer',
-    action: 'registered',
-    description: 'New customer Amit Singh registered',
-    timestamp: new Date('2024-09-20T12:00:00'),
-  },
-];
-
-// Dashboard Metrics
-export const mockDashboardMetrics: DashboardMetrics = {
-  todayOrders: 3,
-  weekOrders: 12,
-  monthOrders: 45,
-  pendingShipments: 8,
-  lowStockAlerts: 2,
-  todayRevenue: 19756,
-  weekRevenue: 156780,
-  monthRevenue: 587650,
-};
-
-// Chart data for trends
-export const orderTrendsData = [
-  { date: '25 Sep', orders: 8 },
-  { date: '26 Sep', orders: 12 },
-  { date: '27 Sep', orders: 10 },
-  { date: '28 Sep', orders: 15 },
-  { date: '29 Sep', orders: 11 },
-  { date: '30 Sep', orders: 14 },
-  { date: '1 Oct', orders: 13 },
-  { date: '2 Oct', orders: 3 },
-];
-
-export const topProductsData = [
-  { name: 'Rice', sales: 4500 },
-  { name: 'Wheat', sales: 3800 },
-  { name: 'T-Shirts', sales: 2900 },
-  { name: 'Backpacks', sales: 2200 },
-  { name: 'Mustard Oil', sales: 1800 },
-];
-
-export const deliveryStatusData = [
-  { name: 'Delivered', value: 45, color: '#0a0a0a' },
-  { name: 'In Transit', value: 25, color: '#404040' },
-  { name: 'Pending', value: 15, color: '#a3a3a3' },
-  { name: 'Cancelled', value: 5, color: '#e5e5e5' },
-];
-
-// Mock Warehouses
-export const mockWarehouses: Warehouse[] = [
-  {
-    id: 'WH-001',
-    name: 'Bangalore Central Warehouse',
-    ownerId: 'USR-001',
-    location: {
-      address: 'Plot 45, Industrial Area, Phase 1',
-      city: 'Bangalore',
-      state: 'Karnataka',
-      pincode: '560058',
-      coordinates: { lat: 13.0358, lng: 77.5970 },
-    },
-    totalArea: 50000,
-    availableArea: 15000,
-    pricePerSqft: 25,
-    amenities: ['Climate Control', '24/7 Security', 'Loading Dock', 'Fire Safety', 'CCTV'],
-    operationalHours: '24/7',
-    images: [],
-    rating: 4.5,
-    reviewCount: 28,
-    isVerified: true,
-    createdAt: new Date('2023-06-15'),
-  },
-  {
-    id: 'WH-002',
-    name: 'Mumbai Logistics Hub',
-    ownerId: 'USR-002',
-    location: {
-      address: '78 Godown Street, Andheri East',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400069',
-      coordinates: { lat: 19.1136, lng: 72.8697 },
-    },
-    totalArea: 75000,
-    availableArea: 25000,
-    pricePerSqft: 30,
-    amenities: ['Climate Control', 'Loading Dock', 'Security', 'Parking'],
-    operationalHours: 'Mon-Sat: 6 AM - 10 PM',
-    images: [],
-    rating: 4.2,
-    reviewCount: 42,
-    isVerified: true,
-    createdAt: new Date('2023-08-20'),
-  },
-  {
-    id: 'WH-003',
-    name: 'Delhi NCR Distribution Center',
-    ownerId: 'USR-003',
-    location: {
-      address: 'Sector 28, IMT Manesar',
-      city: 'Gurugram',
-      state: 'Haryana',
-      pincode: '122051',
-      coordinates: { lat: 28.3587, lng: 76.9334 },
-    },
-    totalArea: 100000,
-    availableArea: 60000,
-    pricePerSqft: 22,
-    amenities: ['Loading Dock', 'Security', 'Fire Safety', 'Office Space'],
-    operationalHours: '24/7',
-    images: [],
-    rating: 4.7,
-    reviewCount: 35,
-    isVerified: true,
-    createdAt: new Date('2023-05-10'),
-  },
-  {
-    id: 'WH-004',
-    name: 'Chennai Storage Facility',
-    ownerId: 'USR-001',
-    location: {
-      address: 'Red Hills Industrial Area',
-      city: 'Chennai',
-      state: 'Tamil Nadu',
-      pincode: '600052',
-      coordinates: { lat: 13.1538, lng: 80.1844 },
-    },
-    totalArea: 30000,
-    availableArea: 5000,
-    pricePerSqft: 20,
-    amenities: ['Climate Control', 'Security', 'CCTV'],
-    operationalHours: 'Mon-Fri: 7 AM - 7 PM',
-    images: [],
-    rating: 4.0,
-    reviewCount: 18,
-    isVerified: false,
-    createdAt: new Date('2024-01-05'),
-  },
-  {
-    id: 'WH-005',
-    name: 'Pune Cold Storage',
-    ownerId: 'USR-004',
-    location: {
-      address: 'Chakan Industrial Zone',
-      city: 'Pune',
-      state: 'Maharashtra',
-      pincode: '410501',
-      coordinates: { lat: 18.7606, lng: 73.8636 },
-    },
-    totalArea: 40000,
-    availableArea: 12000,
-    pricePerSqft: 35,
-    amenities: ['Cold Storage', 'Climate Control', '24/7 Security', 'Loading Dock', 'Generator Backup'],
-    operationalHours: '24/7',
-    images: [],
-    rating: 4.8,
-    reviewCount: 52,
-    isVerified: true,
-    createdAt: new Date('2023-09-12'),
-  },
-];
+$i$m$p$o$r$t$ ${$ $$
+$ $ $P$r$o$d$u$c$t$,$ $$
+$ $ $O$r$d$e$r$,$ $$
+$ $ $C$u$s$t$o$m$e$r$,$ $$
+$ $ $A$c$t$i$v$i$t$y$,$ $$
+$ $ $D$a$s$h$b$o$a$r$d$M$e$t$r$i$c$s$,$$
+$ $ $U$s$e$r$,$$
+$ $ $W$a$r$e$h$o$u$s$e$$
+$}$ $f$r$o$m$ $'$@$/$t$y$p$e$s$'$;$$
+$$
+$/$/$ $C$u$r$r$e$n$t$ $l$o$g$g$e$d$-$i$n$ $u$s$e$r$$
+$e$x$p$o$r$t$ $c$o$n$s$t$ $c$u$r$r$e$n$t$U$s$e$r$:$ $U$s$e$r$ $=$ ${$$
+$ $ $i$d$:$ $'$U$S$R$-$0$0$1$'$,$$
+$ $ $n$a$m$e$:$ $'$M$u$k$e$s$h$ $K$u$m$a$r$'$,$$
+$ $ $e$m$a$i$l$:$ $'$m$u$k$e$s$h$@$l$o$g$i$s$y$n$c$.$i$n$'$,$$
+$ $ $p$h$o$n$e$:$ $'$+$9$1$ $9$8$7$6$5$ $4$3$2$1$0$'$,$$
+$ $ $r$o$l$e$:$ $'$a$d$m$i$n$'$,$$
+$ $ $b$u$s$i$n$e$s$s$N$a$m$e$:$ $'$L$o$g$i$S$y$n$c$ $E$n$t$e$r$p$r$i$s$e$s$'$,$$
+$ $ $g$s$t$N$u$m$b$e$r$:$ $'$2$9$A$B$C$D$E$1$2$3$4$F$1$Z$5$'$,$$
+$ $ $s$u$b$s$c$r$i$p$t$i$o$n$T$i$e$r$:$ $'$e$n$t$e$r$p$r$i$s$e$'$,$$
+$ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$1$-$1$5$'$)$,$$
+$}$;$$
+$$
+$/$/$ $M$o$c$k$ $P$r$o$d$u$c$t$s$$
+$e$x$p$o$r$t$ $c$o$n$s$t$ $m$o$c$k$P$r$o$d$u$c$t$s$:$ $P$r$o$d$u$c$t$[$]$ $=$ $[$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$P$R$D$-$0$0$1$'$,$$
+$ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$1$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$P$r$e$m$i$u$m$ $R$i$c$e$ $($B$a$s$m$a$t$i$)$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$1$k$g$ $p$a$c$k$ $o$f$ $p$r$e$m$i$u$m$ $q$u$a$l$i$t$y$ $b$a$s$m$a$t$i$ $r$i$c$e$'$,$$
+$ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$F$o$o$d$ $&$ $B$e$v$e$r$a$g$e$s$'$,$$
+$ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $1$8$0$,$$
+$ $ $ $ $c$o$s$t$P$r$i$c$e$:$ $1$2$0$,$$
+$ $ $ $ $c$u$r$r$e$n$t$S$t$o$c$k$:$ $4$5$0$,$$
+$ $ $ $ $r$e$o$r$d$e$r$L$e$v$e$l$:$ $1$0$0$,$$
+$ $ $ $ $u$n$i$t$:$ $'$k$g$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$s$:$ $[${$ $w$a$r$e$h$o$u$s$e$I$d$:$ $'$W$H$-$0$0$1$'$,$ $q$u$a$n$t$i$t$y$:$ $4$5$0$ $}$]$,$$
+$ $ $ $ $s$u$p$p$l$i$e$r$:$ ${$ $n$a$m$e$:$ $'$A$g$r$i$S$u$p$p$l$y$ $C$o$.$'$,$ $c$o$n$t$a$c$t$:$ $'$+$9$1$ $9$8$7$6$5$ $0$0$0$0$1$'$ $}$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$8$-$0$1$'$)$,$$
+$ $ $ $ $u$p$d$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$1$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$P$R$D$-$0$0$2$'$,$$
+$ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$2$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$O$r$g$a$n$i$c$ $W$h$e$a$t$ $F$l$o$u$r$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$5$k$g$ $p$a$c$k$ $o$f$ $o$r$g$a$n$i$c$ $w$h$e$a$t$ $f$l$o$u$r$'$,$$
+$ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$F$o$o$d$ $&$ $B$e$v$e$r$a$g$e$s$'$,$$
+$ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $3$5$0$,$$
+$ $ $ $ $c$o$s$t$P$r$i$c$e$:$ $2$5$0$,$$
+$ $ $ $ $c$u$r$r$e$n$t$S$t$o$c$k$:$ $8$5$,$$
+$ $ $ $ $r$e$o$r$d$e$r$L$e$v$e$l$:$ $1$0$0$,$$
+$ $ $ $ $u$n$i$t$:$ $'$k$g$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$s$:$ $[${$ $w$a$r$e$h$o$u$s$e$I$d$:$ $'$W$H$-$0$0$1$'$,$ $q$u$a$n$t$i$t$y$:$ $8$5$ $}$]$,$$
+$ $ $ $ $s$u$p$p$l$i$e$r$:$ ${$ $n$a$m$e$:$ $'$O$r$g$a$n$i$c$ $G$r$a$i$n$s$ $L$t$d$.$'$,$ $c$o$n$t$a$c$t$:$ $'$+$9$1$ $9$8$7$6$5$ $0$0$0$0$2$'$ $}$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$8$-$0$5$'$)$,$$
+$ $ $ $ $u$p$d$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$1$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$P$R$D$-$0$0$3$'$,$$
+$ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$3$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$C$o$t$t$o$n$ $T$-$S$h$i$r$t$s$ $($P$a$c$k$ $o$f$ $3$)$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$P$r$e$m$i$u$m$ $q$u$a$l$i$t$y$ $c$o$t$t$o$n$ $t$-$s$h$i$r$t$s$'$,$$
+$ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$A$p$p$a$r$e$l$'$,$$
+$ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $8$9$9$,$$
+$ $ $ $ $c$o$s$t$P$r$i$c$e$:$ $6$0$0$,$$
+$ $ $ $ $c$u$r$r$e$n$t$S$t$o$c$k$:$ $2$5$0$,$$
+$ $ $ $ $r$e$o$r$d$e$r$L$e$v$e$l$:$ $5$0$,$$
+$ $ $ $ $u$n$i$t$:$ $'$p$i$e$c$e$s$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$s$:$ $[${$ $w$a$r$e$h$o$u$s$e$I$d$:$ $'$W$H$-$0$0$2$'$,$ $q$u$a$n$t$i$t$y$:$ $2$5$0$ $}$]$,$$
+$ $ $ $ $s$u$p$p$l$i$e$r$:$ ${$ $n$a$m$e$:$ $'$T$e$x$t$i$l$e$ $W$o$r$l$d$'$,$ $c$o$n$t$a$c$t$:$ $'$+$9$1$ $9$8$7$6$5$ $0$0$0$0$3$'$ $}$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$9$-$0$1$'$)$,$$
+$ $ $ $ $u$p$d$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$1$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$P$R$D$-$0$0$4$'$,$$
+$ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$4$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$M$u$s$t$a$r$d$ $O$i$l$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$P$u$r$e$ $m$u$s$t$a$r$d$ $o$i$l$ $1$L$ $b$o$t$t$l$e$'$,$$
+$ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$F$o$o$d$ $&$ $B$e$v$e$r$a$g$e$s$'$,$$
+$ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $2$2$0$,$$
+$ $ $ $ $c$o$s$t$P$r$i$c$e$:$ $1$6$0$,$$
+$ $ $ $ $c$u$r$r$e$n$t$S$t$o$c$k$:$ $3$0$,$$
+$ $ $ $ $r$e$o$r$d$e$r$L$e$v$e$l$:$ $5$0$,$$
+$ $ $ $ $u$n$i$t$:$ $'$l$i$t$e$r$s$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$s$:$ $[${$ $w$a$r$e$h$o$u$s$e$I$d$:$ $'$W$H$-$0$0$1$'$,$ $q$u$a$n$t$i$t$y$:$ $3$0$ $}$]$,$$
+$ $ $ $ $s$u$p$p$l$i$e$r$:$ ${$ $n$a$m$e$:$ $'$O$i$l$ $M$i$l$l$s$ $I$n$d$i$a$'$,$ $c$o$n$t$a$c$t$:$ $'$+$9$1$ $9$8$7$6$5$ $0$0$0$0$4$'$ $}$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$9$-$1$0$'$)$,$$
+$ $ $ $ $u$p$d$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$1$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$P$R$D$-$0$0$5$'$,$$
+$ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$5$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$L$a$p$t$o$p$ $B$a$c$k$p$a$c$k$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$W$a$t$e$r$-$r$e$s$i$s$t$a$n$t$ $l$a$p$t$o$p$ $b$a$c$k$p$a$c$k$'$,$$
+$ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$A$c$c$e$s$s$o$r$i$e$s$'$,$$
+$ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $1$4$9$9$,$$
+$ $ $ $ $c$o$s$t$P$r$i$c$e$:$ $1$0$0$0$,$$
+$ $ $ $ $c$u$r$r$e$n$t$S$t$o$c$k$:$ $1$2$0$,$$
+$ $ $ $ $r$e$o$r$d$e$r$L$e$v$e$l$:$ $3$0$,$$
+$ $ $ $ $u$n$i$t$:$ $'$p$i$e$c$e$s$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$s$:$ $[${$ $w$a$r$e$h$o$u$s$e$I$d$:$ $'$W$H$-$0$0$2$'$,$ $q$u$a$n$t$i$t$y$:$ $1$2$0$ $}$]$,$$
+$ $ $ $ $s$u$p$p$l$i$e$r$:$ ${$ $n$a$m$e$:$ $'$B$a$g$s$ $&$ $B$e$y$o$n$d$'$,$ $c$o$n$t$a$c$t$:$ $'$+$9$1$ $9$8$7$6$5$ $0$0$0$0$5$'$ $}$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$9$-$1$5$'$)$,$$
+$ $ $ $ $u$p$d$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$1$'$)$,$$
+$ $ $}$,$$
+$]$;$$
+$$
+$/$/$ $M$o$c$k$ $C$u$s$t$o$m$e$r$s$$
+$e$x$p$o$r$t$ $c$o$n$s$t$ $m$o$c$k$C$u$s$t$o$m$e$r$s$:$ $C$u$s$t$o$m$e$r$[$]$ $=$ $[$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$C$U$S$T$-$0$0$1$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$R$a$j$e$s$h$ $S$h$a$r$m$a$'$,$$
+$ $ $ $ $b$u$s$i$n$e$s$s$N$a$m$e$:$ $'$S$h$a$r$m$a$ $R$e$t$a$i$l$ $S$t$o$r$e$'$,$$
+$ $ $ $ $e$m$a$i$l$:$ $'$r$a$j$e$s$h$@$s$h$a$r$m$a$r$e$t$a$i$l$.$c$o$m$'$,$$
+$ $ $ $ $p$h$o$n$e$:$ $'$+$9$1$ $9$8$7$6$5$ $1$1$1$1$1$'$,$$
+$ $ $ $ $g$s$t$N$u$m$b$e$r$:$ $'$2$9$A$B$C$D$E$1$2$3$4$F$1$Z$1$'$,$$
+$ $ $ $ $b$i$l$l$i$n$g$A$d$d$r$e$s$s$:$ ${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$1$2$3$ $M$G$ $R$o$a$d$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$B$a$n$g$a$l$o$r$e$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$K$a$r$n$a$t$a$k$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$5$6$0$0$0$1$'$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $s$h$i$p$p$i$n$g$A$d$d$r$e$s$s$e$s$:$ $[${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$1$2$3$ $M$G$ $R$o$a$d$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$B$a$n$g$a$l$o$r$e$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$K$a$r$n$a$t$a$k$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$5$6$0$0$0$1$'$,$$
+$ $ $ $ $}$]$,$$
+$ $ $ $ $t$o$t$a$l$O$r$d$e$r$s$:$ $4$5$,$$
+$ $ $ $ $l$i$f$e$t$i$m$e$V$a$l$u$e$:$ $1$2$5$0$0$0$,$$
+$ $ $ $ $s$e$g$m$e$n$t$:$ $'$p$r$e$m$i$u$m$'$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$1$-$1$0$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$C$U$S$T$-$0$0$2$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$P$r$i$y$a$ $P$a$t$e$l$'$,$$
+$ $ $ $ $b$u$s$i$n$e$s$s$N$a$m$e$:$ $'$P$a$t$e$l$ $G$r$o$c$e$r$i$e$s$'$,$$
+$ $ $ $ $e$m$a$i$l$:$ $'$p$r$i$y$a$@$p$a$t$e$l$g$r$o$c$e$r$i$e$s$.$c$o$m$'$,$$
+$ $ $ $ $p$h$o$n$e$:$ $'$+$9$1$ $9$8$7$6$5$ $2$2$2$2$2$'$,$$
+$ $ $ $ $b$i$l$l$i$n$g$A$d$d$r$e$s$s$:$ ${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$4$5$6$ $C$o$m$m$e$r$c$i$a$l$ $S$t$r$e$e$t$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$M$u$m$b$a$i$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$M$a$h$a$r$a$s$h$t$r$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$4$0$0$0$0$1$'$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $s$h$i$p$p$i$n$g$A$d$d$r$e$s$s$e$s$:$ $[${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$4$5$6$ $C$o$m$m$e$r$c$i$a$l$ $S$t$r$e$e$t$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$M$u$m$b$a$i$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$M$a$h$a$r$a$s$h$t$r$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$4$0$0$0$0$1$'$,$$
+$ $ $ $ $}$]$,$$
+$ $ $ $ $t$o$t$a$l$O$r$d$e$r$s$:$ $2$8$,$$
+$ $ $ $ $l$i$f$e$t$i$m$e$V$a$l$u$e$:$ $7$8$0$0$0$,$$
+$ $ $ $ $s$e$g$m$e$n$t$:$ $'$r$e$g$u$l$a$r$'$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$3$-$1$5$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$C$U$S$T$-$0$0$3$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$A$m$i$t$ $S$i$n$g$h$'$,$$
+$ $ $ $ $e$m$a$i$l$:$ $'$a$m$i$t$.$s$i$n$g$h$@$e$m$a$i$l$.$c$o$m$'$,$$
+$ $ $ $ $p$h$o$n$e$:$ $'$+$9$1$ $9$8$7$6$5$ $3$3$3$3$3$'$,$$
+$ $ $ $ $b$i$l$l$i$n$g$A$d$d$r$e$s$s$:$ ${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$7$8$9$ $P$a$r$k$ $A$v$e$n$u$e$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$D$e$l$h$i$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$D$e$l$h$i$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$1$1$0$0$0$1$'$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $s$h$i$p$p$i$n$g$A$d$d$r$e$s$s$e$s$:$ $[${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$7$8$9$ $P$a$r$k$ $A$v$e$n$u$e$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$D$e$l$h$i$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$D$e$l$h$i$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$1$1$0$0$0$1$'$,$$
+$ $ $ $ $}$]$,$$
+$ $ $ $ $t$o$t$a$l$O$r$d$e$r$s$:$ $3$,$$
+$ $ $ $ $l$i$f$e$t$i$m$e$V$a$l$u$e$:$ $5$4$0$0$,$$
+$ $ $ $ $s$e$g$m$e$n$t$:$ $'$n$e$w$'$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$9$-$2$0$'$)$,$$
+$ $ $}$,$$
+$]$;$$
+$$
+$/$/$ $M$o$c$k$ $O$r$d$e$r$s$$
+$e$x$p$o$r$t$ $c$o$n$s$t$ $m$o$c$k$O$r$d$e$r$s$:$ $O$r$d$e$r$[$]$ $=$ $[$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$O$R$D$-$0$0$1$'$,$$
+$ $ $ $ $o$r$d$e$r$N$u$m$b$e$r$:$ $'$A$U$T$O$-$O$R$D$-$0$0$1$'$,$$
+$ $ $ $ $c$u$s$t$o$m$e$r$I$d$:$ $'$C$U$S$T$-$0$0$1$'$,$$
+$ $ $ $ $c$u$s$t$o$m$e$r$N$a$m$e$:$ $'$R$a$j$e$s$h$ $S$h$a$r$m$a$'$,$$
+$ $ $ $ $i$t$e$m$s$:$ $[$$
+$ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$I$d$:$ $'$P$R$D$-$0$0$1$'$,$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$N$a$m$e$:$ $'$P$r$e$m$i$u$m$ $R$i$c$e$ $($B$a$s$m$a$t$i$)$'$,$$
+$ $ $ $ $ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$1$'$,$$
+$ $ $ $ $ $ $ $ $q$u$a$n$t$i$t$y$:$ $5$0$,$$
+$ $ $ $ $ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $1$8$0$,$$
+$ $ $ $ $ $ $ $ $t$o$t$a$l$:$ $9$0$0$0$,$$
+$ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$I$d$:$ $'$P$R$D$-$0$0$2$'$,$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$N$a$m$e$:$ $'$O$r$g$a$n$i$c$ $W$h$e$a$t$ $F$l$o$u$r$'$,$$
+$ $ $ $ $ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$2$'$,$$
+$ $ $ $ $ $ $ $ $q$u$a$n$t$i$t$y$:$ $2$0$,$$
+$ $ $ $ $ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $3$5$0$,$$
+$ $ $ $ $ $ $ $ $t$o$t$a$l$:$ $7$0$0$0$,$$
+$ $ $ $ $ $ $}$,$$
+$ $ $ $ $]$,$$
+$ $ $ $ $s$u$b$t$o$t$a$l$:$ $1$6$0$0$0$,$$
+$ $ $ $ $t$a$x$:$ $2$8$8$0$,$ $/$/$ $1$8$%$ $G$S$T$$
+$ $ $ $ $s$h$i$p$p$i$n$g$C$o$s$t$:$ $5$0$0$,$$
+$ $ $ $ $t$o$t$a$l$:$ $1$9$3$8$0$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$d$e$l$i$v$e$r$e$d$'$,$$
+$ $ $ $ $p$a$y$m$e$n$t$S$t$a$t$u$s$:$ $'$p$a$i$d$'$,$$
+$ $ $ $ $s$h$i$p$p$i$n$g$A$d$d$r$e$s$s$:$ ${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$1$2$3$ $M$G$ $R$o$a$d$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$B$a$n$g$a$l$o$r$e$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$K$a$r$n$a$t$a$k$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$5$6$0$0$0$1$'$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $d$e$l$i$v$e$r$y$T$y$p$e$:$ $'$s$t$a$n$d$a$r$d$'$,$$
+$ $ $ $ $e$s$t$i$m$a$t$e$d$D$e$l$i$v$e$r$y$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$5$'$)$,$$
+$ $ $ $ $t$r$a$c$k$i$n$g$N$u$m$b$e$r$:$ $'$T$R$K$-$1$2$3$4$5$6$7$8$9$'$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$9$-$2$8$'$)$,$$
+$ $ $ $ $u$p$d$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$1$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$O$R$D$-$0$0$2$'$,$$
+$ $ $ $ $o$r$d$e$r$N$u$m$b$e$r$:$ $'$A$U$T$O$-$O$R$D$-$0$0$2$'$,$$
+$ $ $ $ $c$u$s$t$o$m$e$r$I$d$:$ $'$C$U$S$T$-$0$0$2$'$,$$
+$ $ $ $ $c$u$s$t$o$m$e$r$N$a$m$e$:$ $'$P$r$i$y$a$ $P$a$t$e$l$'$,$$
+$ $ $ $ $i$t$e$m$s$:$ $[$$
+$ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$I$d$:$ $'$P$R$D$-$0$0$3$'$,$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$N$a$m$e$:$ $'$C$o$t$t$o$n$ $T$-$S$h$i$r$t$s$ $($P$a$c$k$ $o$f$ $3$)$'$,$$
+$ $ $ $ $ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$3$'$,$$
+$ $ $ $ $ $ $ $ $q$u$a$n$t$i$t$y$:$ $1$0$,$$
+$ $ $ $ $ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $8$9$9$,$$
+$ $ $ $ $ $ $ $ $t$o$t$a$l$:$ $8$9$9$0$,$$
+$ $ $ $ $ $ $}$,$$
+$ $ $ $ $]$,$$
+$ $ $ $ $s$u$b$t$o$t$a$l$:$ $8$9$9$0$,$$
+$ $ $ $ $t$a$x$:$ $4$4$9$,$ $/$/$ $5$%$ $G$S$T$$
+$ $ $ $ $s$h$i$p$p$i$n$g$C$o$s$t$:$ $3$0$0$,$$
+$ $ $ $ $t$o$t$a$l$:$ $9$7$3$9$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$s$h$i$p$p$e$d$'$,$$
+$ $ $ $ $p$a$y$m$e$n$t$S$t$a$t$u$s$:$ $'$p$a$i$d$'$,$$
+$ $ $ $ $s$h$i$p$p$i$n$g$A$d$d$r$e$s$s$:$ ${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$4$5$6$ $C$o$m$m$e$r$c$i$a$l$ $S$t$r$e$e$t$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$M$u$m$b$a$i$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$M$a$h$a$r$a$s$h$t$r$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$4$0$0$0$0$1$'$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $d$e$l$i$v$e$r$y$T$y$p$e$:$ $'$e$x$p$r$e$s$s$'$,$$
+$ $ $ $ $e$s$t$i$m$a$t$e$d$D$e$l$i$v$e$r$y$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$3$'$)$,$$
+$ $ $ $ $t$r$a$c$k$i$n$g$N$u$m$b$e$r$:$ $'$T$R$K$-$9$8$7$6$5$4$3$2$1$'$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$1$'$)$,$$
+$ $ $ $ $u$p$d$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$O$R$D$-$0$0$3$'$,$$
+$ $ $ $ $o$r$d$e$r$N$u$m$b$e$r$:$ $'$A$U$T$O$-$O$R$D$-$0$0$3$'$,$$
+$ $ $ $ $c$u$s$t$o$m$e$r$I$d$:$ $'$C$U$S$T$-$0$0$3$'$,$$
+$ $ $ $ $c$u$s$t$o$m$e$r$N$a$m$e$:$ $'$A$m$i$t$ $S$i$n$g$h$'$,$$
+$ $ $ $ $i$t$e$m$s$:$ $[$$
+$ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$I$d$:$ $'$P$R$D$-$0$0$5$'$,$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$N$a$m$e$:$ $'$L$a$p$t$o$p$ $B$a$c$k$p$a$c$k$'$,$$
+$ $ $ $ $ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$5$'$,$$
+$ $ $ $ $ $ $ $ $q$u$a$n$t$i$t$y$:$ $2$,$$
+$ $ $ $ $ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $1$4$9$9$,$$
+$ $ $ $ $ $ $ $ $t$o$t$a$l$:$ $2$9$9$8$,$$
+$ $ $ $ $ $ $}$,$$
+$ $ $ $ $]$,$$
+$ $ $ $ $s$u$b$t$o$t$a$l$:$ $2$9$9$8$,$$
+$ $ $ $ $t$a$x$:$ $5$3$9$,$ $/$/$ $1$8$%$ $G$S$T$$
+$ $ $ $ $s$h$i$p$p$i$n$g$C$o$s$t$:$ $2$0$0$,$$
+$ $ $ $ $t$o$t$a$l$:$ $3$7$3$7$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$p$a$c$k$e$d$'$,$$
+$ $ $ $ $p$a$y$m$e$n$t$S$t$a$t$u$s$:$ $'$p$a$i$d$'$,$$
+$ $ $ $ $s$h$i$p$p$i$n$g$A$d$d$r$e$s$s$:$ ${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$7$8$9$ $P$a$r$k$ $A$v$e$n$u$e$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$D$e$l$h$i$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$D$e$l$h$i$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$1$1$0$0$0$1$'$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $d$e$l$i$v$e$r$y$T$y$p$e$:$ $'$s$t$a$n$d$a$r$d$'$,$$
+$ $ $ $ $e$s$t$i$m$a$t$e$d$D$e$l$i$v$e$r$y$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$6$'$)$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$'$)$,$$
+$ $ $ $ $u$p$d$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$O$R$D$-$0$0$4$'$,$$
+$ $ $ $ $o$r$d$e$r$N$u$m$b$e$r$:$ $'$A$U$T$O$-$O$R$D$-$0$0$4$'$,$$
+$ $ $ $ $c$u$s$t$o$m$e$r$I$d$:$ $'$C$U$S$T$-$0$0$1$'$,$$
+$ $ $ $ $c$u$s$t$o$m$e$r$N$a$m$e$:$ $'$R$a$j$e$s$h$ $S$h$a$r$m$a$'$,$$
+$ $ $ $ $i$t$e$m$s$:$ $[$$
+$ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$I$d$:$ $'$P$R$D$-$0$0$4$'$,$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$N$a$m$e$:$ $'$M$u$s$t$a$r$d$ $O$i$l$'$,$$
+$ $ $ $ $ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$4$'$,$$
+$ $ $ $ $ $ $ $ $q$u$a$n$t$i$t$y$:$ $2$5$,$$
+$ $ $ $ $ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $2$2$0$,$$
+$ $ $ $ $ $ $ $ $t$o$t$a$l$:$ $5$5$0$0$,$$
+$ $ $ $ $ $ $}$,$$
+$ $ $ $ $]$,$$
+$ $ $ $ $s$u$b$t$o$t$a$l$:$ $5$5$0$0$,$$
+$ $ $ $ $t$a$x$:$ $6$6$0$,$ $/$/$ $1$2$%$ $G$S$T$$
+$ $ $ $ $s$h$i$p$p$i$n$g$C$o$s$t$:$ $1$5$0$,$$
+$ $ $ $ $t$o$t$a$l$:$ $6$3$1$0$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$c$o$n$f$i$r$m$e$d$'$,$$
+$ $ $ $ $p$a$y$m$e$n$t$S$t$a$t$u$s$:$ $'$p$e$n$d$i$n$g$'$,$$
+$ $ $ $ $s$h$i$p$p$i$n$g$A$d$d$r$e$s$s$:$ ${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$1$2$3$ $M$G$ $R$o$a$d$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$B$a$n$g$a$l$o$r$e$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$K$a$r$n$a$t$a$k$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$5$6$0$0$0$1$'$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $d$e$l$i$v$e$r$y$T$y$p$e$:$ $'$s$t$a$n$d$a$r$d$'$,$$
+$ $ $ $ $e$s$t$i$m$a$t$e$d$D$e$l$i$v$e$r$y$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$8$'$)$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$'$)$,$$
+$ $ $ $ $u$p$d$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$O$R$D$-$0$0$5$'$,$$
+$ $ $ $ $o$r$d$e$r$N$u$m$b$e$r$:$ $'$A$U$T$O$-$O$R$D$-$0$0$5$'$,$$
+$ $ $ $ $c$u$s$t$o$m$e$r$I$d$:$ $'$C$U$S$T$-$0$0$2$'$,$$
+$ $ $ $ $c$u$s$t$o$m$e$r$N$a$m$e$:$ $'$P$r$i$y$a$ $P$a$t$e$l$'$,$$
+$ $ $ $ $i$t$e$m$s$:$ $[$$
+$ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$I$d$:$ $'$P$R$D$-$0$0$1$'$,$$
+$ $ $ $ $ $ $ $ $p$r$o$d$u$c$t$N$a$m$e$:$ $'$P$r$e$m$i$u$m$ $R$i$c$e$ $($B$a$s$m$a$t$i$)$'$,$$
+$ $ $ $ $ $ $ $ $s$k$u$:$ $'$S$K$U$-$2$0$2$4$-$0$0$1$'$,$$
+$ $ $ $ $ $ $ $ $q$u$a$n$t$i$t$y$:$ $3$0$,$$
+$ $ $ $ $ $ $ $ $u$n$i$t$P$r$i$c$e$:$ $1$8$0$,$$
+$ $ $ $ $ $ $ $ $t$o$t$a$l$:$ $5$4$0$0$,$$
+$ $ $ $ $ $ $}$,$$
+$ $ $ $ $]$,$$
+$ $ $ $ $s$u$b$t$o$t$a$l$:$ $5$4$0$0$,$$
+$ $ $ $ $t$a$x$:$ $9$7$2$,$ $/$/$ $1$8$%$ $G$S$T$$
+$ $ $ $ $s$h$i$p$p$i$n$g$C$o$s$t$:$ $2$5$0$,$$
+$ $ $ $ $t$o$t$a$l$:$ $6$6$2$2$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$p$e$n$d$i$n$g$'$,$$
+$ $ $ $ $p$a$y$m$e$n$t$S$t$a$t$u$s$:$ $'$p$e$n$d$i$n$g$'$,$$
+$ $ $ $ $s$h$i$p$p$i$n$g$A$d$d$r$e$s$s$:$ ${$$
+$ $ $ $ $ $ $l$i$n$e$1$:$ $'$4$5$6$ $C$o$m$m$e$r$c$i$a$l$ $S$t$r$e$e$t$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$M$u$m$b$a$i$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$M$a$h$a$r$a$s$h$t$r$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$4$0$0$0$0$1$'$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $d$e$l$i$v$e$r$y$T$y$p$e$:$ $'$s$t$a$n$d$a$r$d$'$,$$
+$ $ $ $ $e$s$t$i$m$a$t$e$d$D$e$l$i$v$e$r$y$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$9$'$)$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$'$)$,$$
+$ $ $ $ $u$p$d$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$'$)$,$$
+$ $ $}$,$$
+$]$;$$
+$$
+$/$/$ $M$o$c$k$ $A$c$t$i$v$i$t$i$e$s$$
+$e$x$p$o$r$t$ $c$o$n$s$t$ $m$o$c$k$A$c$t$i$v$i$t$i$e$s$:$ $A$c$t$i$v$i$t$y$[$]$ $=$ $[$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$A$C$T$-$0$0$1$'$,$$
+$ $ $ $ $t$y$p$e$:$ $'$o$r$d$e$r$'$,$$
+$ $ $ $ $a$c$t$i$o$n$:$ $'$c$r$e$a$t$e$d$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$N$e$w$ $o$r$d$e$r$ $A$U$T$O$-$O$R$D$-$0$0$5$ $p$l$a$c$e$d$ $b$y$ $P$r$i$y$a$ $P$a$t$e$l$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$T$1$4$:$3$0$:$0$0$'$)$,$$
+$ $ $ $ $u$s$e$r$I$d$:$ $c$u$r$r$e$n$t$U$s$e$r$.$i$d$,$$
+$ $ $ $ $u$s$e$r$N$a$m$e$:$ $c$u$r$r$e$n$t$U$s$e$r$.$n$a$m$e$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$A$C$T$-$0$0$2$'$,$$
+$ $ $ $ $t$y$p$e$:$ $'$o$r$d$e$r$'$,$$
+$ $ $ $ $a$c$t$i$o$n$:$ $'$u$p$d$a$t$e$d$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$O$r$d$e$r$ $A$U$T$O$-$O$R$D$-$0$0$4$ $c$o$n$f$i$r$m$e$d$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$T$1$3$:$1$5$:$0$0$'$)$,$$
+$ $ $ $ $u$s$e$r$I$d$:$ $c$u$r$r$e$n$t$U$s$e$r$.$i$d$,$$
+$ $ $ $ $u$s$e$r$N$a$m$e$:$ $c$u$r$r$e$n$t$U$s$e$r$.$n$a$m$e$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$A$C$T$-$0$0$3$'$,$$
+$ $ $ $ $t$y$p$e$:$ $'$s$h$i$p$m$e$n$t$'$,$$
+$ $ $ $ $a$c$t$i$o$n$:$ $'$d$i$s$p$a$t$c$h$e$d$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$S$h$i$p$m$e$n$t$ $T$R$K$-$9$8$7$6$5$4$3$2$1$ $d$i$s$p$a$t$c$h$e$d$ $f$o$r$ $o$r$d$e$r$ $A$U$T$O$-$O$R$D$-$0$0$2$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$T$1$1$:$0$0$:$0$0$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$A$C$T$-$0$0$4$'$,$$
+$ $ $ $ $t$y$p$e$:$ $'$o$r$d$e$r$'$,$$
+$ $ $ $ $a$c$t$i$o$n$:$ $'$p$a$c$k$e$d$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$O$r$d$e$r$ $A$U$T$O$-$O$R$D$-$0$0$3$ $p$a$c$k$e$d$ $a$n$d$ $r$e$a$d$y$ $f$o$r$ $s$h$i$p$m$e$n$t$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$T$1$0$:$4$5$:$0$0$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$A$C$T$-$0$0$5$'$,$$
+$ $ $ $ $t$y$p$e$:$ $'$i$n$v$e$n$t$o$r$y$'$,$$
+$ $ $ $ $a$c$t$i$o$n$:$ $'$a$l$e$r$t$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$L$o$w$ $s$t$o$c$k$ $a$l$e$r$t$:$ $M$u$s$t$a$r$d$ $O$i$l$ $b$e$l$o$w$ $r$e$o$r$d$e$r$ $l$e$v$e$l$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$2$T$0$9$:$3$0$:$0$0$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$A$C$T$-$0$0$6$'$,$$
+$ $ $ $ $t$y$p$e$:$ $'$o$r$d$e$r$'$,$$
+$ $ $ $ $a$c$t$i$o$n$:$ $'$d$e$l$i$v$e$r$e$d$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$O$r$d$e$r$ $A$U$T$O$-$O$R$D$-$0$0$1$ $d$e$l$i$v$e$r$e$d$ $t$o$ $R$a$j$e$s$h$ $S$h$a$r$m$a$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$1$0$-$0$1$T$1$6$:$2$0$:$0$0$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$A$C$T$-$0$0$7$'$,$$
+$ $ $ $ $t$y$p$e$:$ $'$c$u$s$t$o$m$e$r$'$,$$
+$ $ $ $ $a$c$t$i$o$n$:$ $'$r$e$g$i$s$t$e$r$e$d$'$,$$
+$ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$N$e$w$ $c$u$s$t$o$m$e$r$ $A$m$i$t$ $S$i$n$g$h$ $r$e$g$i$s$t$e$r$e$d$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$9$-$2$0$T$1$2$:$0$0$:$0$0$'$)$,$$
+$ $ $}$,$$
+$]$;$$
+$$
+$/$/$ $D$a$s$h$b$o$a$r$d$ $M$e$t$r$i$c$s$$
+$e$x$p$o$r$t$ $c$o$n$s$t$ $m$o$c$k$D$a$s$h$b$o$a$r$d$M$e$t$r$i$c$s$:$ $D$a$s$h$b$o$a$r$d$M$e$t$r$i$c$s$ $=$ ${$$
+$ $ $t$o$d$a$y$O$r$d$e$r$s$:$ $3$,$$
+$ $ $w$e$e$k$O$r$d$e$r$s$:$ $1$2$,$$
+$ $ $m$o$n$t$h$O$r$d$e$r$s$:$ $4$5$,$$
+$ $ $p$e$n$d$i$n$g$S$h$i$p$m$e$n$t$s$:$ $8$,$$
+$ $ $l$o$w$S$t$o$c$k$A$l$e$r$t$s$:$ $2$,$$
+$ $ $t$o$d$a$y$R$e$v$e$n$u$e$:$ $1$9$7$5$6$,$$
+$ $ $w$e$e$k$R$e$v$e$n$u$e$:$ $1$5$6$7$8$0$,$$
+$ $ $m$o$n$t$h$R$e$v$e$n$u$e$:$ $5$8$7$6$5$0$,$$
+$}$;$$
+$$
+$/$/$ $C$h$a$r$t$ $d$a$t$a$ $f$o$r$ $t$r$e$n$d$s$$
+$e$x$p$o$r$t$ $c$o$n$s$t$ $o$r$d$e$r$T$r$e$n$d$s$D$a$t$a$ $=$ $[$$
+$ $ ${$ $d$a$t$e$:$ $'$2$5$ $S$e$p$'$,$ $o$r$d$e$r$s$:$ $8$ $}$,$$
+$ $ ${$ $d$a$t$e$:$ $'$2$6$ $S$e$p$'$,$ $o$r$d$e$r$s$:$ $1$2$ $}$,$$
+$ $ ${$ $d$a$t$e$:$ $'$2$7$ $S$e$p$'$,$ $o$r$d$e$r$s$:$ $1$0$ $}$,$$
+$ $ ${$ $d$a$t$e$:$ $'$2$8$ $S$e$p$'$,$ $o$r$d$e$r$s$:$ $1$5$ $}$,$$
+$ $ ${$ $d$a$t$e$:$ $'$2$9$ $S$e$p$'$,$ $o$r$d$e$r$s$:$ $1$1$ $}$,$$
+$ $ ${$ $d$a$t$e$:$ $'$3$0$ $S$e$p$'$,$ $o$r$d$e$r$s$:$ $1$4$ $}$,$$
+$ $ ${$ $d$a$t$e$:$ $'$1$ $O$c$t$'$,$ $o$r$d$e$r$s$:$ $1$3$ $}$,$$
+$ $ ${$ $d$a$t$e$:$ $'$2$ $O$c$t$'$,$ $o$r$d$e$r$s$:$ $3$ $}$,$$
+$]$;$$
+$$
+$e$x$p$o$r$t$ $c$o$n$s$t$ $t$o$p$P$r$o$d$u$c$t$s$D$a$t$a$ $=$ $[$$
+$ $ ${$ $n$a$m$e$:$ $'$R$i$c$e$'$,$ $s$a$l$e$s$:$ $4$5$0$0$ $}$,$$
+$ $ ${$ $n$a$m$e$:$ $'$W$h$e$a$t$'$,$ $s$a$l$e$s$:$ $3$8$0$0$ $}$,$$
+$ $ ${$ $n$a$m$e$:$ $'$T$-$S$h$i$r$t$s$'$,$ $s$a$l$e$s$:$ $2$9$0$0$ $}$,$$
+$ $ ${$ $n$a$m$e$:$ $'$B$a$c$k$p$a$c$k$s$'$,$ $s$a$l$e$s$:$ $2$2$0$0$ $}$,$$
+$ $ ${$ $n$a$m$e$:$ $'$M$u$s$t$a$r$d$ $O$i$l$'$,$ $s$a$l$e$s$:$ $1$8$0$0$ $}$,$$
+$]$;$$
+$$
+$e$x$p$o$r$t$ $c$o$n$s$t$ $d$e$l$i$v$e$r$y$S$t$a$t$u$s$D$a$t$a$ $=$ $[$$
+$ $ ${$ $n$a$m$e$:$ $'$D$e$l$i$v$e$r$e$d$'$,$ $v$a$l$u$e$:$ $4$5$,$ $c$o$l$o$r$:$ $'$#$0$a$0$a$0$a$'$ $}$,$$
+$ $ ${$ $n$a$m$e$:$ $'$I$n$ $T$r$a$n$s$i$t$'$,$ $v$a$l$u$e$:$ $2$5$,$ $c$o$l$o$r$:$ $'$#$4$0$4$0$4$0$'$ $}$,$$
+$ $ ${$ $n$a$m$e$:$ $'$P$e$n$d$i$n$g$'$,$ $v$a$l$u$e$:$ $1$5$,$ $c$o$l$o$r$:$ $'$#$a$3$a$3$a$3$'$ $}$,$$
+$ $ ${$ $n$a$m$e$:$ $'$C$a$n$c$e$l$l$e$d$'$,$ $v$a$l$u$e$:$ $5$,$ $c$o$l$o$r$:$ $'$#$e$5$e$5$e$5$'$ $}$,$$
+$]$;$$
+$$
+$/$/$ $M$o$c$k$ $W$a$r$e$h$o$u$s$e$s$$
+$e$x$p$o$r$t$ $c$o$n$s$t$ $m$o$c$k$W$a$r$e$h$o$u$s$e$s$:$ $W$a$r$e$h$o$u$s$e$[$]$ $=$ $[$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$W$H$-$0$0$1$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$B$a$n$g$a$l$o$r$e$ $C$e$n$t$r$a$l$ $W$a$r$e$h$o$u$s$e$'$,$$
+$ $ $ $ $o$w$n$e$r$I$d$:$ $'$U$S$R$-$0$0$1$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$:$ ${$$
+$ $ $ $ $ $ $a$d$d$r$e$s$s$:$ $'$P$l$o$t$ $4$5$,$ $I$n$d$u$s$t$r$i$a$l$ $A$r$e$a$,$ $P$h$a$s$e$ $1$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$B$a$n$g$a$l$o$r$e$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$K$a$r$n$a$t$a$k$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$5$6$0$0$5$8$'$,$$
+$ $ $ $ $ $ $c$o$o$r$d$i$n$a$t$e$s$:$ ${$ $l$a$t$:$ $1$3$.$0$3$5$8$,$ $l$n$g$:$ $7$7$.$5$9$7$0$ $}$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $t$o$t$a$l$A$r$e$a$:$ $5$0$0$0$0$,$$
+$ $ $ $ $a$v$a$i$l$a$b$l$e$A$r$e$a$:$ $1$5$0$0$0$,$$
+$ $ $ $ $p$r$i$c$e$P$e$r$S$q$f$t$:$ $2$5$,$$
+$ $ $ $ $a$m$e$n$i$t$i$e$s$:$ $[$'$C$l$i$m$a$t$e$ $C$o$n$t$r$o$l$'$,$ $'$2$4$/$7$ $S$e$c$u$r$i$t$y$'$,$ $'$L$o$a$d$i$n$g$ $D$o$c$k$'$,$ $'$F$i$r$e$ $S$a$f$e$t$y$'$,$ $'$C$C$T$V$'$]$,$$
+$ $ $ $ $o$p$e$r$a$t$i$o$n$a$l$H$o$u$r$s$:$ $'$2$4$/$7$'$,$$
+$ $ $ $ $i$m$a$g$e$s$:$ $[$]$,$$
+$ $ $ $ $r$a$t$i$n$g$:$ $4$.$5$,$$
+$ $ $ $ $r$e$v$i$e$w$C$o$u$n$t$:$ $2$8$,$$
+$ $ $ $ $i$s$V$e$r$i$f$i$e$d$:$ $t$r$u$e$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$3$-$0$6$-$1$5$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$W$H$-$0$0$2$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$M$u$m$b$a$i$ $L$o$g$i$s$t$i$c$s$ $H$u$b$'$,$$
+$ $ $ $ $o$w$n$e$r$I$d$:$ $'$U$S$R$-$0$0$2$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$:$ ${$$
+$ $ $ $ $ $ $a$d$d$r$e$s$s$:$ $'$7$8$ $G$o$d$o$w$n$ $S$t$r$e$e$t$,$ $A$n$d$h$e$r$i$ $E$a$s$t$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$M$u$m$b$a$i$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$M$a$h$a$r$a$s$h$t$r$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$4$0$0$0$6$9$'$,$$
+$ $ $ $ $ $ $c$o$o$r$d$i$n$a$t$e$s$:$ ${$ $l$a$t$:$ $1$9$.$1$1$3$6$,$ $l$n$g$:$ $7$2$.$8$6$9$7$ $}$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $t$o$t$a$l$A$r$e$a$:$ $7$5$0$0$0$,$$
+$ $ $ $ $a$v$a$i$l$a$b$l$e$A$r$e$a$:$ $2$5$0$0$0$,$$
+$ $ $ $ $p$r$i$c$e$P$e$r$S$q$f$t$:$ $3$0$,$$
+$ $ $ $ $a$m$e$n$i$t$i$e$s$:$ $[$'$C$l$i$m$a$t$e$ $C$o$n$t$r$o$l$'$,$ $'$L$o$a$d$i$n$g$ $D$o$c$k$'$,$ $'$S$e$c$u$r$i$t$y$'$,$ $'$P$a$r$k$i$n$g$'$]$,$$
+$ $ $ $ $o$p$e$r$a$t$i$o$n$a$l$H$o$u$r$s$:$ $'$M$o$n$-$S$a$t$:$ $6$ $A$M$ $-$ $1$0$ $P$M$'$,$$
+$ $ $ $ $i$m$a$g$e$s$:$ $[$]$,$$
+$ $ $ $ $r$a$t$i$n$g$:$ $4$.$2$,$$
+$ $ $ $ $r$e$v$i$e$w$C$o$u$n$t$:$ $4$2$,$$
+$ $ $ $ $i$s$V$e$r$i$f$i$e$d$:$ $t$r$u$e$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$3$-$0$8$-$2$0$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$W$H$-$0$0$3$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$D$e$l$h$i$ $N$C$R$ $D$i$s$t$r$i$b$u$t$i$o$n$ $C$e$n$t$e$r$'$,$$
+$ $ $ $ $o$w$n$e$r$I$d$:$ $'$U$S$R$-$0$0$3$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$:$ ${$$
+$ $ $ $ $ $ $a$d$d$r$e$s$s$:$ $'$S$e$c$t$o$r$ $2$8$,$ $I$M$T$ $M$a$n$e$s$a$r$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$G$u$r$u$g$r$a$m$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$H$a$r$y$a$n$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$1$2$2$0$5$1$'$,$$
+$ $ $ $ $ $ $c$o$o$r$d$i$n$a$t$e$s$:$ ${$ $l$a$t$:$ $2$8$.$3$5$8$7$,$ $l$n$g$:$ $7$6$.$9$3$3$4$ $}$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $t$o$t$a$l$A$r$e$a$:$ $1$0$0$0$0$0$,$$
+$ $ $ $ $a$v$a$i$l$a$b$l$e$A$r$e$a$:$ $6$0$0$0$0$,$$
+$ $ $ $ $p$r$i$c$e$P$e$r$S$q$f$t$:$ $2$2$,$$
+$ $ $ $ $a$m$e$n$i$t$i$e$s$:$ $[$'$L$o$a$d$i$n$g$ $D$o$c$k$'$,$ $'$S$e$c$u$r$i$t$y$'$,$ $'$F$i$r$e$ $S$a$f$e$t$y$'$,$ $'$O$f$f$i$c$e$ $S$p$a$c$e$'$]$,$$
+$ $ $ $ $o$p$e$r$a$t$i$o$n$a$l$H$o$u$r$s$:$ $'$2$4$/$7$'$,$$
+$ $ $ $ $i$m$a$g$e$s$:$ $[$]$,$$
+$ $ $ $ $r$a$t$i$n$g$:$ $4$.$7$,$$
+$ $ $ $ $r$e$v$i$e$w$C$o$u$n$t$:$ $3$5$,$$
+$ $ $ $ $i$s$V$e$r$i$f$i$e$d$:$ $t$r$u$e$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$3$-$0$5$-$1$0$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$W$H$-$0$0$4$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$C$h$e$n$n$a$i$ $S$t$o$r$a$g$e$ $F$a$c$i$l$i$t$y$'$,$$
+$ $ $ $ $o$w$n$e$r$I$d$:$ $'$U$S$R$-$0$0$1$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$:$ ${$$
+$ $ $ $ $ $ $a$d$d$r$e$s$s$:$ $'$R$e$d$ $H$i$l$l$s$ $I$n$d$u$s$t$r$i$a$l$ $A$r$e$a$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$C$h$e$n$n$a$i$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$T$a$m$i$l$ $N$a$d$u$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$6$0$0$0$5$2$'$,$$
+$ $ $ $ $ $ $c$o$o$r$d$i$n$a$t$e$s$:$ ${$ $l$a$t$:$ $1$3$.$1$5$3$8$,$ $l$n$g$:$ $8$0$.$1$8$4$4$ $}$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $t$o$t$a$l$A$r$e$a$:$ $3$0$0$0$0$,$$
+$ $ $ $ $a$v$a$i$l$a$b$l$e$A$r$e$a$:$ $5$0$0$0$,$$
+$ $ $ $ $p$r$i$c$e$P$e$r$S$q$f$t$:$ $2$0$,$$
+$ $ $ $ $a$m$e$n$i$t$i$e$s$:$ $[$'$C$l$i$m$a$t$e$ $C$o$n$t$r$o$l$'$,$ $'$S$e$c$u$r$i$t$y$'$,$ $'$C$C$T$V$'$]$,$$
+$ $ $ $ $o$p$e$r$a$t$i$o$n$a$l$H$o$u$r$s$:$ $'$M$o$n$-$F$r$i$:$ $7$ $A$M$ $-$ $7$ $P$M$'$,$$
+$ $ $ $ $i$m$a$g$e$s$:$ $[$]$,$$
+$ $ $ $ $r$a$t$i$n$g$:$ $4$.$0$,$$
+$ $ $ $ $r$e$v$i$e$w$C$o$u$n$t$:$ $1$8$,$$
+$ $ $ $ $i$s$V$e$r$i$f$i$e$d$:$ $f$a$l$s$e$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$4$-$0$1$-$0$5$'$)$,$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $'$W$H$-$0$0$5$'$,$$
+$ $ $ $ $n$a$m$e$:$ $'$P$u$n$e$ $C$o$l$d$ $S$t$o$r$a$g$e$'$,$$
+$ $ $ $ $o$w$n$e$r$I$d$:$ $'$U$S$R$-$0$0$4$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$:$ ${$$
+$ $ $ $ $ $ $a$d$d$r$e$s$s$:$ $'$C$h$a$k$a$n$ $I$n$d$u$s$t$r$i$a$l$ $Z$o$n$e$'$,$$
+$ $ $ $ $ $ $c$i$t$y$:$ $'$P$u$n$e$'$,$$
+$ $ $ $ $ $ $s$t$a$t$e$:$ $'$M$a$h$a$r$a$s$h$t$r$a$'$,$$
+$ $ $ $ $ $ $p$i$n$c$o$d$e$:$ $'$4$1$0$5$0$1$'$,$$
+$ $ $ $ $ $ $c$o$o$r$d$i$n$a$t$e$s$:$ ${$ $l$a$t$:$ $1$8$.$7$6$0$6$,$ $l$n$g$:$ $7$3$.$8$6$3$6$ $}$,$$
+$ $ $ $ $}$,$$
+$ $ $ $ $t$o$t$a$l$A$r$e$a$:$ $4$0$0$0$0$,$$
+$ $ $ $ $a$v$a$i$l$a$b$l$e$A$r$e$a$:$ $1$2$0$0$0$,$$
+$ $ $ $ $p$r$i$c$e$P$e$r$S$q$f$t$:$ $3$5$,$$
+$ $ $ $ $a$m$e$n$i$t$i$e$s$:$ $[$'$C$o$l$d$ $S$t$o$r$a$g$e$'$,$ $'$C$l$i$m$a$t$e$ $C$o$n$t$r$o$l$'$,$ $'$2$4$/$7$ $S$e$c$u$r$i$t$y$'$,$ $'$L$o$a$d$i$n$g$ $D$o$c$k$'$,$ $'$G$e$n$e$r$a$t$o$r$ $B$a$c$k$u$p$'$]$,$$
+$ $ $ $ $o$p$e$r$a$t$i$o$n$a$l$H$o$u$r$s$:$ $'$2$4$/$7$'$,$$
+$ $ $ $ $i$m$a$g$e$s$:$ $[$]$,$$
+$ $ $ $ $r$a$t$i$n$g$:$ $4$.$8$,$$
+$ $ $ $ $r$e$v$i$e$w$C$o$u$n$t$:$ $5$2$,$$
+$ $ $ $ $i$s$V$e$r$i$f$i$e$d$:$ $t$r$u$e$,$$
+$ $ $ $ $c$r$e$a$t$e$d$A$t$:$ $n$e$w$ $D$a$t$e$($'$2$0$2$3$-$0$9$-$1$2$'$)$,$$
+$ $ $}$,$$
+$]$;$$
+$

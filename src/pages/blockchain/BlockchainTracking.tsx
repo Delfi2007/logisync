@@ -1,295 +1,296 @@
-import { useState } from 'react';
-import { Link as LinkIcon, Package, MapPin, CheckCircle, Clock, AlertCircle } from 'lucide-react';
-
-const mockJourney = [
-  {
-    id: 1,
-    stage: 'Manufacturing',
-    location: 'Shenzhen Factory, China',
-    timestamp: '2025-01-15 08:30:00',
-    txHash: '0x7a8f3b2c1d9e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a',
-    status: 'completed',
-    validator: 'Factory QC Station',
-    details: 'Product manufactured and passed quality inspection'
-  },
-  {
-    id: 2,
-    stage: 'Warehouse Intake',
-    location: 'Shanghai Distribution Center',
-    timestamp: '2025-01-16 14:20:00',
-    txHash: '0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c',
-    status: 'completed',
-    validator: 'Warehouse Manager',
-    details: 'Received and stored in climate-controlled zone'
-  },
-  {
-    id: 3,
-    stage: 'In Transit - Air',
-    location: 'Shanghai â†’ Los Angeles',
-    timestamp: '2025-01-17 22:15:00',
-    txHash: '0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d',
-    status: 'completed',
-    validator: 'Cargo Airlines Ltd.',
-    details: 'Air freight shipment - temperature monitored'
-  },
-  {
-    id: 4,
-    stage: 'Customs Clearance',
-    location: 'LAX Customs, USA',
-    timestamp: '2025-01-18 16:45:00',
-    txHash: '0x0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e',
-    status: 'completed',
-    validator: 'US Customs Authority',
-    details: 'Cleared customs - all documentation verified'
-  },
-  {
-    id: 5,
-    stage: 'Final Mile Delivery',
-    location: 'En route to customer',
-    timestamp: '2025-01-22 10:30:00',
-    txHash: '0x1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f',
-    status: 'in-progress',
-    validator: 'Delivery Partner',
-    details: 'Last-mile delivery in progress - ETA 2 hours'
-  }
-];
-
-const blockchainStats = [
-  { label: 'Total Transactions', value: '12,847', change: '+342 today' },
-  { label: 'Active Products', value: '3,456', change: '100% tracked' },
-  { label: 'Network Nodes', value: '127', change: 'Validators' },
-  { label: 'Avg Confirmation', value: '2.3s', change: 'Block time' }
-];
-
-export default function BlockchainTracking() {
-  const [selectedProduct] = useState('LAPTOP-PRO-15-SN847293');
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-neutral-900 flex items-center gap-3">
-          <LinkIcon className="w-8 h-8 text-violet-600" />
-          Blockchain Product Tracking
-        </h1>
-        <p className="text-neutral-600 mt-2">Ethereum-based immutable supply chain transparency with smart contract automation</p>
-      </div>
-
-      {/* Blockchain Network Info */}
-      <div className="card p-6 bg-gradient-to-r from-violet-50 to-purple-50 border-2 border-violet-100">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-violet-600 rounded-lg flex items-center justify-center flex-shrink-0">
-            <LinkIcon className="w-6 h-6 text-white" />
-          </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-bold text-neutral-900">Ethereum Mainnet + Polygon L2</h3>
-            <p className="text-sm text-neutral-600 mt-1">
-              Hybrid blockchain architecture - Ethereum for critical events + Polygon for cost-effective tracking.
-              Gas optimization: <span className="font-bold text-violet-600">92% cost reduction</span> vs Ethereum-only
-            </p>
-            <div className="flex gap-4 mt-3 text-xs text-neutral-500">
-              <span>Network: Ethereum + Polygon</span>
-              <span>Smart Contract: ERC-721 (NFTs)</span>
-              <span>Consensus: Proof of Stake</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-4 gap-4">
-        {blockchainStats.map((stat, idx) => (
-          <div key={idx} className="card p-6">
-            <div className="text-sm text-neutral-600 mb-2">{stat.label}</div>
-            <div className="text-3xl font-bold text-neutral-900">{stat.value}</div>
-            <div className="text-xs text-violet-600 mt-1">{stat.change}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Product Search */}
-      <div className="card p-6">
-        <h2 className="text-xl font-bold text-neutral-900 mb-4">Track Product Journey</h2>
-        <div className="flex gap-2 mb-6">
-          <input
-            type="text"
-            value={selectedProduct}
-            readOnly
-            className="flex-1 px-4 py-3 border-2 border-neutral-200 rounded-lg bg-neutral-50 font-mono text-sm"
-            placeholder="Enter Product ID or Serial Number"
-          />
-          <button className="px-6 py-3 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors font-medium">
-            Track
-          </button>
-          <button className="px-6 py-3 bg-neutral-100 text-neutral-700 rounded-lg hover:bg-neutral-200 transition-colors font-medium">
-            Verify on Chain
-          </button>
-        </div>
-
-        {/* Product Info Card */}
-        <div className="p-6 bg-gradient-to-br from-violet-50 to-purple-50 rounded-lg border-2 border-violet-200 mb-6">
-          <div className="flex items-start justify-between mb-4">
-            <div>
-              <div className="text-2xl font-bold text-neutral-900 mb-2">Laptop Pro 15"</div>
-              <div className="flex gap-2 text-sm text-neutral-600">
-                <span className="font-mono bg-white px-2 py-1 rounded border border-neutral-300">
-                  SN: {selectedProduct}
-                </span>
-                <span className="px-2 py-1 bg-green-100 text-green-700 rounded font-medium">
-                  âœ“ Authentic
-                </span>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-sm text-neutral-600 mb-1">NFT Token ID</div>
-              <div className="font-mono text-lg font-bold text-violet-600">#8472</div>
-            </div>
-          </div>
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            <div>
-              <span className="text-neutral-500">Minted:</span>
-              <span className="ml-2 font-medium">2025-01-15</span>
-            </div>
-            <div>
-              <span className="text-neutral-500">Total Events:</span>
-              <span className="ml-2 font-medium">5</span>
-            </div>
-            <div>
-              <span className="text-neutral-500">Current Status:</span>
-              <span className="ml-2 font-medium text-orange-600">In Transit</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Journey Timeline */}
-      <div className="card p-6">
-        <h2 className="text-xl font-bold text-neutral-900 mb-6">Supply Chain Journey</h2>
-        <div className="space-y-4">
-          {mockJourney.map((event, idx) => (
-            <div key={event.id} className="relative">
-              {/* Connector Line */}
-              {idx < mockJourney.length - 1 && (
-                <div className="absolute left-6 top-14 w-0.5 h-full bg-neutral-200"></div>
-              )}
-              
-              <div className={`flex gap-4 p-4 rounded-lg border-2 ${
-                event.status === 'completed' 
-                  ? 'border-green-200 bg-green-50' 
-                  : 'border-orange-200 bg-orange-50'
-              }`}>
-                {/* Status Icon */}
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
-                  event.status === 'completed' 
-                    ? 'bg-green-600' 
-                    : 'bg-orange-600'
-                }`}>
-                  {event.status === 'completed' ? (
-                    <CheckCircle className="w-6 h-6 text-white" />
-                  ) : (
-                    <Clock className="w-6 h-6 text-white" />
-                  )}
-                </div>
-
-                {/* Event Details */}
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <div className="font-bold text-neutral-900 text-lg">{event.stage}</div>
-                      <div className="flex items-center gap-2 text-sm text-neutral-600 mt-1">
-                        <MapPin className="w-4 h-4" />
-                        {event.location}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm text-neutral-500">{event.timestamp}</div>
-                      <div className={`text-xs px-2 py-1 rounded mt-1 font-medium ${
-                        event.status === 'completed' 
-                          ? 'bg-green-600 text-white' 
-                          : 'bg-orange-600 text-white'
-                      }`}>
-                        {event.status === 'completed' ? 'Completed' : 'In Progress'}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-sm text-neutral-700 mb-3">{event.details}</div>
-
-                  {/* Blockchain Info */}
-                  <div className="bg-white p-3 rounded border border-neutral-200">
-                    <div className="flex items-center justify-between text-xs">
-                      <div>
-                        <span className="text-neutral-500">Tx Hash:</span>
-                        <span className="ml-2 font-mono text-violet-600">{event.txHash.slice(0, 20)}...{event.txHash.slice(-10)}</span>
-                      </div>
-                      <div>
-                        <span className="text-neutral-500">Validator:</span>
-                        <span className="ml-2 font-medium">{event.validator}</span>
-                      </div>
-                      <button className="px-3 py-1 bg-violet-100 text-violet-700 rounded hover:bg-violet-200 transition-colors font-medium">
-                        View on Chain â†—
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Smart Contract Events */}
-      <div className="card p-6">
-        <h2 className="text-xl font-bold text-neutral-900 mb-4">Recent Smart Contract Events</h2>
-        <div className="space-y-2">
-          {[
-            { event: 'ProductMinted', product: 'LAPTOP-PRO-15-SN847293', time: '7 days ago', gas: '0.002 ETH' },
-            { event: 'LocationUpdated', product: 'LAPTOP-PRO-15-SN847293', time: '2 hours ago', gas: '0.0001 MATIC' },
-            { event: 'OwnershipTransferred', product: 'MOUSE-WL-42-SN991823', time: '5 hours ago', gas: '0.003 ETH' },
-            { event: 'QualityCheckPassed', product: 'CHARGER-USB-C-SN445678', time: '1 day ago', gas: '0.0001 MATIC' }
-          ].map((evt, idx) => (
-            <div key={idx} className="flex items-center justify-between p-3 bg-neutral-50 rounded hover:bg-violet-50 transition-colors">
-              <div className="flex items-center gap-3">
-                <Package className="w-5 h-5 text-violet-600" />
-                <div>
-                  <span className="font-medium text-neutral-900">{evt.event}</span>
-                  <span className="text-sm text-neutral-600 ml-2">â€¢ {evt.product}</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 text-sm">
-                <span className="text-neutral-500">{evt.time}</span>
-                <span className="text-violet-600 font-mono">{evt.gas}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Benefits */}
-      <div className="card p-6 bg-gradient-to-br from-purple-50 to-violet-50 border-2 border-purple-100">
-        <h3 className="text-lg font-bold text-neutral-900 mb-3 flex items-center gap-2">
-          <AlertCircle className="w-5 h-5 text-violet-600" />
-          Blockchain Benefits & Trust Metrics
-        </h3>
-        <div className="space-y-2 text-sm text-neutral-700">
-          <div className="flex items-start gap-2">
-            <div className="w-2 h-2 bg-violet-600 rounded-full mt-1.5"></div>
-            <p><span className="font-medium">Immutable Records:</span> All 12,847 transactions permanently recorded on Ethereum - cannot be altered or deleted (100% data integrity)</p>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="w-2 h-2 bg-purple-600 rounded-full mt-1.5"></div>
-            <p><span className="font-medium">Real-Time Transparency:</span> Customers verify product authenticity independently - reduced counterfeit claims by 94%</p>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="w-2 h-2 bg-blue-600 rounded-full mt-1.5"></div>
-            <p><span className="font-medium">Cost Efficiency:</span> Polygon L2 scaling reduces gas costs by 92% vs Ethereum-only ($0.01 per event vs $1.20)</p>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="w-2 h-2 bg-green-600 rounded-full mt-1.5"></div>
-            <p><span className="font-medium">Smart Contract Automation:</span> Automatic ownership transfers and quality checks - 3x faster processing with zero human error</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+$i$m$p$o$r$t$ ${$ $u$s$e$S$t$a$t$e$ $}$ $f$r$o$m$ $'$r$e$a$c$t$'$;$$
+$i$m$p$o$r$t$ ${$ $L$i$n$k$ $a$s$ $L$i$n$k$I$c$o$n$,$ $P$a$c$k$a$g$e$,$ $M$a$p$P$i$n$,$ $C$h$e$c$k$C$i$r$c$l$e$,$ $C$l$o$c$k$,$ $A$l$e$r$t$C$i$r$c$l$e$ $}$ $f$r$o$m$ $'$l$u$c$i$d$e$-$r$e$a$c$t$'$;$$
+$$
+$c$o$n$s$t$ $m$o$c$k$J$o$u$r$n$e$y$ $=$ $[$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $1$,$$
+$ $ $ $ $s$t$a$g$e$:$ $'$M$a$n$u$f$a$c$t$u$r$i$n$g$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$:$ $'$S$h$e$n$z$h$e$n$ $F$a$c$t$o$r$y$,$ $C$h$i$n$a$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $'$2$0$2$5$-$0$1$-$1$5$ $0$8$:$3$0$:$0$0$'$,$$
+$ $ $ $ $t$x$H$a$s$h$:$ $'$0$x$7$a$8$f$3$b$2$c$1$d$9$e$4$f$5$a$6$b$7$c$8$d$9$e$0$f$1$a$2$b$3$c$4$d$5$e$6$f$7$a$8$b$9$c$0$d$1$e$2$f$3$a$4$b$5$c$6$d$7$e$8$f$9$a$'$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$c$o$m$p$l$e$t$e$d$'$,$$
+$ $ $ $ $v$a$l$i$d$a$t$o$r$:$ $'$F$a$c$t$o$r$y$ $Q$C$ $S$t$a$t$i$o$n$'$,$$
+$ $ $ $ $d$e$t$a$i$l$s$:$ $'$P$r$o$d$u$c$t$ $m$a$n$u$f$a$c$t$u$r$e$d$ $a$n$d$ $p$a$s$s$e$d$ $q$u$a$l$i$t$y$ $i$n$s$p$e$c$t$i$o$n$'$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $2$,$$
+$ $ $ $ $s$t$a$g$e$:$ $'$W$a$r$e$h$o$u$s$e$ $I$n$t$a$k$e$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$:$ $'$S$h$a$n$g$h$a$i$ $D$i$s$t$r$i$b$u$t$i$o$n$ $C$e$n$t$e$r$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $'$2$0$2$5$-$0$1$-$1$6$ $1$4$:$2$0$:$0$0$'$,$$
+$ $ $ $ $t$x$H$a$s$h$:$ $'$0$x$8$b$9$c$0$d$1$e$2$f$3$a$4$b$5$c$6$d$7$e$8$f$9$a$0$b$1$c$2$d$3$e$4$f$5$a$6$b$7$c$8$d$9$e$0$f$1$a$2$b$3$c$4$d$5$e$6$f$7$a$8$b$9$c$'$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$c$o$m$p$l$e$t$e$d$'$,$$
+$ $ $ $ $v$a$l$i$d$a$t$o$r$:$ $'$W$a$r$e$h$o$u$s$e$ $M$a$n$a$g$e$r$'$,$$
+$ $ $ $ $d$e$t$a$i$l$s$:$ $'$R$e$c$e$i$v$e$d$ $a$n$d$ $s$t$o$r$e$d$ $i$n$ $c$l$i$m$a$t$e$-$c$o$n$t$r$o$l$l$e$d$ $z$o$n$e$'$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $3$,$$
+$ $ $ $ $s$t$a$g$e$:$ $'$I$n$ $T$r$a$n$s$i$t$ $-$ $A$i$r$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$:$ $'$S$h$a$n$g$h$a$i$ $â$†$’$ $L$o$s$ $A$n$g$e$l$e$s$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $'$2$0$2$5$-$0$1$-$1$7$ $2$2$:$1$5$:$0$0$'$,$$
+$ $ $ $ $t$x$H$a$s$h$:$ $'$0$x$9$c$0$d$1$e$2$f$3$a$4$b$5$c$6$d$7$e$8$f$9$a$0$b$1$c$2$d$3$e$4$f$5$a$6$b$7$c$8$d$9$e$0$f$1$a$2$b$3$c$4$d$5$e$6$f$7$a$8$b$9$c$0$d$'$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$c$o$m$p$l$e$t$e$d$'$,$$
+$ $ $ $ $v$a$l$i$d$a$t$o$r$:$ $'$C$a$r$g$o$ $A$i$r$l$i$n$e$s$ $L$t$d$.$'$,$$
+$ $ $ $ $d$e$t$a$i$l$s$:$ $'$A$i$r$ $f$r$e$i$g$h$t$ $s$h$i$p$m$e$n$t$ $-$ $t$e$m$p$e$r$a$t$u$r$e$ $m$o$n$i$t$o$r$e$d$'$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $4$,$$
+$ $ $ $ $s$t$a$g$e$:$ $'$C$u$s$t$o$m$s$ $C$l$e$a$r$a$n$c$e$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$:$ $'$L$A$X$ $C$u$s$t$o$m$s$,$ $U$S$A$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $'$2$0$2$5$-$0$1$-$1$8$ $1$6$:$4$5$:$0$0$'$,$$
+$ $ $ $ $t$x$H$a$s$h$:$ $'$0$x$0$d$1$e$2$f$3$a$4$b$5$c$6$d$7$e$8$f$9$a$0$b$1$c$2$d$3$e$4$f$5$a$6$b$7$c$8$d$9$e$0$f$1$a$2$b$3$c$4$d$5$e$6$f$7$a$8$b$9$c$0$d$1$e$'$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$c$o$m$p$l$e$t$e$d$'$,$$
+$ $ $ $ $v$a$l$i$d$a$t$o$r$:$ $'$U$S$ $C$u$s$t$o$m$s$ $A$u$t$h$o$r$i$t$y$'$,$$
+$ $ $ $ $d$e$t$a$i$l$s$:$ $'$C$l$e$a$r$e$d$ $c$u$s$t$o$m$s$ $-$ $a$l$l$ $d$o$c$u$m$e$n$t$a$t$i$o$n$ $v$e$r$i$f$i$e$d$'$$
+$ $ $}$,$$
+$ $ ${$$
+$ $ $ $ $i$d$:$ $5$,$$
+$ $ $ $ $s$t$a$g$e$:$ $'$F$i$n$a$l$ $M$i$l$e$ $D$e$l$i$v$e$r$y$'$,$$
+$ $ $ $ $l$o$c$a$t$i$o$n$:$ $'$E$n$ $r$o$u$t$e$ $t$o$ $c$u$s$t$o$m$e$r$'$,$$
+$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $'$2$0$2$5$-$0$1$-$2$2$ $1$0$:$3$0$:$0$0$'$,$$
+$ $ $ $ $t$x$H$a$s$h$:$ $'$0$x$1$e$2$f$3$a$4$b$5$c$6$d$7$e$8$f$9$a$0$b$1$c$2$d$3$e$4$f$5$a$6$b$7$c$8$d$9$e$0$f$1$a$2$b$3$c$4$d$5$e$6$f$7$a$8$b$9$c$0$d$1$e$2$f$'$,$$
+$ $ $ $ $s$t$a$t$u$s$:$ $'$i$n$-$p$r$o$g$r$e$s$s$'$,$$
+$ $ $ $ $v$a$l$i$d$a$t$o$r$:$ $'$D$e$l$i$v$e$r$y$ $P$a$r$t$n$e$r$'$,$$
+$ $ $ $ $d$e$t$a$i$l$s$:$ $'$L$a$s$t$-$m$i$l$e$ $d$e$l$i$v$e$r$y$ $i$n$ $p$r$o$g$r$e$s$s$ $-$ $E$T$A$ $2$ $h$o$u$r$s$'$$
+$ $ $}$$
+$]$;$$
+$$
+$c$o$n$s$t$ $b$l$o$c$k$c$h$a$i$n$S$t$a$t$s$ $=$ $[$$
+$ $ ${$ $l$a$b$e$l$:$ $'$T$o$t$a$l$ $T$r$a$n$s$a$c$t$i$o$n$s$'$,$ $v$a$l$u$e$:$ $'$1$2$,$8$4$7$'$,$ $c$h$a$n$g$e$:$ $'$+$3$4$2$ $t$o$d$a$y$'$ $}$,$$
+$ $ ${$ $l$a$b$e$l$:$ $'$A$c$t$i$v$e$ $P$r$o$d$u$c$t$s$'$,$ $v$a$l$u$e$:$ $'$3$,$4$5$6$'$,$ $c$h$a$n$g$e$:$ $'$1$0$0$%$ $t$r$a$c$k$e$d$'$ $}$,$$
+$ $ ${$ $l$a$b$e$l$:$ $'$N$e$t$w$o$r$k$ $N$o$d$e$s$'$,$ $v$a$l$u$e$:$ $'$1$2$7$'$,$ $c$h$a$n$g$e$:$ $'$V$a$l$i$d$a$t$o$r$s$'$ $}$,$$
+$ $ ${$ $l$a$b$e$l$:$ $'$A$v$g$ $C$o$n$f$i$r$m$a$t$i$o$n$'$,$ $v$a$l$u$e$:$ $'$2$.$3$s$'$,$ $c$h$a$n$g$e$:$ $'$B$l$o$c$k$ $t$i$m$e$'$ $}$$
+$]$;$$
+$$
+$e$x$p$o$r$t$ $d$e$f$a$u$l$t$ $f$u$n$c$t$i$o$n$ $B$l$o$c$k$c$h$a$i$n$T$r$a$c$k$i$n$g$($)$ ${$$
+$ $ $c$o$n$s$t$ $[$s$e$l$e$c$t$e$d$P$r$o$d$u$c$t$]$ $=$ $u$s$e$S$t$a$t$e$($'$L$A$P$T$O$P$-$P$R$O$-$1$5$-$S$N$8$4$7$2$9$3$'$)$;$$
+$$
+$ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$6$"$>$$
+$ $ $ $ $ $ ${$/$*$ $H$e$a$d$e$r$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$h$1$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$3$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$L$i$n$k$I$c$o$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$8$ $h$-$8$ $t$e$x$t$-$v$i$o$l$e$t$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $B$l$o$c$k$c$h$a$i$n$ $P$r$o$d$u$c$t$ $T$r$a$c$k$i$n$g$$
+$ $ $ $ $ $ $ $ $<$/$h$1$>$$
+$ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$2$"$>$E$t$h$e$r$e$u$m$-$b$a$s$e$d$ $i$m$m$u$t$a$b$l$e$ $s$u$p$p$l$y$ $c$h$a$i$n$ $t$r$a$n$s$p$a$r$e$n$c$y$ $w$i$t$h$ $s$m$a$r$t$ $c$o$n$t$r$a$c$t$ $a$u$t$o$m$a$t$i$o$n$<$/$p$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $B$l$o$c$k$c$h$a$i$n$ $N$e$t$w$o$r$k$ $I$n$f$o$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$r$ $f$r$o$m$-$v$i$o$l$e$t$-$5$0$ $t$o$-$p$u$r$p$l$e$-$5$0$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$v$i$o$l$e$t$-$1$0$0$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$1$2$ $h$-$1$2$ $b$g$-$v$i$o$l$e$t$-$6$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $f$l$e$x$-$s$h$r$i$n$k$-$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$L$i$n$k$I$c$o$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$6$ $h$-$6$ $t$e$x$t$-$w$h$i$t$e$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$E$t$h$e$r$e$u$m$ $M$a$i$n$n$e$t$ $+$ $P$o$l$y$g$o$n$ $L$2$<$/$h$3$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $H$y$b$r$i$d$ $b$l$o$c$k$c$h$a$i$n$ $a$r$c$h$i$t$e$c$t$u$r$e$ $-$ $E$t$h$e$r$e$u$m$ $f$o$r$ $c$r$i$t$i$c$a$l$ $e$v$e$n$t$s$ $+$ $P$o$l$y$g$o$n$ $f$o$r$ $c$o$s$t$-$e$f$f$e$c$t$i$v$e$ $t$r$a$c$k$i$n$g$.$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $G$a$s$ $o$p$t$i$m$i$z$a$t$i$o$n$:$ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$v$i$o$l$e$t$-$6$0$0$"$>$9$2$%$ $c$o$s$t$ $r$e$d$u$c$t$i$o$n$<$/$s$p$a$n$>$ $v$s$ $E$t$h$e$r$e$u$m$-$o$n$l$y$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$4$ $m$t$-$3$ $t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$N$e$t$w$o$r$k$:$ $E$t$h$e$r$e$u$m$ $+$ $P$o$l$y$g$o$n$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$S$m$a$r$t$ $C$o$n$t$r$a$c$t$:$ $E$R$C$-$7$2$1$ $($N$F$T$s$)$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$C$o$n$s$e$n$s$u$s$:$ $P$r$o$o$f$ $o$f$ $S$t$a$k$e$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $S$t$a$t$s$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$4$"$>$$
+$ $ $ $ $ $ $ $ ${$b$l$o$c$k$c$h$a$i$n$S$t$a$t$s$.$m$a$p$($($s$t$a$t$,$ $i$d$x$)$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$i$d$x$}$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$b$-$2$"$>${$s$t$a$t$.$l$a$b$e$l$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$s$t$a$t$.$v$a$l$u$e$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$v$i$o$l$e$t$-$6$0$0$ $m$t$-$1$"$>${$s$t$a$t$.$c$h$a$n$g$e$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $P$r$o$d$u$c$t$ $S$e$a$r$c$h$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$"$>$T$r$a$c$k$ $P$r$o$d$u$c$t$ $J$o$u$r$n$e$y$<$/$h$2$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$2$ $m$b$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$i$n$p$u$t$$
+$ $ $ $ $ $ $ $ $ $ $ $ $t$y$p$e$=$"$t$e$x$t$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$e$l$e$c$t$e$d$P$r$o$d$u$c$t$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $r$e$a$d$O$n$l$y$$
+$ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$ $p$x$-$4$ $p$y$-$3$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $r$o$u$n$d$e$d$-$l$g$ $b$g$-$n$e$u$t$r$a$l$-$5$0$ $f$o$n$t$-$m$o$n$o$ $t$e$x$t$-$s$m$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $p$l$a$c$e$h$o$l$d$e$r$=$"$E$n$t$e$r$ $P$r$o$d$u$c$t$ $I$D$ $o$r$ $S$e$r$i$a$l$ $N$u$m$b$e$r$"$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$3$ $b$g$-$v$i$o$l$e$t$-$6$0$0$ $t$e$x$t$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$l$g$ $h$o$v$e$r$:$b$g$-$v$i$o$l$e$t$-$7$0$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $f$o$n$t$-$m$e$d$i$u$m$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $T$r$a$c$k$$
+$ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$6$ $p$y$-$3$ $b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $r$o$u$n$d$e$d$-$l$g$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$2$0$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $f$o$n$t$-$m$e$d$i$u$m$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $V$e$r$i$f$y$ $o$n$ $C$h$a$i$n$$
+$ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ ${$/$*$ $P$r$o$d$u$c$t$ $I$n$f$o$ $C$a$r$d$ $*$/$}$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$p$-$6$ $b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$b$r$ $f$r$o$m$-$v$i$o$l$e$t$-$5$0$ $t$o$-$p$u$r$p$l$e$-$5$0$ $r$o$u$n$d$e$d$-$l$g$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$v$i$o$l$e$t$-$2$0$0$ $m$b$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$2$"$>$L$a$p$t$o$p$ $P$r$o$ $1$5$"$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$2$ $t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$o$n$o$ $b$g$-$w$h$i$t$e$ $p$x$-$2$ $p$y$-$1$ $r$o$u$n$d$e$d$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$3$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $S$N$:$ ${$s$e$l$e$c$t$e$d$P$r$o$d$u$c$t$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$2$ $p$y$-$1$ $b$g$-$g$r$e$e$n$-$1$0$0$ $t$e$x$t$-$g$r$e$e$n$-$7$0$0$ $r$o$u$n$d$e$d$ $f$o$n$t$-$m$e$d$i$u$m$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $â$œ$“$ $A$u$t$h$e$n$t$i$c$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$r$i$g$h$t$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$b$-$1$"$>$N$F$T$ $T$o$k$e$n$ $I$D$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$o$n$o$ $t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$v$i$o$l$e$t$-$6$0$0$"$>$#$8$4$7$2$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$3$ $g$a$p$-$4$ $t$e$x$t$-$s$m$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$M$i$n$t$e$d$:$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$2$ $f$o$n$t$-$m$e$d$i$u$m$"$>$2$0$2$5$-$0$1$-$1$5$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$T$o$t$a$l$ $E$v$e$n$t$s$:$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$2$ $f$o$n$t$-$m$e$d$i$u$m$"$>$5$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$C$u$r$r$e$n$t$ $S$t$a$t$u$s$:$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$2$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$o$r$a$n$g$e$-$6$0$0$"$>$I$n$ $T$r$a$n$s$i$t$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $J$o$u$r$n$e$y$ $T$i$m$e$l$i$n$e$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$6$"$>$S$u$p$p$l$y$ $C$h$a$i$n$ $J$o$u$r$n$e$y$<$/$h$2$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ ${$m$o$c$k$J$o$u$r$n$e$y$.$m$a$p$($($e$v$e$n$t$,$ $i$d$x$)$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$e$v$e$n$t$.$i$d$}$ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $C$o$n$n$e$c$t$o$r$ $L$i$n$e$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$d$x$ $<$ $m$o$c$k$J$o$u$r$n$e$y$.$l$e$n$g$t$h$ $-$ $1$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$a$b$s$o$l$u$t$e$ $l$e$f$t$-$6$ $t$o$p$-$1$4$ $w$-$0$.$5$ $h$-$f$u$l$l$ $b$g$-$n$e$u$t$r$a$l$-$2$0$0$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=${$`$f$l$e$x$ $g$a$p$-$4$ $p$-$4$ $r$o$u$n$d$e$d$-$l$g$ $b$o$r$d$e$r$-$2$ $$${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $e$v$e$n$t$.$s$t$a$t$u$s$ $=$=$=$ $'$c$o$m$p$l$e$t$e$d$'$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$b$o$r$d$e$r$-$g$r$e$e$n$-$2$0$0$ $b$g$-$g$r$e$e$n$-$5$0$'$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $'$b$o$r$d$e$r$-$o$r$a$n$g$e$-$2$0$0$ $b$g$-$o$r$a$n$g$e$-$5$0$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $S$t$a$t$u$s$ $I$c$o$n$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=${$`$w$-$1$2$ $h$-$1$2$ $r$o$u$n$d$e$d$-$f$u$l$l$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $f$l$e$x$-$s$h$r$i$n$k$-$0$ $$${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $e$v$e$n$t$.$s$t$a$t$u$s$ $=$=$=$ $'$c$o$m$p$l$e$t$e$d$'$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$b$g$-$g$r$e$e$n$-$6$0$0$'$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $'$b$g$-$o$r$a$n$g$e$-$6$0$0$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$e$v$e$n$t$.$s$t$a$t$u$s$ $=$=$=$ $'$c$o$m$p$l$e$t$e$d$'$ $?$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$h$e$c$k$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$6$ $h$-$6$ $t$e$x$t$-$w$h$i$t$e$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$ $:$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$l$o$c$k$ $c$l$a$s$s$N$a$m$e$=$"$w$-$6$ $h$-$6$ $t$e$x$t$-$w$h$i$t$e$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $E$v$e$n$t$ $D$e$t$a$i$l$s$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $t$e$x$t$-$l$g$"$>${$e$v$e$n$t$.$s$t$a$g$e$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$ $t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$M$a$p$P$i$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$4$ $h$-$4$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$e$v$e$n$t$.$l$o$c$a$t$i$o$n$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$r$i$g$h$t$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>${$e$v$e$n$t$.$t$i$m$e$s$t$a$m$p$}$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=${$`$t$e$x$t$-$x$s$ $p$x$-$2$ $p$y$-$1$ $r$o$u$n$d$e$d$ $m$t$-$1$ $f$o$n$t$-$m$e$d$i$u$m$ $$${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $e$v$e$n$t$.$s$t$a$t$u$s$ $=$=$=$ $'$c$o$m$p$l$e$t$e$d$'$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$b$g$-$g$r$e$e$n$-$6$0$0$ $t$e$x$t$-$w$h$i$t$e$'$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $'$b$g$-$o$r$a$n$g$e$-$6$0$0$ $t$e$x$t$-$w$h$i$t$e$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$e$v$e$n$t$.$s$t$a$t$u$s$ $=$=$=$ $'$c$o$m$p$l$e$t$e$d$'$ $?$ $'$C$o$m$p$l$e$t$e$d$'$ $:$ $'$I$n$ $P$r$o$g$r$e$s$s$'$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $m$b$-$3$"$>${$e$v$e$n$t$.$d$e$t$a$i$l$s$}$<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $B$l$o$c$k$c$h$a$i$n$ $I$n$f$o$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $p$-$3$ $r$o$u$n$d$e$d$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $t$e$x$t$-$x$s$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$T$x$ $H$a$s$h$:$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$2$ $f$o$n$t$-$m$o$n$o$ $t$e$x$t$-$v$i$o$l$e$t$-$6$0$0$"$>${$e$v$e$n$t$.$t$x$H$a$s$h$.$s$l$i$c$e$($0$,$ $2$0$)$}$.$.$.${$e$v$e$n$t$.$t$x$H$a$s$h$.$s$l$i$c$e$($-$1$0$)$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$V$a$l$i$d$a$t$o$r$:$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$m$l$-$2$ $f$o$n$t$-$m$e$d$i$u$m$"$>${$e$v$e$n$t$.$v$a$l$i$d$a$t$o$r$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$3$ $p$y$-$1$ $b$g$-$v$i$o$l$e$t$-$1$0$0$ $t$e$x$t$-$v$i$o$l$e$t$-$7$0$0$ $r$o$u$n$d$e$d$ $h$o$v$e$r$:$b$g$-$v$i$o$l$e$t$-$2$0$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $f$o$n$t$-$m$e$d$i$u$m$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $V$i$e$w$ $o$n$ $C$h$a$i$n$ $â$†$—$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $S$m$a$r$t$ $C$o$n$t$r$a$c$t$ $E$v$e$n$t$s$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$"$>$R$e$c$e$n$t$ $S$m$a$r$t$ $C$o$n$t$r$a$c$t$ $E$v$e$n$t$s$<$/$h$2$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ ${$[$$
+$ $ $ $ $ $ $ $ $ $ $ $ ${$ $e$v$e$n$t$:$ $'$P$r$o$d$u$c$t$M$i$n$t$e$d$'$,$ $p$r$o$d$u$c$t$:$ $'$L$A$P$T$O$P$-$P$R$O$-$1$5$-$S$N$8$4$7$2$9$3$'$,$ $t$i$m$e$:$ $'$7$ $d$a$y$s$ $a$g$o$'$,$ $g$a$s$:$ $'$0$.$0$0$2$ $E$T$H$'$ $}$,$$
+$ $ $ $ $ $ $ $ $ $ $ $ ${$ $e$v$e$n$t$:$ $'$L$o$c$a$t$i$o$n$U$p$d$a$t$e$d$'$,$ $p$r$o$d$u$c$t$:$ $'$L$A$P$T$O$P$-$P$R$O$-$1$5$-$S$N$8$4$7$2$9$3$'$,$ $t$i$m$e$:$ $'$2$ $h$o$u$r$s$ $a$g$o$'$,$ $g$a$s$:$ $'$0$.$0$0$0$1$ $M$A$T$I$C$'$ $}$,$$
+$ $ $ $ $ $ $ $ $ $ $ $ ${$ $e$v$e$n$t$:$ $'$O$w$n$e$r$s$h$i$p$T$r$a$n$s$f$e$r$r$e$d$'$,$ $p$r$o$d$u$c$t$:$ $'$M$O$U$S$E$-$W$L$-$4$2$-$S$N$9$9$1$8$2$3$'$,$ $t$i$m$e$:$ $'$5$ $h$o$u$r$s$ $a$g$o$'$,$ $g$a$s$:$ $'$0$.$0$0$3$ $E$T$H$'$ $}$,$$
+$ $ $ $ $ $ $ $ $ $ $ $ ${$ $e$v$e$n$t$:$ $'$Q$u$a$l$i$t$y$C$h$e$c$k$P$a$s$s$e$d$'$,$ $p$r$o$d$u$c$t$:$ $'$C$H$A$R$G$E$R$-$U$S$B$-$C$-$S$N$4$4$5$6$7$8$'$,$ $t$i$m$e$:$ $'$1$ $d$a$y$ $a$g$o$'$,$ $g$a$s$:$ $'$0$.$0$0$0$1$ $M$A$T$I$C$'$ $}$$
+$ $ $ $ $ $ $ $ $ $ $]$.$m$a$p$($($e$v$t$,$ $i$d$x$)$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$i$d$x$}$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $p$-$3$ $b$g$-$n$e$u$t$r$a$l$-$5$0$ $r$o$u$n$d$e$d$ $h$o$v$e$r$:$b$g$-$v$i$o$l$e$t$-$5$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$3$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$P$a$c$k$a$g$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$v$i$o$l$e$t$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$e$v$t$.$e$v$e$n$t$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$l$-$2$"$>$â$€$¢$ ${$e$v$t$.$p$r$o$d$u$c$t$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$4$ $t$e$x$t$-$s$m$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>${$e$v$t$.$t$i$m$e$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$v$i$o$l$e$t$-$6$0$0$ $f$o$n$t$-$m$o$n$o$"$>${$e$v$t$.$g$a$s$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $B$e$n$e$f$i$t$s$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$b$r$ $f$r$o$m$-$p$u$r$p$l$e$-$5$0$ $t$o$-$v$i$o$l$e$t$-$5$0$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$p$u$r$p$l$e$-$1$0$0$"$>$$
+$ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$3$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$A$l$e$r$t$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$v$i$o$l$e$t$-$6$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $B$l$o$c$k$c$h$a$i$n$ $B$e$n$e$f$i$t$s$ $&$ $T$r$u$s$t$ $M$e$t$r$i$c$s$$
+$ $ $ $ $ $ $ $ $<$/$h$3$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$2$ $t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$v$i$o$l$e$t$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$I$m$m$u$t$a$b$l$e$ $R$e$c$o$r$d$s$:$<$/$s$p$a$n$>$ $A$l$l$ $1$2$,$8$4$7$ $t$r$a$n$s$a$c$t$i$o$n$s$ $p$e$r$m$a$n$e$n$t$l$y$ $r$e$c$o$r$d$e$d$ $o$n$ $E$t$h$e$r$e$u$m$ $-$ $c$a$n$n$o$t$ $b$e$ $a$l$t$e$r$e$d$ $o$r$ $d$e$l$e$t$e$d$ $($1$0$0$%$ $d$a$t$a$ $i$n$t$e$g$r$i$t$y$)$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$p$u$r$p$l$e$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$R$e$a$l$-$T$i$m$e$ $T$r$a$n$s$p$a$r$e$n$c$y$:$<$/$s$p$a$n$>$ $C$u$s$t$o$m$e$r$s$ $v$e$r$i$f$y$ $p$r$o$d$u$c$t$ $a$u$t$h$e$n$t$i$c$i$t$y$ $i$n$d$e$p$e$n$d$e$n$t$l$y$ $-$ $r$e$d$u$c$e$d$ $c$o$u$n$t$e$r$f$e$i$t$ $c$l$a$i$m$s$ $b$y$ $9$4$%$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$b$l$u$e$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$C$o$s$t$ $E$f$f$i$c$i$e$n$c$y$:$<$/$s$p$a$n$>$ $P$o$l$y$g$o$n$ $L$2$ $s$c$a$l$i$n$g$ $r$e$d$u$c$e$s$ $g$a$s$ $c$o$s$t$s$ $b$y$ $9$2$%$ $v$s$ $E$t$h$e$r$e$u$m$-$o$n$l$y$ $($$$0$.$0$1$ $p$e$r$ $e$v$e$n$t$ $v$s$ $$$1$.$2$0$)$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$g$r$e$e$n$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$S$m$a$r$t$ $C$o$n$t$r$a$c$t$ $A$u$t$o$m$a$t$i$o$n$:$<$/$s$p$a$n$>$ $A$u$t$o$m$a$t$i$c$ $o$w$n$e$r$s$h$i$p$ $t$r$a$n$s$f$e$r$s$ $a$n$d$ $q$u$a$l$i$t$y$ $c$h$e$c$k$s$ $-$ $3$x$ $f$a$s$t$e$r$ $p$r$o$c$e$s$s$i$n$g$ $w$i$t$h$ $z$e$r$o$ $h$u$m$a$n$ $e$r$r$o$r$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $<$/$d$i$v$>$$
+$ $ $)$;$$
+$}$$
+$

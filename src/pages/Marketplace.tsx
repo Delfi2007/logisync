@@ -1,487 +1,488 @@
-import { useState, useEffect } from 'react';
-import {
-  Search,
-  Filter,
-  Star,
-  ShoppingCart,
-  TrendingUp,
-  Package,
-  Award,
-  Download,
-  Eye,
-  Users
-} from 'lucide-react';
-
-interface MarketplaceItem {
-  id: number;
-  name: string;
-  category: string;
-  description: string;
-  price: number;
-  rating: number;
-  reviews: number;
-  downloads: number;
-  vendor: string;
-  featured: boolean;
-  image: string;
-  tags: string[];
-}
-
-interface MarketplaceStats {
-  total_listings: number;
-  featured_listings: number;
-  total_vendors: number;
-  avg_rating: number;
-}
-
-export default function Marketplace() {
-  const [items, setItems] = useState<MarketplaceItem[]>([]);
-  const [stats, setStats] = useState<MarketplaceStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<'popular' | 'rating' | 'price'>('popular');
-
-  useEffect(() => {
-    fetchMarketplaceData();
-  }, [searchQuery, categoryFilter, sortBy]);
-
-  const fetchMarketplaceData = () => {
-    setLoading(true);
-
-    setTimeout(() => {
-      // STATIC MOCK DATA
-      const mockItems: MarketplaceItem[] = [
-        {
-          id: 1,
-          name: 'Advanced Route Optimizer',
-          category: 'Transportation',
-          description: 'AI-powered route optimization tool that reduces delivery times by 30% and fuel costs by 25%.',
-          price: 29900,
-          rating: 4.8,
-          reviews: 156,
-          downloads: 2340,
-          vendor: 'LogiTech Solutions',
-          featured: true,
-          image: 'https://images.unsplash.com/photo-1524661135-423995f22d0b?w=400&h=300&fit=crop',
-          tags: ['AI', 'Route Planning', 'Cost Reduction']
-        },
-        {
-          id: 2,
-          name: 'Smart Warehouse Manager',
-          category: 'Warehouse',
-          description: 'Complete warehouse management system with real-time inventory tracking and automated reordering.',
-          price: 34900,
-          rating: 4.9,
-          reviews: 203,
-          downloads: 1890,
-          vendor: 'WareHub Inc',
-          featured: true,
-          image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=300&fit=crop',
-          tags: ['Inventory', 'Automation', 'Analytics']
-        },
-        {
-          id: 3,
-          name: 'Blockchain Tracking Module',
-          category: 'Technology',
-          description: 'Integrate blockchain technology for transparent and immutable shipment tracking across the supply chain.',
-          price: 49900,
-          rating: 4.7,
-          reviews: 89,
-          downloads: 1450,
-          vendor: 'ChainLogix',
-          featured: true,
-          image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=300&fit=crop',
-          tags: ['Blockchain', 'Security', 'Transparency']
-        },
-        {
-          id: 4,
-          name: 'Fleet Maintenance Tracker',
-          category: 'Transportation',
-          description: 'Predictive maintenance system that monitors vehicle health and schedules service automatically.',
-          price: 24900,
-          rating: 4.6,
-          reviews: 124,
-          downloads: 1680,
-          vendor: 'FleetCare Pro',
-          featured: false,
-          image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=300&fit=crop',
-          tags: ['Maintenance', 'Fleet', 'Predictive']
-        },
-        {
-          id: 5,
-          name: 'Customer Portal Builder',
-          category: 'Customer Service',
-          description: 'White-label customer portal for order tracking, support tickets, and self-service management.',
-          price: 19900,
-          rating: 4.5,
-          reviews: 167,
-          downloads: 2120,
-          vendor: 'PortalPro',
-          featured: false,
-          image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop',
-          tags: ['Portal', 'Customer Service', 'White-label']
-        },
-        {
-          id: 6,
-          name: 'AI Demand Forecaster',
-          category: 'Analytics',
-          description: 'Machine learning model that predicts demand patterns with 95% accuracy for better inventory planning.',
-          price: 39900,
-          rating: 4.9,
-          reviews: 142,
-          downloads: 1560,
-          vendor: 'PredictAI',
-          featured: true,
-          image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
-          tags: ['AI', 'Forecasting', 'Machine Learning']
-        },
-        {
-          id: 7,
-          name: 'Carbon Footprint Calculator',
-          category: 'Sustainability',
-          description: 'Calculate and reduce carbon emissions across your logistics operations with detailed reporting.',
-          price: 14900,
-          rating: 4.7,
-          reviews: 98,
-          downloads: 1340,
-          vendor: 'EcoLogistics',
-          featured: false,
-          image: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=400&h=300&fit=crop',
-          tags: ['Sustainability', 'Carbon', 'Reporting']
-        },
-        {
-          id: 8,
-          name: 'Multi-Carrier Integration',
-          category: 'Integration',
-          description: 'Connect with 50+ shipping carriers worldwide through a single unified API interface.',
-          price: 27900,
-          rating: 4.8,
-          reviews: 211,
-          downloads: 2890,
-          vendor: 'CarrierConnect',
-          featured: false,
-          image: 'https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?w=400&h=300&fit=crop',
-          tags: ['Integration', 'API', 'Shipping']
-        },
-        {
-          id: 9,
-          name: 'Real-Time Analytics Dashboard',
-          category: 'Analytics',
-          description: 'Comprehensive analytics dashboard with 50+ KPIs, custom reports, and predictive insights.',
-          price: 32900,
-          rating: 4.9,
-          reviews: 178,
-          downloads: 2240,
-          vendor: 'DataViz Pro',
-          featured: true,
-          image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=300&fit=crop',
-          tags: ['Analytics', 'Dashboard', 'Reporting']
-        },
-        {
-          id: 10,
-          name: 'IoT Sensor Network',
-          category: 'Technology',
-          description: 'Monitor temperature, humidity, and location of shipments in real-time with IoT sensors.',
-          price: 44900,
-          rating: 4.6,
-          reviews: 76,
-          downloads: 980,
-          vendor: 'SensorNet',
-          featured: false,
-          image: 'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=400&h=300&fit=crop',
-          tags: ['IoT', 'Monitoring', 'Real-time']
-        },
-        {
-          id: 11,
-          name: 'Automated Invoice Generator',
-          category: 'Finance',
-          description: 'Generate, send, and track invoices automatically with payment gateway integration.',
-          price: 17900,
-          rating: 4.5,
-          reviews: 143,
-          downloads: 1890,
-          vendor: 'InvoiceAuto',
-          featured: false,
-          image: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=400&h=300&fit=crop',
-          tags: ['Finance', 'Invoicing', 'Automation']
-        },
-        {
-          id: 12,
-          name: 'Supplier Collaboration Hub',
-          category: 'Procurement',
-          description: 'Collaborate with suppliers in real-time, manage contracts, and track performance metrics.',
-          price: 29900,
-          rating: 4.7,
-          reviews: 109,
-          downloads: 1450,
-          vendor: 'SupplyChain+',
-          featured: false,
-          image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop',
-          tags: ['Procurement', 'Collaboration', 'Suppliers']
-        }
-      ];
-
-      const mockStats: MarketplaceStats = {
-        total_listings: 12,
-        featured_listings: 5,
-        total_vendors: 12,
-        avg_rating: 4.7
-      };
-
-      // Apply filters
-      let filtered = mockItems;
-
-      if (searchQuery) {
-        filtered = filtered.filter(item =>
-          item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-        );
-      }
-
-      if (categoryFilter !== 'all') {
-        filtered = filtered.filter(item => item.category === categoryFilter);
-      }
-
-      // Apply sorting
-      filtered.sort((a, b) => {
-        switch (sortBy) {
-          case 'rating':
-            return b.rating - a.rating;
-          case 'price':
-            return a.price - b.price;
-          case 'popular':
-          default:
-            return b.downloads - a.downloads;
-        }
-      });
-
-      setItems(filtered);
-      setStats(mockStats);
-      setLoading(false);
-    }, 100);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
-
-  const categories = ['all', 'Transportation', 'Warehouse', 'Technology', 'Analytics', 'Customer Service', 'Sustainability', 'Integration', 'Finance', 'Procurement'];
-
-  const StatCard = ({ icon: Icon, label, value, bgColor, iconColor }: any) => (
-    <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-neutral-600 mb-1">{label}</p>
-          <p className="text-2xl font-bold text-neutral-900">{value}</p>
-        </div>
-        <div className={`${bgColor} p-3 rounded-lg`}>
-          <Icon className={`h-6 w-6 ${iconColor}`} />
-        </div>
-      </div>
-    </div>
-  );
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-neutral-900">LogiSphere Marketplace</h1>
-        <p className="text-neutral-600 mt-2">Discover and integrate powerful logistics solutions</p>
-      </div>
-
-      {/* Stats Cards */}
-      {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <StatCard
-            icon={Package}
-            label="Total Listings"
-            value={stats.total_listings}
-            bgColor="bg-blue-50"
-            iconColor="text-blue-600"
-          />
-          <StatCard
-            icon={Award}
-            label="Featured Products"
-            value={stats.featured_listings}
-            bgColor="bg-amber-50"
-            iconColor="text-amber-600"
-          />
-          <StatCard
-            icon={Users}
-            label="Trusted Vendors"
-            value={stats.total_vendors}
-            bgColor="bg-green-50"
-            iconColor="text-green-600"
-          />
-          <StatCard
-            icon={Star}
-            label="Average Rating"
-            value={stats.avg_rating.toFixed(1)}
-            bgColor="bg-purple-50"
-            iconColor="text-purple-600"
-          />
-        </div>
-      )}
-
-      {/* Filters */}
-      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Search */}
-          <div className="lg:col-span-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400" />
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              />
-            </div>
-          </div>
-
-          {/* Category Filter */}
-          <div className="lg:col-span-1">
-            <div className="relative">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400" />
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none bg-white"
-              >
-                {categories.map(cat => (
-                  <option key={cat} value={cat}>
-                    {cat === 'all' ? 'All Categories' : cat}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Sort By */}
-          <div className="lg:col-span-1">
-            <div className="relative">
-              <TrendingUp className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-neutral-400" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full pl-10 pr-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none bg-white"
-              >
-                <option value="popular">Most Popular</option>
-                <option value="rating">Highest Rated</option>
-                <option value="price">Lowest Price</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Marketplace Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden hover:shadow-lg transition-shadow group"
-          >
-            {/* Image */}
-            <div className="relative h-48 bg-gradient-to-br from-primary-50 to-primary-100 overflow-hidden">
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              {item.featured && (
-                <div className="absolute top-3 right-3 bg-amber-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                  <Award className="h-3 w-3" />
-                  Featured
-                </div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="p-4">
-              <div className="flex items-start justify-between mb-2">
-                <div className="flex-1">
-                  <h3 className="font-semibold text-neutral-900 text-sm mb-1 line-clamp-1">
-                    {item.name}
-                  </h3>
-                  <p className="text-xs text-neutral-500">{item.vendor}</p>
-                </div>
-              </div>
-
-              <p className="text-sm text-neutral-600 mb-3 line-clamp-2">
-                {item.description}
-              </p>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-1 mb-3">
-                {item.tags.slice(0, 2).map((tag, idx) => (
-                  <span
-                    key={idx}
-                    className="px-2 py-1 bg-neutral-100 text-neutral-700 rounded-full text-xs"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Rating & Downloads */}
-              <div className="flex items-center gap-3 mb-3 text-xs text-neutral-600">
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                  <span className="font-medium">{item.rating}</span>
-                  <span>({item.reviews})</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Download className="h-4 w-4" />
-                  <span>{item.downloads.toLocaleString()}</span>
-                </div>
-              </div>
-
-              {/* Price & Action */}
-              <div className="flex items-center justify-between pt-3 border-t border-neutral-100">
-                <div>
-                  <span className="text-lg font-bold text-neutral-900">
-                    {formatCurrency(item.price)}
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <button className="p-2 text-neutral-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors">
-                    <Eye className="h-4 w-4" />
-                  </button>
-                  <button className="px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-1 text-sm font-medium">
-                    <ShoppingCart className="h-4 w-4" />
-                    Add
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {items.length === 0 && (
-        <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-12 text-center">
-          <Package className="h-16 w-16 text-neutral-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-neutral-900 mb-2">No products found</h3>
-          <p className="text-neutral-600">Try adjusting your search or filters</p>
-        </div>
-      )}
-    </div>
-  );
-}
+$i$m$p$o$r$t$ ${$ $u$s$e$S$t$a$t$e$,$ $u$s$e$E$f$f$e$c$t$ $}$ $f$r$o$m$ $'$r$e$a$c$t$'$;$$
+$i$m$p$o$r$t$ ${$$
+$ $ $S$e$a$r$c$h$,$$
+$ $ $F$i$l$t$e$r$,$$
+$ $ $S$t$a$r$,$$
+$ $ $S$h$o$p$p$i$n$g$C$a$r$t$,$$
+$ $ $T$r$e$n$d$i$n$g$U$p$,$$
+$ $ $P$a$c$k$a$g$e$,$$
+$ $ $A$w$a$r$d$,$$
+$ $ $D$o$w$n$l$o$a$d$,$$
+$ $ $E$y$e$,$$
+$ $ $U$s$e$r$s$$
+$}$ $f$r$o$m$ $'$l$u$c$i$d$e$-$r$e$a$c$t$'$;$$
+$$
+$i$n$t$e$r$f$a$c$e$ $M$a$r$k$e$t$p$l$a$c$e$I$t$e$m$ ${$$
+$ $ $i$d$:$ $n$u$m$b$e$r$;$$
+$ $ $n$a$m$e$:$ $s$t$r$i$n$g$;$$
+$ $ $c$a$t$e$g$o$r$y$:$ $s$t$r$i$n$g$;$$
+$ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $s$t$r$i$n$g$;$$
+$ $ $p$r$i$c$e$:$ $n$u$m$b$e$r$;$$
+$ $ $r$a$t$i$n$g$:$ $n$u$m$b$e$r$;$$
+$ $ $r$e$v$i$e$w$s$:$ $n$u$m$b$e$r$;$$
+$ $ $d$o$w$n$l$o$a$d$s$:$ $n$u$m$b$e$r$;$$
+$ $ $v$e$n$d$o$r$:$ $s$t$r$i$n$g$;$$
+$ $ $f$e$a$t$u$r$e$d$:$ $b$o$o$l$e$a$n$;$$
+$ $ $i$m$a$g$e$:$ $s$t$r$i$n$g$;$$
+$ $ $t$a$g$s$:$ $s$t$r$i$n$g$[$]$;$$
+$}$$
+$$
+$i$n$t$e$r$f$a$c$e$ $M$a$r$k$e$t$p$l$a$c$e$S$t$a$t$s$ ${$$
+$ $ $t$o$t$a$l$_$l$i$s$t$i$n$g$s$:$ $n$u$m$b$e$r$;$$
+$ $ $f$e$a$t$u$r$e$d$_$l$i$s$t$i$n$g$s$:$ $n$u$m$b$e$r$;$$
+$ $ $t$o$t$a$l$_$v$e$n$d$o$r$s$:$ $n$u$m$b$e$r$;$$
+$ $ $a$v$g$_$r$a$t$i$n$g$:$ $n$u$m$b$e$r$;$$
+$}$$
+$$
+$e$x$p$o$r$t$ $d$e$f$a$u$l$t$ $f$u$n$c$t$i$o$n$ $M$a$r$k$e$t$p$l$a$c$e$($)$ ${$$
+$ $ $c$o$n$s$t$ $[$i$t$e$m$s$,$ $s$e$t$I$t$e$m$s$]$ $=$ $u$s$e$S$t$a$t$e$<$M$a$r$k$e$t$p$l$a$c$e$I$t$e$m$[$]$>$($[$]$)$;$$
+$ $ $c$o$n$s$t$ $[$s$t$a$t$s$,$ $s$e$t$S$t$a$t$s$]$ $=$ $u$s$e$S$t$a$t$e$<$M$a$r$k$e$t$p$l$a$c$e$S$t$a$t$s$ $|$ $n$u$l$l$>$($n$u$l$l$)$;$$
+$ $ $c$o$n$s$t$ $[$l$o$a$d$i$n$g$,$ $s$e$t$L$o$a$d$i$n$g$]$ $=$ $u$s$e$S$t$a$t$e$($t$r$u$e$)$;$$
+$ $ $c$o$n$s$t$ $[$s$e$a$r$c$h$Q$u$e$r$y$,$ $s$e$t$S$e$a$r$c$h$Q$u$e$r$y$]$ $=$ $u$s$e$S$t$a$t$e$($'$'$)$;$$
+$ $ $c$o$n$s$t$ $[$c$a$t$e$g$o$r$y$F$i$l$t$e$r$,$ $s$e$t$C$a$t$e$g$o$r$y$F$i$l$t$e$r$]$ $=$ $u$s$e$S$t$a$t$e$<$s$t$r$i$n$g$>$($'$a$l$l$'$)$;$$
+$ $ $c$o$n$s$t$ $[$s$o$r$t$B$y$,$ $s$e$t$S$o$r$t$B$y$]$ $=$ $u$s$e$S$t$a$t$e$<$'$p$o$p$u$l$a$r$'$ $|$ $'$r$a$t$i$n$g$'$ $|$ $'$p$r$i$c$e$'$>$($'$p$o$p$u$l$a$r$'$)$;$$
+$$
+$ $ $u$s$e$E$f$f$e$c$t$($($)$ $=$>$ ${$$
+$ $ $ $ $f$e$t$c$h$M$a$r$k$e$t$p$l$a$c$e$D$a$t$a$($)$;$$
+$ $ $}$,$ $[$s$e$a$r$c$h$Q$u$e$r$y$,$ $c$a$t$e$g$o$r$y$F$i$l$t$e$r$,$ $s$o$r$t$B$y$]$)$;$$
+$$
+$ $ $c$o$n$s$t$ $f$e$t$c$h$M$a$r$k$e$t$p$l$a$c$e$D$a$t$a$ $=$ $($)$ $=$>$ ${$$
+$ $ $ $ $s$e$t$L$o$a$d$i$n$g$($t$r$u$e$)$;$$
+$$
+$ $ $ $ $s$e$t$T$i$m$e$o$u$t$($($)$ $=$>$ ${$$
+$ $ $ $ $ $ $/$/$ $S$T$A$T$I$C$ $M$O$C$K$ $D$A$T$A$$
+$ $ $ $ $ $ $c$o$n$s$t$ $m$o$c$k$I$t$e$m$s$:$ $M$a$r$k$e$t$p$l$a$c$e$I$t$e$m$[$]$ $=$ $[$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $1$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$A$d$v$a$n$c$e$d$ $R$o$u$t$e$ $O$p$t$i$m$i$z$e$r$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$T$r$a$n$s$p$o$r$t$a$t$i$o$n$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$A$I$-$p$o$w$e$r$e$d$ $r$o$u$t$e$ $o$p$t$i$m$i$z$a$t$i$o$n$ $t$o$o$l$ $t$h$a$t$ $r$e$d$u$c$e$s$ $d$e$l$i$v$e$r$y$ $t$i$m$e$s$ $b$y$ $3$0$%$ $a$n$d$ $f$u$e$l$ $c$o$s$t$s$ $b$y$ $2$5$%$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $2$9$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$8$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $1$5$6$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $2$3$4$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$L$o$g$i$T$e$c$h$ $S$o$l$u$t$i$o$n$s$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $t$r$u$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$5$2$4$6$6$1$1$3$5$-$4$2$3$9$9$5$f$2$2$d$0$b$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$A$I$'$,$ $'$R$o$u$t$e$ $P$l$a$n$n$i$n$g$'$,$ $'$C$o$s$t$ $R$e$d$u$c$t$i$o$n$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $2$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$S$m$a$r$t$ $W$a$r$e$h$o$u$s$e$ $M$a$n$a$g$e$r$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$W$a$r$e$h$o$u$s$e$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$C$o$m$p$l$e$t$e$ $w$a$r$e$h$o$u$s$e$ $m$a$n$a$g$e$m$e$n$t$ $s$y$s$t$e$m$ $w$i$t$h$ $r$e$a$l$-$t$i$m$e$ $i$n$v$e$n$t$o$r$y$ $t$r$a$c$k$i$n$g$ $a$n$d$ $a$u$t$o$m$a$t$e$d$ $r$e$o$r$d$e$r$i$n$g$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $3$4$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$9$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $2$0$3$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $1$8$9$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$W$a$r$e$H$u$b$ $I$n$c$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $t$r$u$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$5$8$6$5$2$8$1$1$6$3$1$1$-$a$d$8$d$d$3$c$8$3$1$0$d$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$I$n$v$e$n$t$o$r$y$'$,$ $'$A$u$t$o$m$a$t$i$o$n$'$,$ $'$A$n$a$l$y$t$i$c$s$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $3$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$B$l$o$c$k$c$h$a$i$n$ $T$r$a$c$k$i$n$g$ $M$o$d$u$l$e$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$T$e$c$h$n$o$l$o$g$y$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$I$n$t$e$g$r$a$t$e$ $b$l$o$c$k$c$h$a$i$n$ $t$e$c$h$n$o$l$o$g$y$ $f$o$r$ $t$r$a$n$s$p$a$r$e$n$t$ $a$n$d$ $i$m$m$u$t$a$b$l$e$ $s$h$i$p$m$e$n$t$ $t$r$a$c$k$i$n$g$ $a$c$r$o$s$s$ $t$h$e$ $s$u$p$p$l$y$ $c$h$a$i$n$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $4$9$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$7$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $8$9$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $1$4$5$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$C$h$a$i$n$L$o$g$i$x$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $t$r$u$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$6$3$9$7$6$2$6$8$1$4$8$5$-$0$7$4$b$7$f$9$3$8$b$a$0$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$B$l$o$c$k$c$h$a$i$n$'$,$ $'$S$e$c$u$r$i$t$y$'$,$ $'$T$r$a$n$s$p$a$r$e$n$c$y$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $4$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$F$l$e$e$t$ $M$a$i$n$t$e$n$a$n$c$e$ $T$r$a$c$k$e$r$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$T$r$a$n$s$p$o$r$t$a$t$i$o$n$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$P$r$e$d$i$c$t$i$v$e$ $m$a$i$n$t$e$n$a$n$c$e$ $s$y$s$t$e$m$ $t$h$a$t$ $m$o$n$i$t$o$r$s$ $v$e$h$i$c$l$e$ $h$e$a$l$t$h$ $a$n$d$ $s$c$h$e$d$u$l$e$s$ $s$e$r$v$i$c$e$ $a$u$t$o$m$a$t$i$c$a$l$l$y$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $2$4$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$6$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $1$2$4$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $1$6$8$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$F$l$e$e$t$C$a$r$e$ $P$r$o$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $f$a$l$s$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$5$8$1$0$9$1$2$2$6$8$2$5$-$a$6$a$2$a$5$a$e$e$1$5$8$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$M$a$i$n$t$e$n$a$n$c$e$'$,$ $'$F$l$e$e$t$'$,$ $'$P$r$e$d$i$c$t$i$v$e$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $5$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$C$u$s$t$o$m$e$r$ $P$o$r$t$a$l$ $B$u$i$l$d$e$r$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$C$u$s$t$o$m$e$r$ $S$e$r$v$i$c$e$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$W$h$i$t$e$-$l$a$b$e$l$ $c$u$s$t$o$m$e$r$ $p$o$r$t$a$l$ $f$o$r$ $o$r$d$e$r$ $t$r$a$c$k$i$n$g$,$ $s$u$p$p$o$r$t$ $t$i$c$k$e$t$s$,$ $a$n$d$ $s$e$l$f$-$s$e$r$v$i$c$e$ $m$a$n$a$g$e$m$e$n$t$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $1$9$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$5$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $1$6$7$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $2$1$2$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$P$o$r$t$a$l$P$r$o$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $f$a$l$s$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$4$6$0$9$2$5$8$9$5$9$1$7$-$a$f$d$a$b$8$2$7$c$5$2$f$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$P$o$r$t$a$l$'$,$ $'$C$u$s$t$o$m$e$r$ $S$e$r$v$i$c$e$'$,$ $'$W$h$i$t$e$-$l$a$b$e$l$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $6$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$A$I$ $D$e$m$a$n$d$ $F$o$r$e$c$a$s$t$e$r$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$A$n$a$l$y$t$i$c$s$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$M$a$c$h$i$n$e$ $l$e$a$r$n$i$n$g$ $m$o$d$e$l$ $t$h$a$t$ $p$r$e$d$i$c$t$s$ $d$e$m$a$n$d$ $p$a$t$t$e$r$n$s$ $w$i$t$h$ $9$5$%$ $a$c$c$u$r$a$c$y$ $f$o$r$ $b$e$t$t$e$r$ $i$n$v$e$n$t$o$r$y$ $p$l$a$n$n$i$n$g$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $3$9$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$9$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $1$4$2$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $1$5$6$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$P$r$e$d$i$c$t$A$I$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $t$r$u$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$5$5$1$2$8$8$0$4$9$-$b$e$b$d$a$4$e$3$8$f$7$1$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$A$I$'$,$ $'$F$o$r$e$c$a$s$t$i$n$g$'$,$ $'$M$a$c$h$i$n$e$ $L$e$a$r$n$i$n$g$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $7$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$C$a$r$b$o$n$ $F$o$o$t$p$r$i$n$t$ $C$a$l$c$u$l$a$t$o$r$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$S$u$s$t$a$i$n$a$b$i$l$i$t$y$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$C$a$l$c$u$l$a$t$e$ $a$n$d$ $r$e$d$u$c$e$ $c$a$r$b$o$n$ $e$m$i$s$s$i$o$n$s$ $a$c$r$o$s$s$ $y$o$u$r$ $l$o$g$i$s$t$i$c$s$ $o$p$e$r$a$t$i$o$n$s$ $w$i$t$h$ $d$e$t$a$i$l$e$d$ $r$e$p$o$r$t$i$n$g$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $1$4$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$7$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $9$8$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $1$3$4$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$E$c$o$L$o$g$i$s$t$i$c$s$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $f$a$l$s$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$4$7$3$3$4$1$3$0$4$1$7$0$-$9$7$1$d$c$c$b$5$a$c$1$e$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$S$u$s$t$a$i$n$a$b$i$l$i$t$y$'$,$ $'$C$a$r$b$o$n$'$,$ $'$R$e$p$o$r$t$i$n$g$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $8$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$M$u$l$t$i$-$C$a$r$r$i$e$r$ $I$n$t$e$g$r$a$t$i$o$n$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$I$n$t$e$g$r$a$t$i$o$n$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$C$o$n$n$e$c$t$ $w$i$t$h$ $5$0$+$ $s$h$i$p$p$i$n$g$ $c$a$r$r$i$e$r$s$ $w$o$r$l$d$w$i$d$e$ $t$h$r$o$u$g$h$ $a$ $s$i$n$g$l$e$ $u$n$i$f$i$e$d$ $A$P$I$ $i$n$t$e$r$f$a$c$e$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $2$7$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$8$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $2$1$1$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $2$8$9$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$C$a$r$r$i$e$r$C$o$n$n$e$c$t$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $f$a$l$s$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$5$6$6$5$7$6$7$2$1$3$4$6$-$d$4$a$3$b$4$e$a$e$b$5$5$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$I$n$t$e$g$r$a$t$i$o$n$'$,$ $'$A$P$I$'$,$ $'$S$h$i$p$p$i$n$g$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $9$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$R$e$a$l$-$T$i$m$e$ $A$n$a$l$y$t$i$c$s$ $D$a$s$h$b$o$a$r$d$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$A$n$a$l$y$t$i$c$s$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$C$o$m$p$r$e$h$e$n$s$i$v$e$ $a$n$a$l$y$t$i$c$s$ $d$a$s$h$b$o$a$r$d$ $w$i$t$h$ $5$0$+$ $K$P$I$s$,$ $c$u$s$t$o$m$ $r$e$p$o$r$t$s$,$ $a$n$d$ $p$r$e$d$i$c$t$i$v$e$ $i$n$s$i$g$h$t$s$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $3$2$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$9$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $1$7$8$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $2$2$4$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$D$a$t$a$V$i$z$ $P$r$o$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $t$r$u$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$5$5$1$2$8$8$0$4$9$-$b$e$b$d$a$4$e$3$8$f$7$1$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$A$n$a$l$y$t$i$c$s$'$,$ $'$D$a$s$h$b$o$a$r$d$'$,$ $'$R$e$p$o$r$t$i$n$g$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $1$0$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$I$o$T$ $S$e$n$s$o$r$ $N$e$t$w$o$r$k$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$T$e$c$h$n$o$l$o$g$y$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$M$o$n$i$t$o$r$ $t$e$m$p$e$r$a$t$u$r$e$,$ $h$u$m$i$d$i$t$y$,$ $a$n$d$ $l$o$c$a$t$i$o$n$ $o$f$ $s$h$i$p$m$e$n$t$s$ $i$n$ $r$e$a$l$-$t$i$m$e$ $w$i$t$h$ $I$o$T$ $s$e$n$s$o$r$s$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $4$4$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$6$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $7$6$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $9$8$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$S$e$n$s$o$r$N$e$t$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $f$a$l$s$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$5$5$8$3$4$6$4$9$0$-$a$7$2$e$5$3$a$e$2$d$4$f$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$I$o$T$'$,$ $'$M$o$n$i$t$o$r$i$n$g$'$,$ $'$R$e$a$l$-$t$i$m$e$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $1$1$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$A$u$t$o$m$a$t$e$d$ $I$n$v$o$i$c$e$ $G$e$n$e$r$a$t$o$r$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$F$i$n$a$n$c$e$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$G$e$n$e$r$a$t$e$,$ $s$e$n$d$,$ $a$n$d$ $t$r$a$c$k$ $i$n$v$o$i$c$e$s$ $a$u$t$o$m$a$t$i$c$a$l$l$y$ $w$i$t$h$ $p$a$y$m$e$n$t$ $g$a$t$e$w$a$y$ $i$n$t$e$g$r$a$t$i$o$n$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $1$7$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$5$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $1$4$3$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $1$8$9$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$I$n$v$o$i$c$e$A$u$t$o$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $f$a$l$s$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$5$5$4$2$2$4$1$5$5$-$8$d$0$4$c$b$2$1$c$d$6$c$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$F$i$n$a$n$c$e$'$,$ $'$I$n$v$o$i$c$i$n$g$'$,$ $'$A$u$t$o$m$a$t$i$o$n$'$]$$
+$ $ $ $ $ $ $ $ $}$,$$
+$ $ $ $ $ $ $ $ ${$$
+$ $ $ $ $ $ $ $ $ $ $i$d$:$ $1$2$,$$
+$ $ $ $ $ $ $ $ $ $ $n$a$m$e$:$ $'$S$u$p$p$l$i$e$r$ $C$o$l$l$a$b$o$r$a$t$i$o$n$ $H$u$b$'$,$$
+$ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$:$ $'$P$r$o$c$u$r$e$m$e$n$t$'$,$$
+$ $ $ $ $ $ $ $ $ $ $d$e$s$c$r$i$p$t$i$o$n$:$ $'$C$o$l$l$a$b$o$r$a$t$e$ $w$i$t$h$ $s$u$p$p$l$i$e$r$s$ $i$n$ $r$e$a$l$-$t$i$m$e$,$ $m$a$n$a$g$e$ $c$o$n$t$r$a$c$t$s$,$ $a$n$d$ $t$r$a$c$k$ $p$e$r$f$o$r$m$a$n$c$e$ $m$e$t$r$i$c$s$.$'$,$$
+$ $ $ $ $ $ $ $ $ $ $p$r$i$c$e$:$ $2$9$9$0$0$,$$
+$ $ $ $ $ $ $ $ $ $ $r$a$t$i$n$g$:$ $4$.$7$,$$
+$ $ $ $ $ $ $ $ $ $ $r$e$v$i$e$w$s$:$ $1$0$9$,$$
+$ $ $ $ $ $ $ $ $ $ $d$o$w$n$l$o$a$d$s$:$ $1$4$5$0$,$$
+$ $ $ $ $ $ $ $ $ $ $v$e$n$d$o$r$:$ $'$S$u$p$p$l$y$C$h$a$i$n$+$'$,$$
+$ $ $ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$:$ $f$a$l$s$e$,$$
+$ $ $ $ $ $ $ $ $ $ $i$m$a$g$e$:$ $'$h$t$t$p$s$:$/$/$i$m$a$g$e$s$.$u$n$s$p$l$a$s$h$.$c$o$m$/$p$h$o$t$o$-$1$5$5$2$6$6$4$7$3$0$-$d$3$0$7$c$a$8$8$4$9$7$8$?$w$=$4$0$0$&$h$=$3$0$0$&$f$i$t$=$c$r$o$p$'$,$$
+$ $ $ $ $ $ $ $ $ $ $t$a$g$s$:$ $[$'$P$r$o$c$u$r$e$m$e$n$t$'$,$ $'$C$o$l$l$a$b$o$r$a$t$i$o$n$'$,$ $'$S$u$p$p$l$i$e$r$s$'$]$$
+$ $ $ $ $ $ $ $ $}$$
+$ $ $ $ $ $ $]$;$$
+$$
+$ $ $ $ $ $ $c$o$n$s$t$ $m$o$c$k$S$t$a$t$s$:$ $M$a$r$k$e$t$p$l$a$c$e$S$t$a$t$s$ $=$ ${$$
+$ $ $ $ $ $ $ $ $t$o$t$a$l$_$l$i$s$t$i$n$g$s$:$ $1$2$,$$
+$ $ $ $ $ $ $ $ $f$e$a$t$u$r$e$d$_$l$i$s$t$i$n$g$s$:$ $5$,$$
+$ $ $ $ $ $ $ $ $t$o$t$a$l$_$v$e$n$d$o$r$s$:$ $1$2$,$$
+$ $ $ $ $ $ $ $ $a$v$g$_$r$a$t$i$n$g$:$ $4$.$7$$
+$ $ $ $ $ $ $}$;$$
+$$
+$ $ $ $ $ $ $/$/$ $A$p$p$l$y$ $f$i$l$t$e$r$s$$
+$ $ $ $ $ $ $l$e$t$ $f$i$l$t$e$r$e$d$ $=$ $m$o$c$k$I$t$e$m$s$;$$
+$$
+$ $ $ $ $ $ $i$f$ $($s$e$a$r$c$h$Q$u$e$r$y$)$ ${$$
+$ $ $ $ $ $ $ $ $f$i$l$t$e$r$e$d$ $=$ $f$i$l$t$e$r$e$d$.$f$i$l$t$e$r$($i$t$e$m$ $=$>$$
+$ $ $ $ $ $ $ $ $ $ $i$t$e$m$.$n$a$m$e$.$t$o$L$o$w$e$r$C$a$s$e$($)$.$i$n$c$l$u$d$e$s$($s$e$a$r$c$h$Q$u$e$r$y$.$t$o$L$o$w$e$r$C$a$s$e$($)$)$ $|$|$$
+$ $ $ $ $ $ $ $ $ $ $i$t$e$m$.$d$e$s$c$r$i$p$t$i$o$n$.$t$o$L$o$w$e$r$C$a$s$e$($)$.$i$n$c$l$u$d$e$s$($s$e$a$r$c$h$Q$u$e$r$y$.$t$o$L$o$w$e$r$C$a$s$e$($)$)$ $|$|$$
+$ $ $ $ $ $ $ $ $ $ $i$t$e$m$.$t$a$g$s$.$s$o$m$e$($t$a$g$ $=$>$ $t$a$g$.$t$o$L$o$w$e$r$C$a$s$e$($)$.$i$n$c$l$u$d$e$s$($s$e$a$r$c$h$Q$u$e$r$y$.$t$o$L$o$w$e$r$C$a$s$e$($)$)$)$$
+$ $ $ $ $ $ $ $ $)$;$$
+$ $ $ $ $ $ $}$$
+$$
+$ $ $ $ $ $ $i$f$ $($c$a$t$e$g$o$r$y$F$i$l$t$e$r$ $!$=$=$ $'$a$l$l$'$)$ ${$$
+$ $ $ $ $ $ $ $ $f$i$l$t$e$r$e$d$ $=$ $f$i$l$t$e$r$e$d$.$f$i$l$t$e$r$($i$t$e$m$ $=$>$ $i$t$e$m$.$c$a$t$e$g$o$r$y$ $=$=$=$ $c$a$t$e$g$o$r$y$F$i$l$t$e$r$)$;$$
+$ $ $ $ $ $ $}$$
+$$
+$ $ $ $ $ $ $/$/$ $A$p$p$l$y$ $s$o$r$t$i$n$g$$
+$ $ $ $ $ $ $f$i$l$t$e$r$e$d$.$s$o$r$t$($($a$,$ $b$)$ $=$>$ ${$$
+$ $ $ $ $ $ $ $ $s$w$i$t$c$h$ $($s$o$r$t$B$y$)$ ${$$
+$ $ $ $ $ $ $ $ $ $ $c$a$s$e$ $'$r$a$t$i$n$g$'$:$$
+$ $ $ $ $ $ $ $ $ $ $ $ $r$e$t$u$r$n$ $b$.$r$a$t$i$n$g$ $-$ $a$.$r$a$t$i$n$g$;$$
+$ $ $ $ $ $ $ $ $ $ $c$a$s$e$ $'$p$r$i$c$e$'$:$$
+$ $ $ $ $ $ $ $ $ $ $ $ $r$e$t$u$r$n$ $a$.$p$r$i$c$e$ $-$ $b$.$p$r$i$c$e$;$$
+$ $ $ $ $ $ $ $ $ $ $c$a$s$e$ $'$p$o$p$u$l$a$r$'$:$$
+$ $ $ $ $ $ $ $ $ $ $d$e$f$a$u$l$t$:$$
+$ $ $ $ $ $ $ $ $ $ $ $ $r$e$t$u$r$n$ $b$.$d$o$w$n$l$o$a$d$s$ $-$ $a$.$d$o$w$n$l$o$a$d$s$;$$
+$ $ $ $ $ $ $ $ $}$$
+$ $ $ $ $ $ $}$)$;$$
+$$
+$ $ $ $ $ $ $s$e$t$I$t$e$m$s$($f$i$l$t$e$r$e$d$)$;$$
+$ $ $ $ $ $ $s$e$t$S$t$a$t$s$($m$o$c$k$S$t$a$t$s$)$;$$
+$ $ $ $ $ $ $s$e$t$L$o$a$d$i$n$g$($f$a$l$s$e$)$;$$
+$ $ $ $ $}$,$ $1$0$0$)$;$$
+$ $ $}$;$$
+$$
+$ $ $c$o$n$s$t$ $f$o$r$m$a$t$C$u$r$r$e$n$c$y$ $=$ $($a$m$o$u$n$t$:$ $n$u$m$b$e$r$)$ $=$>$ ${$$
+$ $ $ $ $r$e$t$u$r$n$ $n$e$w$ $I$n$t$l$.$N$u$m$b$e$r$F$o$r$m$a$t$($'$e$n$-$U$S$'$,$ ${$$
+$ $ $ $ $ $ $s$t$y$l$e$:$ $'$c$u$r$r$e$n$c$y$'$,$$
+$ $ $ $ $ $ $c$u$r$r$e$n$c$y$:$ $'$U$S$D$'$,$$
+$ $ $ $ $ $ $m$a$x$i$m$u$m$F$r$a$c$t$i$o$n$D$i$g$i$t$s$:$ $0$,$$
+$ $ $ $ $}$)$.$f$o$r$m$a$t$($a$m$o$u$n$t$)$;$$
+$ $ $}$;$$
+$$
+$ $ $c$o$n$s$t$ $c$a$t$e$g$o$r$i$e$s$ $=$ $[$'$a$l$l$'$,$ $'$T$r$a$n$s$p$o$r$t$a$t$i$o$n$'$,$ $'$W$a$r$e$h$o$u$s$e$'$,$ $'$T$e$c$h$n$o$l$o$g$y$'$,$ $'$A$n$a$l$y$t$i$c$s$'$,$ $'$C$u$s$t$o$m$e$r$ $S$e$r$v$i$c$e$'$,$ $'$S$u$s$t$a$i$n$a$b$i$l$i$t$y$'$,$ $'$I$n$t$e$g$r$a$t$i$o$n$'$,$ $'$F$i$n$a$n$c$e$'$,$ $'$P$r$o$c$u$r$e$m$e$n$t$'$]$;$$
+$$
+$ $ $c$o$n$s$t$ $S$t$a$t$C$a$r$d$ $=$ $(${$ $i$c$o$n$:$ $I$c$o$n$,$ $l$a$b$e$l$,$ $v$a$l$u$e$,$ $b$g$C$o$l$o$r$,$ $i$c$o$n$C$o$l$o$r$ $}$:$ $a$n$y$)$ $=$>$ $($$
+$ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$x$l$ $s$h$a$d$o$w$-$s$m$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $p$-$6$ $h$o$v$e$r$:$s$h$a$d$o$w$-$m$d$ $t$r$a$n$s$i$t$i$o$n$-$s$h$a$d$o$w$"$>$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$b$-$1$"$>${$l$a$b$e$l$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$v$a$l$u$e$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=${$`$$${$b$g$C$o$l$o$r$}$ $p$-$3$ $r$o$u$n$d$e$d$-$l$g$`$}$>$$
+$ $ $ $ $ $ $ $ $ $ $<$I$c$o$n$ $c$l$a$s$s$N$a$m$e$=${$`$h$-$6$ $w$-$6$ $$${$i$c$o$n$C$o$l$o$r$}$`$}$ $/$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $<$/$d$i$v$>$$
+$ $ $)$;$$
+$$
+$ $ $i$f$ $($l$o$a$d$i$n$g$)$ ${$$
+$ $ $ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $h$-$6$4$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$a$n$i$m$a$t$e$-$s$p$i$n$ $r$o$u$n$d$e$d$-$f$u$l$l$ $h$-$1$2$ $w$-$1$2$ $b$o$r$d$e$r$-$b$-$2$ $b$o$r$d$e$r$-$p$r$i$m$a$r$y$-$6$0$0$"$>$<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $)$;$$
+$ $ $}$$
+$$
+$ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$6$"$>$$
+$ $ $ $ $ $ ${$/$*$ $H$e$a$d$e$r$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$h$1$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$L$o$g$i$S$p$h$e$r$e$ $M$a$r$k$e$t$p$l$a$c$e$<$/$h$1$>$$
+$ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$2$"$>$D$i$s$c$o$v$e$r$ $a$n$d$ $i$n$t$e$g$r$a$t$e$ $p$o$w$e$r$f$u$l$ $l$o$g$i$s$t$i$c$s$ $s$o$l$u$t$i$o$n$s$<$/$p$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $S$t$a$t$s$ $C$a$r$d$s$ $*$/$}$$
+$ $ $ $ $ $ ${$s$t$a$t$s$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $m$d$:$g$r$i$d$-$c$o$l$s$-$2$ $l$g$:$g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$S$t$a$t$C$a$r$d$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$P$a$c$k$a$g$e$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$T$o$t$a$l$ $L$i$s$t$i$n$g$s$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$t$a$t$s$.$t$o$t$a$l$_$l$i$s$t$i$n$g$s$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $b$g$C$o$l$o$r$=$"$b$g$-$b$l$u$e$-$5$0$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$C$o$l$o$r$=$"$t$e$x$t$-$b$l$u$e$-$6$0$0$"$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$S$t$a$t$C$a$r$d$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$A$w$a$r$d$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$F$e$a$t$u$r$e$d$ $P$r$o$d$u$c$t$s$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$t$a$t$s$.$f$e$a$t$u$r$e$d$_$l$i$s$t$i$n$g$s$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $b$g$C$o$l$o$r$=$"$b$g$-$a$m$b$e$r$-$5$0$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$C$o$l$o$r$=$"$t$e$x$t$-$a$m$b$e$r$-$6$0$0$"$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$S$t$a$t$C$a$r$d$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$U$s$e$r$s$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$T$r$u$s$t$e$d$ $V$e$n$d$o$r$s$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$t$a$t$s$.$t$o$t$a$l$_$v$e$n$d$o$r$s$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $b$g$C$o$l$o$r$=$"$b$g$-$g$r$e$e$n$-$5$0$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$C$o$l$o$r$=$"$t$e$x$t$-$g$r$e$e$n$-$6$0$0$"$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$S$t$a$t$C$a$r$d$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$S$t$a$r$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$A$v$e$r$a$g$e$ $R$a$t$i$n$g$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$t$a$t$s$.$a$v$g$_$r$a$t$i$n$g$.$t$o$F$i$x$e$d$($1$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $b$g$C$o$l$o$r$=$"$b$g$-$p$u$r$p$l$e$-$5$0$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$C$o$l$o$r$=$"$t$e$x$t$-$p$u$r$p$l$e$-$6$0$0$"$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $)$}$$
+$$
+$ $ $ $ $ $ ${$/$*$ $F$i$l$t$e$r$s$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$x$l$ $s$h$a$d$o$w$-$s$m$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $l$g$:$g$r$i$d$-$c$o$l$s$-$3$ $g$a$p$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ ${$/$*$ $S$e$a$r$c$h$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$l$g$:$c$o$l$-$s$p$a$n$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$S$e$a$r$c$h$ $c$l$a$s$s$N$a$m$e$=$"$a$b$s$o$l$u$t$e$ $l$e$f$t$-$3$ $t$o$p$-$1$/$2$ $t$r$a$n$s$f$o$r$m$ $-$t$r$a$n$s$l$a$t$e$-$y$-$1$/$2$ $h$-$5$ $w$-$5$ $t$e$x$t$-$n$e$u$t$r$a$l$-$4$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$i$n$p$u$t$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$y$p$e$=$"$t$e$x$t$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $p$l$a$c$e$h$o$l$d$e$r$=$"$S$e$a$r$c$h$ $p$r$o$d$u$c$t$s$.$.$.$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$e$a$r$c$h$Q$u$e$r$y$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$h$a$n$g$e$=${$($e$)$ $=$>$ $s$e$t$S$e$a$r$c$h$Q$u$e$r$y$($e$.$t$a$r$g$e$t$.$v$a$l$u$e$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $p$l$-$1$0$ $p$r$-$4$ $p$y$-$2$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$3$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$o$c$u$s$:$r$i$n$g$-$2$ $f$o$c$u$s$:$r$i$n$g$-$p$r$i$m$a$r$y$-$5$0$0$ $f$o$c$u$s$:$b$o$r$d$e$r$-$t$r$a$n$s$p$a$r$e$n$t$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ ${$/$*$ $C$a$t$e$g$o$r$y$ $F$i$l$t$e$r$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$l$g$:$c$o$l$-$s$p$a$n$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$F$i$l$t$e$r$ $c$l$a$s$s$N$a$m$e$=$"$a$b$s$o$l$u$t$e$ $l$e$f$t$-$3$ $t$o$p$-$1$/$2$ $t$r$a$n$s$f$o$r$m$ $-$t$r$a$n$s$l$a$t$e$-$y$-$1$/$2$ $h$-$5$ $w$-$5$ $t$e$x$t$-$n$e$u$t$r$a$l$-$4$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$e$l$e$c$t$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$c$a$t$e$g$o$r$y$F$i$l$t$e$r$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$h$a$n$g$e$=${$($e$)$ $=$>$ $s$e$t$C$a$t$e$g$o$r$y$F$i$l$t$e$r$($e$.$t$a$r$g$e$t$.$v$a$l$u$e$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $p$l$-$1$0$ $p$r$-$4$ $p$y$-$2$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$3$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$o$c$u$s$:$r$i$n$g$-$2$ $f$o$c$u$s$:$r$i$n$g$-$p$r$i$m$a$r$y$-$5$0$0$ $f$o$c$u$s$:$b$o$r$d$e$r$-$t$r$a$n$s$p$a$r$e$n$t$ $a$p$p$e$a$r$a$n$c$e$-$n$o$n$e$ $b$g$-$w$h$i$t$e$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$c$a$t$e$g$o$r$i$e$s$.$m$a$p$($c$a$t$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$o$p$t$i$o$n$ $k$e$y$=${$c$a$t$}$ $v$a$l$u$e$=${$c$a$t$}$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$c$a$t$ $=$=$=$ $'$a$l$l$'$ $?$ $'$A$l$l$ $C$a$t$e$g$o$r$i$e$s$'$ $:$ $c$a$t$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$o$p$t$i$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$e$l$e$c$t$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ ${$/$*$ $S$o$r$t$ $B$y$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$l$g$:$c$o$l$-$s$p$a$n$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$T$r$e$n$d$i$n$g$U$p$ $c$l$a$s$s$N$a$m$e$=$"$a$b$s$o$l$u$t$e$ $l$e$f$t$-$3$ $t$o$p$-$1$/$2$ $t$r$a$n$s$f$o$r$m$ $-$t$r$a$n$s$l$a$t$e$-$y$-$1$/$2$ $h$-$5$ $w$-$5$ $t$e$x$t$-$n$e$u$t$r$a$l$-$4$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$e$l$e$c$t$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$o$r$t$B$y$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$h$a$n$g$e$=${$($e$)$ $=$>$ $s$e$t$S$o$r$t$B$y$($e$.$t$a$r$g$e$t$.$v$a$l$u$e$ $a$s$ $a$n$y$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $p$l$-$1$0$ $p$r$-$4$ $p$y$-$2$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$3$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$o$c$u$s$:$r$i$n$g$-$2$ $f$o$c$u$s$:$r$i$n$g$-$p$r$i$m$a$r$y$-$5$0$0$ $f$o$c$u$s$:$b$o$r$d$e$r$-$t$r$a$n$s$p$a$r$e$n$t$ $a$p$p$e$a$r$a$n$c$e$-$n$o$n$e$ $b$g$-$w$h$i$t$e$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$o$p$t$i$o$n$ $v$a$l$u$e$=$"$p$o$p$u$l$a$r$"$>$M$o$s$t$ $P$o$p$u$l$a$r$<$/$o$p$t$i$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$o$p$t$i$o$n$ $v$a$l$u$e$=$"$r$a$t$i$n$g$"$>$H$i$g$h$e$s$t$ $R$a$t$e$d$<$/$o$p$t$i$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$o$p$t$i$o$n$ $v$a$l$u$e$=$"$p$r$i$c$e$"$>$L$o$w$e$s$t$ $P$r$i$c$e$<$/$o$p$t$i$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$e$l$e$c$t$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $M$a$r$k$e$t$p$l$a$c$e$ $G$r$i$d$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $m$d$:$g$r$i$d$-$c$o$l$s$-$2$ $l$g$:$g$r$i$d$-$c$o$l$s$-$3$ $x$l$:$g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$6$"$>$$
+$ $ $ $ $ $ $ $ ${$i$t$e$m$s$.$m$a$p$($($i$t$e$m$)$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$$
+$ $ $ $ $ $ $ $ $ $ $ $ $k$e$y$=${$i$t$e$m$.$i$d$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$x$l$ $s$h$a$d$o$w$-$s$m$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $o$v$e$r$f$l$o$w$-$h$i$d$d$e$n$ $h$o$v$e$r$:$s$h$a$d$o$w$-$l$g$ $t$r$a$n$s$i$t$i$o$n$-$s$h$a$d$o$w$ $g$r$o$u$p$"$$
+$ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $I$m$a$g$e$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$r$e$l$a$t$i$v$e$ $h$-$4$8$ $b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$b$r$ $f$r$o$m$-$p$r$i$m$a$r$y$-$5$0$ $t$o$-$p$r$i$m$a$r$y$-$1$0$0$ $o$v$e$r$f$l$o$w$-$h$i$d$d$e$n$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$i$m$g$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$r$c$=${$i$t$e$m$.$i$m$a$g$e$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $a$l$t$=${$i$t$e$m$.$n$a$m$e$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $h$-$f$u$l$l$ $o$b$j$e$c$t$-$c$o$v$e$r$ $g$r$o$u$p$-$h$o$v$e$r$:$s$c$a$l$e$-$1$0$5$ $t$r$a$n$s$i$t$i$o$n$-$t$r$a$n$s$f$o$r$m$ $d$u$r$a$t$i$o$n$-$3$0$0$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$t$e$m$.$f$e$a$t$u$r$e$d$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$a$b$s$o$l$u$t$e$ $t$o$p$-$3$ $r$i$g$h$t$-$3$ $b$g$-$a$m$b$e$r$-$5$0$0$ $t$e$x$t$-$w$h$i$t$e$ $p$x$-$2$ $p$y$-$1$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$e$x$t$-$x$s$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$A$w$a$r$d$ $c$l$a$s$s$N$a$m$e$=$"$h$-$3$ $w$-$3$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $F$e$a$t$u$r$e$d$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $C$o$n$t$e$n$t$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$p$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $t$e$x$t$-$s$m$ $m$b$-$1$ $l$i$n$e$-$c$l$a$m$p$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$t$e$m$.$n$a$m$e$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$h$3$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>${$i$t$e$m$.$v$e$n$d$o$r$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$b$-$3$ $l$i$n$e$-$c$l$a$m$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$t$e$m$.$d$e$s$c$r$i$p$t$i$o$n$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$p$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $T$a$g$s$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $f$l$e$x$-$w$r$a$p$ $g$a$p$-$1$ $m$b$-$3$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$t$e$m$.$t$a$g$s$.$s$l$i$c$e$($0$,$ $2$)$.$m$a$p$($($t$a$g$,$ $i$d$x$)$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $k$e$y$=${$i$d$x$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$2$ $p$y$-$1$ $b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$e$x$t$-$x$s$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$t$a$g$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $R$a$t$i$n$g$ $&$ $D$o$w$n$l$o$a$d$s$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$3$ $m$b$-$3$ $t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$S$t$a$r$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$ $f$i$l$l$-$a$m$b$e$r$-$4$0$0$ $t$e$x$t$-$a$m$b$e$r$-$4$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>${$i$t$e$m$.$r$a$t$i$n$g$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$(${$i$t$e$m$.$r$e$v$i$e$w$s$}$)$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$D$o$w$n$l$o$a$d$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>${$i$t$e$m$.$d$o$w$n$l$o$a$d$s$.$t$o$L$o$c$a$l$e$S$t$r$i$n$g$($)$}$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$/$*$ $P$r$i$c$e$ $&$ $A$c$t$i$o$n$ $*$/$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $p$t$-$3$ $b$o$r$d$e$r$-$t$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$1$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$f$o$r$m$a$t$C$u$r$r$e$n$c$y$($i$t$e$m$.$p$r$i$c$e$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$2$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$ $c$l$a$s$s$N$a$m$e$=$"$p$-$2$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $h$o$v$e$r$:$t$e$x$t$-$p$r$i$m$a$r$y$-$6$0$0$ $h$o$v$e$r$:$b$g$-$p$r$i$m$a$r$y$-$5$0$ $r$o$u$n$d$e$d$-$l$g$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$E$y$e$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$3$ $p$y$-$2$ $b$g$-$p$r$i$m$a$r$y$-$6$0$0$ $t$e$x$t$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$l$g$ $h$o$v$e$r$:$b$g$-$p$r$i$m$a$r$y$-$7$0$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$1$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$S$h$o$p$p$i$n$g$C$a$r$t$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $A$d$d$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $E$m$p$t$y$ $S$t$a$t$e$ $*$/$}$$
+$ $ $ $ $ $ ${$i$t$e$m$s$.$l$e$n$g$t$h$ $=$=$=$ $0$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$x$l$ $s$h$a$d$o$w$-$s$m$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $p$-$1$2$ $t$e$x$t$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$P$a$c$k$a$g$e$ $c$l$a$s$s$N$a$m$e$=$"$h$-$1$6$ $w$-$1$6$ $t$e$x$t$-$n$e$u$t$r$a$l$-$4$0$0$ $m$x$-$a$u$t$o$ $m$b$-$4$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$2$"$>$N$o$ $p$r$o$d$u$c$t$s$ $f$o$u$n$d$<$/$h$3$>$$
+$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$T$r$y$ $a$d$j$u$s$t$i$n$g$ $y$o$u$r$ $s$e$a$r$c$h$ $o$r$ $f$i$l$t$e$r$s$<$/$p$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $)$}$$
+$ $ $ $ $<$/$d$i$v$>$$
+$ $ $)$;$$
+$}$$
+$

@@ -1,370 +1,371 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Package, 
-  ShoppingCart, 
-  AlertCircle, 
-  IndianRupee,
-  Plus,
-  Warehouse,
-  Truck,
-  Loader2
-} from 'lucide-react';
-import {
-  LineChart,
-  Line,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from 'recharts';
-import dashboardService, { DashboardData } from '@/services/dashboard';
-
-// Metric Card Component
-interface MetricCardProps {
-  title: string;
-  value: string | number;
-  change?: number;
-  icon: React.ElementType;
-  subtitle?: string;
-}
-
-function MetricCard({ title, value, change, icon: Icon, subtitle }: MetricCardProps) {
-  const isPositive = change && change > 0;
-  const isNegative = change && change < 0;
-
-  return (
-    <div className="card p-6 hover:shadow-minimal-lg transition-shadow">
-      <div className="flex items-center justify-between">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-neutral-600">{title}</p>
-          <h3 className="text-3xl font-bold text-neutral-900 mt-2">{value}</h3>
-          {subtitle && (
-            <p className="text-xs text-neutral-500 mt-1">{subtitle}</p>
-          )}
-        </div>
-        <div className="flex-shrink-0 ml-4">
-          <div className="w-14 h-14 bg-neutral-100 rounded-lg flex items-center justify-center">
-            <Icon className="w-7 h-7 text-neutral-700" />
-          </div>
-        </div>
-      </div>
-      
-      {change !== undefined && (
-        <div className="flex items-center mt-4 pt-4 border-t border-neutral-100">
-          {isPositive && (
-            <>
-              <TrendingUp className="w-4 h-4 text-neutral-900 mr-1" />
-              <span className="text-sm font-medium text-neutral-900">
-                +{change}%
-              </span>
-            </>
-          )}
-          {isNegative && (
-            <>
-              <TrendingDown className="w-4 h-4 text-neutral-600 mr-1" />
-              <span className="text-sm font-medium text-neutral-600">
-                {change}%
-              </span>
-            </>
-          )}
-          <span className="text-sm text-neutral-500 ml-2">vs last period</span>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// Quick Action Button
-interface QuickActionProps {
-  label: string;
-  icon: React.ElementType;
-  onClick: () => void;
-}
-
-function QuickAction({ label, icon: Icon, onClick }: QuickActionProps) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex flex-col items-center justify-center p-6 card hover:shadow-minimal-lg transition-all hover:scale-105"
-    >
-      <div className="w-12 h-12 bg-neutral-900 rounded-lg flex items-center justify-center mb-3">
-        <Icon className="w-6 h-6 text-white" />
-      </div>
-      <span className="text-sm font-medium text-neutral-900">{label}</span>
-    </button>
-  );
-}
-
-export default function Dashboard() {
-  const navigate = useNavigate();
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  // Fetch dashboard data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await dashboardService.getData();
-        setDashboardData(data);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load dashboard data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Memoize currency formatter to avoid recreating on every render
-  const formatCurrency = useMemo(() => {
-    const formatter = new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    });
-    return (amount: number) => formatter.format(amount);
-  }, []);
-
-  // Loading state
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-neutral-400 animate-spin mx-auto mb-4" />
-          <p className="text-neutral-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Error state
-  if (error || !dashboardData) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center max-w-md">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-neutral-900 mb-2">Failed to load dashboard</h2>
-          <p className="text-neutral-600 mb-4">{error || 'Unknown error occurred'}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="btn-primary"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  const { stats, recent_orders, revenue_chart, top_products } = dashboardData;
-
-  return (
-    <div className="space-y-8">
-      {/* Page Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-neutral-900">Dashboard</h1>
-        <p className="text-neutral-600 mt-1">
-          Welcome back! Here's what's happening with your business today.
-        </p>
-      </div>
-
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard
-          title="Total Orders"
-          value={stats.orders.total}
-          icon={ShoppingCart}
-          subtitle={`${stats.orders.pending} pending`}
-        />
-        <MetricCard
-          title="Total Revenue"
-          value={formatCurrency(stats.orders.total_revenue)}
-          icon={IndianRupee}
-        />
-        <MetricCard
-          title="Total Products"
-          value={stats.products.total}
-          icon={Package}
-          subtitle={`${stats.products.low_stock} low stock`}
-        />
-        <MetricCard
-          title="Total Customers"
-          value={stats.customers.total}
-          icon={Warehouse}
-          subtitle="Registered customers"
-        />
-      </div>
-
-      {/* Quick Actions */}
-      <div>
-        <h2 className="text-xl font-bold text-neutral-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <QuickAction
-            label="Create Order"
-            icon={Plus}
-            onClick={() => navigate('/orders')}
-          />
-          <QuickAction
-            label="Add Inventory"
-            icon={Package}
-            onClick={() => navigate('/inventory')}
-          />
-          <QuickAction
-            label="Find Warehouse"
-            icon={Warehouse}
-            onClick={() => navigate('/warehouses')}
-          />
-          <QuickAction
-            label="Book Shipment"
-            icon={Truck}
-            onClick={() => navigate('/orders')}
-          />
-        </div>
-      </div>
-
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Revenue Chart */}
-        <div className="card p-6">
-          <h3 className="text-lg font-bold text-neutral-900 mb-4">Revenue Trends (7 Days)</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={revenue_chart.data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
-              <XAxis 
-                dataKey="date" 
-                tick={{ fill: '#737373', fontSize: 12 }}
-                stroke="#d4d4d4"
-              />
-              <YAxis 
-                tick={{ fill: '#737373', fontSize: 12 }}
-                stroke="#d4d4d4"
-              />
-              <Tooltip 
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e5e5',
-                  borderRadius: '8px',
-                }}
-                formatter={(value: number) => [formatCurrency(value), 'Revenue']}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="revenue" 
-                stroke="#0a0a0a" 
-                strokeWidth={2}
-                dot={{ fill: '#0a0a0a', r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Top Customers Chart */}
-        <div className="card p-6">
-          <h3 className="text-lg font-bold text-neutral-900 mb-4">Top Customers by Revenue</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={top_products}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e5e5" />
-              <XAxis 
-                dataKey="name" 
-                tick={{ fill: '#737373', fontSize: 12 }}
-                stroke="#d4d4d4"
-                angle={-15}
-                textAnchor="end"
-                height={60}
-              />
-              <YAxis 
-                tick={{ fill: '#737373', fontSize: 12 }}
-                stroke="#d4d4d4"
-              />
-              <Tooltip 
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e5e5e5',
-                  borderRadius: '8px',
-                }}
-                formatter={(value: number) => [formatCurrency(value), 'Revenue']}
-              />
-              <Bar dataKey="total_revenue" fill="#0a0a0a" radius={[8, 8, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Recent Orders */}
-      <div className="card p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-neutral-900">Recent Orders</h3>
-          <button className="text-sm text-neutral-600 hover:text-neutral-900">View All</button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-neutral-200">
-            <thead className="bg-neutral-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase">
-                  Order #
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase">
-                  Customer
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase">
-                  Amount
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase">
-                  Status
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-neutral-600 uppercase">
-                  Date
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-neutral-200">
-              {recent_orders.map((order) => (
-                <tr key={order.id} className="hover:bg-neutral-50">
-                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-neutral-900">
-                    {order.order_number}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-neutral-700">
-                    {order.customer_name}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-neutral-900">
-                    {formatCurrency(order.total_amount)}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <span className={`badge ${
-                      order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                      order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                      'bg-neutral-100 text-neutral-800'
-                    }`}>
-                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-neutral-600">
-                    {new Date(order.created_at).toLocaleDateString('en-IN')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {recent_orders.length === 0 && (
-            <div className="text-center py-8">
-              <ShoppingCart className="w-12 h-12 text-neutral-300 mx-auto mb-3" />
-              <p className="text-neutral-600">No recent orders</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
+$i$m$p$o$r$t$ ${$ $u$s$e$S$t$a$t$e$,$ $u$s$e$E$f$f$e$c$t$,$ $u$s$e$M$e$m$o$ $}$ $f$r$o$m$ $'$r$e$a$c$t$'$;$$
+$i$m$p$o$r$t$ ${$ $u$s$e$N$a$v$i$g$a$t$e$ $}$ $f$r$o$m$ $'$r$e$a$c$t$-$r$o$u$t$e$r$-$d$o$m$'$;$$
+$i$m$p$o$r$t$ ${$ $$
+$ $ $T$r$e$n$d$i$n$g$U$p$,$ $$
+$ $ $T$r$e$n$d$i$n$g$D$o$w$n$,$ $$
+$ $ $P$a$c$k$a$g$e$,$ $$
+$ $ $S$h$o$p$p$i$n$g$C$a$r$t$,$ $$
+$ $ $A$l$e$r$t$C$i$r$c$l$e$,$ $$
+$ $ $I$n$d$i$a$n$R$u$p$e$e$,$$
+$ $ $P$l$u$s$,$$
+$ $ $W$a$r$e$h$o$u$s$e$,$$
+$ $ $T$r$u$c$k$,$$
+$ $ $L$o$a$d$e$r$2$$
+$}$ $f$r$o$m$ $'$l$u$c$i$d$e$-$r$e$a$c$t$'$;$$
+$i$m$p$o$r$t$ ${$$
+$ $ $L$i$n$e$C$h$a$r$t$,$$
+$ $ $L$i$n$e$,$$
+$ $ $B$a$r$C$h$a$r$t$,$$
+$ $ $B$a$r$,$$
+$ $ $X$A$x$i$s$,$$
+$ $ $Y$A$x$i$s$,$$
+$ $ $C$a$r$t$e$s$i$a$n$G$r$i$d$,$$
+$ $ $T$o$o$l$t$i$p$,$$
+$ $ $R$e$s$p$o$n$s$i$v$e$C$o$n$t$a$i$n$e$r$,$$
+$}$ $f$r$o$m$ $'$r$e$c$h$a$r$t$s$'$;$$
+$i$m$p$o$r$t$ $d$a$s$h$b$o$a$r$d$S$e$r$v$i$c$e$,$ ${$ $D$a$s$h$b$o$a$r$d$D$a$t$a$ $}$ $f$r$o$m$ $'$@$/$s$e$r$v$i$c$e$s$/$d$a$s$h$b$o$a$r$d$'$;$$
+$$
+$/$/$ $M$e$t$r$i$c$ $C$a$r$d$ $C$o$m$p$o$n$e$n$t$$
+$i$n$t$e$r$f$a$c$e$ $M$e$t$r$i$c$C$a$r$d$P$r$o$p$s$ ${$$
+$ $ $t$i$t$l$e$:$ $s$t$r$i$n$g$;$$
+$ $ $v$a$l$u$e$:$ $s$t$r$i$n$g$ $|$ $n$u$m$b$e$r$;$$
+$ $ $c$h$a$n$g$e$?$:$ $n$u$m$b$e$r$;$$
+$ $ $i$c$o$n$:$ $R$e$a$c$t$.$E$l$e$m$e$n$t$T$y$p$e$;$$
+$ $ $s$u$b$t$i$t$l$e$?$:$ $s$t$r$i$n$g$;$$
+$}$$
+$$
+$f$u$n$c$t$i$o$n$ $M$e$t$r$i$c$C$a$r$d$(${$ $t$i$t$l$e$,$ $v$a$l$u$e$,$ $c$h$a$n$g$e$,$ $i$c$o$n$:$ $I$c$o$n$,$ $s$u$b$t$i$t$l$e$ $}$:$ $M$e$t$r$i$c$C$a$r$d$P$r$o$p$s$)$ ${$$
+$ $ $c$o$n$s$t$ $i$s$P$o$s$i$t$i$v$e$ $=$ $c$h$a$n$g$e$ $&$&$ $c$h$a$n$g$e$ $>$ $0$;$$
+$ $ $c$o$n$s$t$ $i$s$N$e$g$a$t$i$v$e$ $=$ $c$h$a$n$g$e$ $&$&$ $c$h$a$n$g$e$ $<$ $0$;$$
+$$
+$ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $h$o$v$e$r$:$s$h$a$d$o$w$-$m$i$n$i$m$a$l$-$l$g$ $t$r$a$n$s$i$t$i$o$n$-$s$h$a$d$o$w$"$>$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>${$t$i$t$l$e$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$t$-$2$"$>${$v$a$l$u$e$}$<$/$h$3$>$$
+$ $ $ $ $ $ $ $ $ $ ${$s$u$b$t$i$t$l$e$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$t$-$1$"$>${$s$u$b$t$i$t$l$e$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$s$h$r$i$n$k$-$0$ $m$l$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$1$4$ $h$-$1$4$ $b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$I$c$o$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$7$ $h$-$7$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $$
+$ $ $ $ $ $ ${$c$h$a$n$g$e$ $!$=$=$ $u$n$d$e$f$i$n$e$d$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $m$t$-$4$ $p$t$-$4$ $b$o$r$d$e$r$-$t$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$1$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ ${$i$s$P$o$s$i$t$i$v$e$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$T$r$e$n$d$i$n$g$U$p$ $c$l$a$s$s$N$a$m$e$=$"$w$-$4$ $h$-$4$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$r$-$1$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $+${$c$h$a$n$g$e$}$%$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$>$$
+$ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $ $ ${$i$s$N$e$g$a$t$i$v$e$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$T$r$e$n$d$i$n$g$D$o$w$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$4$ $h$-$4$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$r$-$1$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$c$h$a$n$g$e$}$%$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$>$$
+$ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$l$-$2$"$>$v$s$ $l$a$s$t$ $p$e$r$i$o$d$<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $)$}$$
+$ $ $ $ $<$/$d$i$v$>$$
+$ $ $)$;$$
+$}$$
+$$
+$/$/$ $Q$u$i$c$k$ $A$c$t$i$o$n$ $B$u$t$t$o$n$$
+$i$n$t$e$r$f$a$c$e$ $Q$u$i$c$k$A$c$t$i$o$n$P$r$o$p$s$ ${$$
+$ $ $l$a$b$e$l$:$ $s$t$r$i$n$g$;$$
+$ $ $i$c$o$n$:$ $R$e$a$c$t$.$E$l$e$m$e$n$t$T$y$p$e$;$$
+$ $ $o$n$C$l$i$c$k$:$ $($)$ $=$>$ $v$o$i$d$;$$
+$}$$
+$$
+$f$u$n$c$t$i$o$n$ $Q$u$i$c$k$A$c$t$i$o$n$(${$ $l$a$b$e$l$,$ $i$c$o$n$:$ $I$c$o$n$,$ $o$n$C$l$i$c$k$ $}$:$ $Q$u$i$c$k$A$c$t$i$o$n$P$r$o$p$s$)$ ${$$
+$ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $<$b$u$t$t$o$n$$
+$ $ $ $ $ $ $o$n$C$l$i$c$k$=${$o$n$C$l$i$c$k$}$$
+$ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $f$l$e$x$-$c$o$l$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $p$-$6$ $c$a$r$d$ $h$o$v$e$r$:$s$h$a$d$o$w$-$m$i$n$i$m$a$l$-$l$g$ $t$r$a$n$s$i$t$i$o$n$-$a$l$l$ $h$o$v$e$r$:$s$c$a$l$e$-$1$0$5$"$$
+$ $ $ $ $>$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$1$2$ $h$-$1$2$ $b$g$-$n$e$u$t$r$a$l$-$9$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $m$b$-$3$"$>$$
+$ $ $ $ $ $ $ $ $<$I$c$o$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$6$ $h$-$6$ $t$e$x$t$-$w$h$i$t$e$"$ $/$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$l$a$b$e$l$}$<$/$s$p$a$n$>$$
+$ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $)$;$$
+$}$$
+$$
+$e$x$p$o$r$t$ $d$e$f$a$u$l$t$ $f$u$n$c$t$i$o$n$ $D$a$s$h$b$o$a$r$d$($)$ ${$$
+$ $ $c$o$n$s$t$ $n$a$v$i$g$a$t$e$ $=$ $u$s$e$N$a$v$i$g$a$t$e$($)$;$$
+$ $ $c$o$n$s$t$ $[$d$a$s$h$b$o$a$r$d$D$a$t$a$,$ $s$e$t$D$a$s$h$b$o$a$r$d$D$a$t$a$]$ $=$ $u$s$e$S$t$a$t$e$<$D$a$s$h$b$o$a$r$d$D$a$t$a$ $|$ $n$u$l$l$>$($n$u$l$l$)$;$$
+$ $ $c$o$n$s$t$ $[$l$o$a$d$i$n$g$,$ $s$e$t$L$o$a$d$i$n$g$]$ $=$ $u$s$e$S$t$a$t$e$($t$r$u$e$)$;$$
+$ $ $c$o$n$s$t$ $[$e$r$r$o$r$,$ $s$e$t$E$r$r$o$r$]$ $=$ $u$s$e$S$t$a$t$e$<$s$t$r$i$n$g$ $|$ $n$u$l$l$>$($n$u$l$l$)$;$$
+$$
+$ $ $/$/$ $F$e$t$c$h$ $d$a$s$h$b$o$a$r$d$ $d$a$t$a$$
+$ $ $u$s$e$E$f$f$e$c$t$($($)$ $=$>$ ${$$
+$ $ $ $ $c$o$n$s$t$ $f$e$t$c$h$D$a$t$a$ $=$ $a$s$y$n$c$ $($)$ $=$>$ ${$$
+$ $ $ $ $ $ $t$r$y$ ${$$
+$ $ $ $ $ $ $ $ $s$e$t$L$o$a$d$i$n$g$($t$r$u$e$)$;$$
+$ $ $ $ $ $ $ $ $s$e$t$E$r$r$o$r$($n$u$l$l$)$;$$
+$ $ $ $ $ $ $ $ $c$o$n$s$t$ $d$a$t$a$ $=$ $a$w$a$i$t$ $d$a$s$h$b$o$a$r$d$S$e$r$v$i$c$e$.$g$e$t$D$a$t$a$($)$;$$
+$ $ $ $ $ $ $ $ $s$e$t$D$a$s$h$b$o$a$r$d$D$a$t$a$($d$a$t$a$)$;$$
+$ $ $ $ $ $ $}$ $c$a$t$c$h$ $($e$r$r$:$ $a$n$y$)$ ${$$
+$ $ $ $ $ $ $ $ $s$e$t$E$r$r$o$r$($e$r$r$.$m$e$s$s$a$g$e$ $|$|$ $'$F$a$i$l$e$d$ $t$o$ $l$o$a$d$ $d$a$s$h$b$o$a$r$d$ $d$a$t$a$'$)$;$$
+$ $ $ $ $ $ $}$ $f$i$n$a$l$l$y$ ${$$
+$ $ $ $ $ $ $ $ $s$e$t$L$o$a$d$i$n$g$($f$a$l$s$e$)$;$$
+$ $ $ $ $ $ $}$$
+$ $ $ $ $}$;$$
+$$
+$ $ $ $ $f$e$t$c$h$D$a$t$a$($)$;$$
+$ $ $}$,$ $[$]$)$;$$
+$$
+$ $ $/$/$ $M$e$m$o$i$z$e$ $c$u$r$r$e$n$c$y$ $f$o$r$m$a$t$t$e$r$ $t$o$ $a$v$o$i$d$ $r$e$c$r$e$a$t$i$n$g$ $o$n$ $e$v$e$r$y$ $r$e$n$d$e$r$$
+$ $ $c$o$n$s$t$ $f$o$r$m$a$t$C$u$r$r$e$n$c$y$ $=$ $u$s$e$M$e$m$o$($($)$ $=$>$ ${$$
+$ $ $ $ $c$o$n$s$t$ $f$o$r$m$a$t$t$e$r$ $=$ $n$e$w$ $I$n$t$l$.$N$u$m$b$e$r$F$o$r$m$a$t$($'$e$n$-$U$S$'$,$ ${$$
+$ $ $ $ $ $ $s$t$y$l$e$:$ $'$c$u$r$r$e$n$c$y$'$,$$
+$ $ $ $ $ $ $c$u$r$r$e$n$c$y$:$ $'$U$S$D$'$,$$
+$ $ $ $ $ $ $m$a$x$i$m$u$m$F$r$a$c$t$i$o$n$D$i$g$i$t$s$:$ $0$,$$
+$ $ $ $ $}$)$;$$
+$ $ $ $ $r$e$t$u$r$n$ $($a$m$o$u$n$t$:$ $n$u$m$b$e$r$)$ $=$>$ $f$o$r$m$a$t$t$e$r$.$f$o$r$m$a$t$($a$m$o$u$n$t$)$;$$
+$ $ $}$,$ $[$]$)$;$$
+$$
+$ $ $/$/$ $L$o$a$d$i$n$g$ $s$t$a$t$e$$
+$ $ $i$f$ $($l$o$a$d$i$n$g$)$ ${$$
+$ $ $ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $h$-$s$c$r$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$c$e$n$t$e$r$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$L$o$a$d$e$r$2$ $c$l$a$s$s$N$a$m$e$=$"$w$-$1$2$ $h$-$1$2$ $t$e$x$t$-$n$e$u$t$r$a$l$-$4$0$0$ $a$n$i$m$a$t$e$-$s$p$i$n$ $m$x$-$a$u$t$o$ $m$b$-$4$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$L$o$a$d$i$n$g$ $d$a$s$h$b$o$a$r$d$.$.$.$<$/$p$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $)$;$$
+$ $ $}$$
+$$
+$ $ $/$/$ $E$r$r$o$r$ $s$t$a$t$e$$
+$ $ $i$f$ $($e$r$r$o$r$ $|$|$ $!$d$a$s$h$b$o$a$r$d$D$a$t$a$)$ ${$$
+$ $ $ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $h$-$s$c$r$e$e$n$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$c$e$n$t$e$r$ $m$a$x$-$w$-$m$d$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$A$l$e$r$t$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$1$2$ $h$-$1$2$ $t$e$x$t$-$r$e$d$-$5$0$0$ $m$x$-$a$u$t$o$ $m$b$-$4$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$2$"$>$F$a$i$l$e$d$ $t$o$ $l$o$a$d$ $d$a$s$h$b$o$a$r$d$<$/$h$2$>$$
+$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$b$-$4$"$>${$e$r$r$o$r$ $|$|$ $'$U$n$k$n$o$w$n$ $e$r$r$o$r$ $o$c$c$u$r$r$e$d$'$}$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $w$i$n$d$o$w$.$l$o$c$a$t$i$o$n$.$r$e$l$o$a$d$($)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$b$t$n$-$p$r$i$m$a$r$y$"$$
+$ $ $ $ $ $ $ $ $ $ $>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $R$e$t$r$y$$
+$ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $)$;$$
+$ $ $}$$
+$$
+$ $ $c$o$n$s$t$ ${$ $s$t$a$t$s$,$ $r$e$c$e$n$t$_$o$r$d$e$r$s$,$ $r$e$v$e$n$u$e$_$c$h$a$r$t$,$ $t$o$p$_$p$r$o$d$u$c$t$s$ $}$ $=$ $d$a$s$h$b$o$a$r$d$D$a$t$a$;$$
+$$
+$ $ $r$e$t$u$r$n$ $($$
+$ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$8$"$>$$
+$ $ $ $ $ $ ${$/$*$ $P$a$g$e$ $H$e$a$d$e$r$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$h$1$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$D$a$s$h$b$o$a$r$d$<$/$h$1$>$$
+$ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$$
+$ $ $ $ $ $ $ $ $ $ $W$e$l$c$o$m$e$ $b$a$c$k$!$ $H$e$r$e$'$s$ $w$h$a$t$'$s$ $h$a$p$p$e$n$i$n$g$ $w$i$t$h$ $y$o$u$r$ $b$u$s$i$n$e$s$s$ $t$o$d$a$y$.$$
+$ $ $ $ $ $ $ $ $<$/$p$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $M$e$t$r$i$c$s$ $G$r$i$d$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $m$d$:$g$r$i$d$-$c$o$l$s$-$2$ $l$g$:$g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $<$M$e$t$r$i$c$C$a$r$d$$
+$ $ $ $ $ $ $ $ $ $ $t$i$t$l$e$=$"$T$o$t$a$l$ $O$r$d$e$r$s$"$$
+$ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$t$a$t$s$.$o$r$d$e$r$s$.$t$o$t$a$l$}$$
+$ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$S$h$o$p$p$i$n$g$C$a$r$t$}$$
+$ $ $ $ $ $ $ $ $ $ $s$u$b$t$i$t$l$e$=${$`$$${$s$t$a$t$s$.$o$r$d$e$r$s$.$p$e$n$d$i$n$g$}$ $p$e$n$d$i$n$g$`$}$$
+$ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $<$M$e$t$r$i$c$C$a$r$d$$
+$ $ $ $ $ $ $ $ $ $ $t$i$t$l$e$=$"$T$o$t$a$l$ $R$e$v$e$n$u$e$"$$
+$ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$f$o$r$m$a$t$C$u$r$r$e$n$c$y$($s$t$a$t$s$.$o$r$d$e$r$s$.$t$o$t$a$l$_$r$e$v$e$n$u$e$)$}$$
+$ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$I$n$d$i$a$n$R$u$p$e$e$}$$
+$ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $<$M$e$t$r$i$c$C$a$r$d$$
+$ $ $ $ $ $ $ $ $ $ $t$i$t$l$e$=$"$T$o$t$a$l$ $P$r$o$d$u$c$t$s$"$$
+$ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$t$a$t$s$.$p$r$o$d$u$c$t$s$.$t$o$t$a$l$}$$
+$ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$P$a$c$k$a$g$e$}$$
+$ $ $ $ $ $ $ $ $ $ $s$u$b$t$i$t$l$e$=${$`$$${$s$t$a$t$s$.$p$r$o$d$u$c$t$s$.$l$o$w$_$s$t$o$c$k$}$ $l$o$w$ $s$t$o$c$k$`$}$$
+$ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $<$M$e$t$r$i$c$C$a$r$d$$
+$ $ $ $ $ $ $ $ $ $ $t$i$t$l$e$=$"$T$o$t$a$l$ $C$u$s$t$o$m$e$r$s$"$$
+$ $ $ $ $ $ $ $ $ $ $v$a$l$u$e$=${$s$t$a$t$s$.$c$u$s$t$o$m$e$r$s$.$t$o$t$a$l$}$$
+$ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$W$a$r$e$h$o$u$s$e$}$$
+$ $ $ $ $ $ $ $ $ $ $s$u$b$t$i$t$l$e$=$"$R$e$g$i$s$t$e$r$e$d$ $c$u$s$t$o$m$e$r$s$"$$
+$ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $Q$u$i$c$k$ $A$c$t$i$o$n$s$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$"$>$Q$u$i$c$k$ $A$c$t$i$o$n$s$<$/$h$2$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$2$ $m$d$:$g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$Q$u$i$c$k$A$c$t$i$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$C$r$e$a$t$e$ $O$r$d$e$r$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$P$l$u$s$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $n$a$v$i$g$a$t$e$($'$/$o$r$d$e$r$s$'$)$}$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$Q$u$i$c$k$A$c$t$i$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$A$d$d$ $I$n$v$e$n$t$o$r$y$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$P$a$c$k$a$g$e$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $n$a$v$i$g$a$t$e$($'$/$i$n$v$e$n$t$o$r$y$'$)$}$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$Q$u$i$c$k$A$c$t$i$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$F$i$n$d$ $W$a$r$e$h$o$u$s$e$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$W$a$r$e$h$o$u$s$e$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $n$a$v$i$g$a$t$e$($'$/$w$a$r$e$h$o$u$s$e$s$'$)$}$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $<$Q$u$i$c$k$A$c$t$i$o$n$$
+$ $ $ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$B$o$o$k$ $S$h$i$p$m$e$n$t$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$T$r$u$c$k$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $n$a$v$i$g$a$t$e$($'$/$o$r$d$e$r$s$'$)$}$$
+$ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $C$h$a$r$t$s$ $R$o$w$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $l$g$:$g$r$i$d$-$c$o$l$s$-$2$ $g$a$p$-$6$"$>$$
+$ $ $ $ $ $ $ $ ${$/$*$ $R$e$v$e$n$u$e$ $C$h$a$r$t$ $*$/$}$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$"$>$R$e$v$e$n$u$e$ $T$r$e$n$d$s$ $($7$ $D$a$y$s$)$<$/$h$3$>$$
+$ $ $ $ $ $ $ $ $ $ $<$R$e$s$p$o$n$s$i$v$e$C$o$n$t$a$i$n$e$r$ $w$i$d$t$h$=$"$1$0$0$%$"$ $h$e$i$g$h$t$=${$3$0$0$}$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$L$i$n$e$C$h$a$r$t$ $d$a$t$a$=${$r$e$v$e$n$u$e$_$c$h$a$r$t$.$d$a$t$a$}$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$a$r$t$e$s$i$a$n$G$r$i$d$ $s$t$r$o$k$e$D$a$s$h$a$r$r$a$y$=$"$3$ $3$"$ $s$t$r$o$k$e$=$"$#$e$5$e$5$e$5$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$X$A$x$i$s$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$a$t$a$K$e$y$=$"$d$a$t$e$"$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$i$c$k$=${${$ $f$i$l$l$:$ $'$#$7$3$7$3$7$3$'$,$ $f$o$n$t$S$i$z$e$:$ $1$2$ $}$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$=$"$#$d$4$d$4$d$4$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$Y$A$x$i$s$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$i$c$k$=${${$ $f$i$l$l$:$ $'$#$7$3$7$3$7$3$'$,$ $f$o$n$t$S$i$z$e$:$ $1$2$ $}$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$=$"$#$d$4$d$4$d$4$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$T$o$o$l$t$i$p$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$o$n$t$e$n$t$S$t$y$l$e$=${${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $b$a$c$k$g$r$o$u$n$d$C$o$l$o$r$:$ $'$#$f$f$f$f$f$f$'$,$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $b$o$r$d$e$r$:$ $'$1$p$x$ $s$o$l$i$d$ $#$e$5$e$5$e$5$'$,$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $b$o$r$d$e$r$R$a$d$i$u$s$:$ $'$8$p$x$'$,$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $f$o$r$m$a$t$t$e$r$=${$($v$a$l$u$e$:$ $n$u$m$b$e$r$)$ $=$>$ $[$f$o$r$m$a$t$C$u$r$r$e$n$c$y$($v$a$l$u$e$)$,$ $'$R$e$v$e$n$u$e$'$]$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$L$i$n$e$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$y$p$e$=$"$m$o$n$o$t$o$n$e$"$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$a$t$a$K$e$y$=$"$r$e$v$e$n$u$e$"$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$=$"$#$0$a$0$a$0$a$"$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$W$i$d$t$h$=${$2$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$o$t$=${${$ $f$i$l$l$:$ $'$#$0$a$0$a$0$a$'$,$ $r$:$ $4$ $}$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $a$c$t$i$v$e$D$o$t$=${${$ $r$:$ $6$ $}$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$L$i$n$e$C$h$a$r$t$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$R$e$s$p$o$n$s$i$v$e$C$o$n$t$a$i$n$e$r$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ $ $ ${$/$*$ $T$o$p$ $C$u$s$t$o$m$e$r$s$ $C$h$a$r$t$ $*$/$}$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$"$>$T$o$p$ $C$u$s$t$o$m$e$r$s$ $b$y$ $R$e$v$e$n$u$e$<$/$h$3$>$$
+$ $ $ $ $ $ $ $ $ $ $<$R$e$s$p$o$n$s$i$v$e$C$o$n$t$a$i$n$e$r$ $w$i$d$t$h$=$"$1$0$0$%$"$ $h$e$i$g$h$t$=${$3$0$0$}$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$B$a$r$C$h$a$r$t$ $d$a$t$a$=${$t$o$p$_$p$r$o$d$u$c$t$s$}$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$a$r$t$e$s$i$a$n$G$r$i$d$ $s$t$r$o$k$e$D$a$s$h$a$r$r$a$y$=$"$3$ $3$"$ $s$t$r$o$k$e$=$"$#$e$5$e$5$e$5$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$X$A$x$i$s$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$a$t$a$K$e$y$=$"$n$a$m$e$"$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$i$c$k$=${${$ $f$i$l$l$:$ $'$#$7$3$7$3$7$3$'$,$ $f$o$n$t$S$i$z$e$:$ $1$2$ $}$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$=$"$#$d$4$d$4$d$4$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $a$n$g$l$e$=${$-$1$5$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$e$x$t$A$n$c$h$o$r$=$"$e$n$d$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $h$e$i$g$h$t$=${$6$0$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$Y$A$x$i$s$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$i$c$k$=${${$ $f$i$l$l$:$ $'$#$7$3$7$3$7$3$'$,$ $f$o$n$t$S$i$z$e$:$ $1$2$ $}$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$=$"$#$d$4$d$4$d$4$"$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$T$o$o$l$t$i$p$ $$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$o$n$t$e$n$t$S$t$y$l$e$=${${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $b$a$c$k$g$r$o$u$n$d$C$o$l$o$r$:$ $'$#$f$f$f$f$f$f$'$,$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $b$o$r$d$e$r$:$ $'$1$p$x$ $s$o$l$i$d$ $#$e$5$e$5$e$5$'$,$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $b$o$r$d$e$r$R$a$d$i$u$s$:$ $'$8$p$x$'$,$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $f$o$r$m$a$t$t$e$r$=${$($v$a$l$u$e$:$ $n$u$m$b$e$r$)$ $=$>$ $[$f$o$r$m$a$t$C$u$r$r$e$n$c$y$($v$a$l$u$e$)$,$ $'$R$e$v$e$n$u$e$'$]$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$B$a$r$ $d$a$t$a$K$e$y$=$"$t$o$t$a$l$_$r$e$v$e$n$u$e$"$ $f$i$l$l$=$"$#$0$a$0$a$0$a$"$ $r$a$d$i$u$s$=${$[$8$,$ $8$,$ $0$,$ $0$]$}$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$B$a$r$C$h$a$r$t$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$R$e$s$p$o$n$s$i$v$e$C$o$n$t$a$i$n$e$r$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$$
+$ $ $ $ $ $ ${$/$*$ $R$e$c$e$n$t$ $O$r$d$e$r$s$ $*$/$}$$
+$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$4$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$R$e$c$e$n$t$ $O$r$d$e$r$s$<$/$h$3$>$$
+$ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $h$o$v$e$r$:$t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$V$i$e$w$ $A$l$l$<$/$b$u$t$t$o$n$>$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$o$v$e$r$f$l$o$w$-$x$-$a$u$t$o$"$>$$
+$ $ $ $ $ $ $ $ $ $ $<$t$a$b$l$e$ $c$l$a$s$s$N$a$m$e$=$"$m$i$n$-$w$-$f$u$l$l$ $d$i$v$i$d$e$-$y$ $d$i$v$i$d$e$-$n$e$u$t$r$a$l$-$2$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$e$a$d$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$n$e$u$t$r$a$l$-$5$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$r$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$3$ $t$e$x$t$-$l$e$f$t$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $O$r$d$e$r$ $#$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$3$ $t$e$x$t$-$l$e$f$t$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $C$u$s$t$o$m$e$r$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$3$ $t$e$x$t$-$l$e$f$t$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $A$m$o$u$n$t$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$3$ $t$e$x$t$-$l$e$f$t$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $S$t$a$t$u$s$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$3$ $t$e$x$t$-$l$e$f$t$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $D$a$t$e$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$r$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$e$a$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$t$b$o$d$y$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $d$i$v$i$d$e$-$y$ $d$i$v$i$d$e$-$n$e$u$t$r$a$l$-$2$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$r$e$c$e$n$t$_$o$r$d$e$r$s$.$m$a$p$($($o$r$d$e$r$)$ $=$>$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$r$ $k$e$y$=${$o$r$d$e$r$.$i$d$}$ $c$l$a$s$s$N$a$m$e$=$"$h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$5$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$3$ $w$h$i$t$e$s$p$a$c$e$-$n$o$w$r$a$p$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$o$r$d$e$r$.$o$r$d$e$r$_$n$u$m$b$e$r$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$3$ $w$h$i$t$e$s$p$a$c$e$-$n$o$w$r$a$p$ $t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$o$r$d$e$r$.$c$u$s$t$o$m$e$r$_$n$a$m$e$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$3$ $w$h$i$t$e$s$p$a$c$e$-$n$o$w$r$a$p$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$f$o$r$m$a$t$C$u$r$r$e$n$c$y$($o$r$d$e$r$.$t$o$t$a$l$_$a$m$o$u$n$t$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$3$ $w$h$i$t$e$s$p$a$c$e$-$n$o$w$r$a$p$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=${$`$b$a$d$g$e$ $$${$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$r$d$e$r$.$s$t$a$t$u$s$ $=$=$=$ $'$c$o$m$p$l$e$t$e$d$'$ $?$ $'$b$g$-$g$r$e$e$n$-$1$0$0$ $t$e$x$t$-$g$r$e$e$n$-$8$0$0$'$ $:$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$r$d$e$r$.$s$t$a$t$u$s$ $=$=$=$ $'$p$e$n$d$i$n$g$'$ $?$ $'$b$g$-$y$e$l$l$o$w$-$1$0$0$ $t$e$x$t$-$y$e$l$l$o$w$-$8$0$0$'$ $:$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$r$d$e$r$.$s$t$a$t$u$s$ $=$=$=$ $'$p$r$o$c$e$s$s$i$n$g$'$ $?$ $'$b$g$-$b$l$u$e$-$1$0$0$ $t$e$x$t$-$b$l$u$e$-$8$0$0$'$ $:$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $'$b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$e$x$t$-$n$e$u$t$r$a$l$-$8$0$0$'$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$o$r$d$e$r$.$s$t$a$t$u$s$.$c$h$a$r$A$t$($0$)$.$t$o$U$p$p$e$r$C$a$s$e$($)$ $+$ $o$r$d$e$r$.$s$t$a$t$u$s$.$s$l$i$c$e$($1$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$3$ $w$h$i$t$e$s$p$a$c$e$-$n$o$w$r$a$p$ $t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$n$e$w$ $D$a$t$e$($o$r$d$e$r$.$c$r$e$a$t$e$d$_$a$t$)$.$t$o$L$o$c$a$l$e$D$a$t$e$S$t$r$i$n$g$($'$e$n$-$U$S$'$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$r$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$)$}$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$b$o$d$y$>$$
+$ $ $ $ $ $ $ $ $ $ $<$/$t$a$b$l$e$>$$
+$ $ $ $ $ $ $ $ $ $ ${$r$e$c$e$n$t$_$o$r$d$e$r$s$.$l$e$n$g$t$h$ $=$=$=$ $0$ $&$&$ $($$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$c$e$n$t$e$r$ $p$y$-$8$"$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$S$h$o$p$p$i$n$g$C$a$r$t$ $c$l$a$s$s$N$a$m$e$=$"$w$-$1$2$ $h$-$1$2$ $t$e$x$t$-$n$e$u$t$r$a$l$-$3$0$0$ $m$x$-$a$u$t$o$ $m$b$-$3$"$ $/$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$N$o$ $r$e$c$e$n$t$ $o$r$d$e$r$s$<$/$p$>$$
+$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $ $ $ $ $)$}$$
+$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $ $ $<$/$d$i$v$>$$
+$ $ $ $ $<$/$d$i$v$>$$
+$ $ $)$;$$
+$}$$
+$
