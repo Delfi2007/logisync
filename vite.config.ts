@@ -43,45 +43,10 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          // Split node_modules into separate chunks
+          // Simplified chunking to avoid circular dependencies
           if (id.includes('node_modules')) {
-            // React core libraries
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
-              return 'react-vendor';
-            }
-            // Chart library (largest dependency)
-            if (id.includes('recharts')) {
-              return 'chart-vendor';
-            }
-            // Icon library
-            if (id.includes('lucide-react')) {
-              return 'icon-vendor';
-            }
-            // HTTP client
-            if (id.includes('axios')) {
-              return 'http-vendor';
-            }
-            // Utilities
-            if (id.includes('clsx')) {
-              return 'utils-vendor';
-            }
-          }
-          
-          // Split large page components
-          if (id.includes('/pages/Dashboard')) {
-            return 'page-dashboard';
-          }
-          if (id.includes('/pages/Warehouses')) {
-            return 'page-warehouses';
-          }
-          if (id.includes('/pages/Inventory')) {
-            return 'page-inventory';
-          }
-          if (id.includes('/pages/Orders')) {
-            return 'page-orders';
-          }
-          if (id.includes('/pages/Customers')) {
-            return 'page-customers';
+            // Group all vendor libraries together
+            return 'vendor';
           }
         },
       },
