@@ -6,13 +6,10 @@ import {
   ShoppingCart,
   TrendingUp,
   Package,
-  Zap,
-  Shield,
   Award,
   Download,
   Eye,
-  Users,
-  DollarSign
+  Users
 } from 'lucide-react';
 
 interface MarketplaceItem {
@@ -51,7 +48,7 @@ export default function Marketplace() {
 
   const fetchMarketplaceData = () => {
     setLoading(true);
-    
+
     setTimeout(() => {
       // STATIC MOCK DATA
       const mockItems: MarketplaceItem[] = [

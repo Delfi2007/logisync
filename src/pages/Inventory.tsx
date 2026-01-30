@@ -1,9 +1,9 @@
 import { useState, useEffect, lazy, Suspense, useCallback, useMemo } from 'react';
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  Download, 
+import {
+  Plus,
+  Search,
+  Filter,
+  Download,
   Upload,
   Package,
   AlertTriangle,
@@ -45,13 +45,13 @@ interface StockMovement {
 }
 
 // Stock Movements Tab Component
-function StockMovementsTab({ products }: { products: Product[] }) {
+function StockMovementsTab({ products: _products }: { products: Product[] }) {
   const [movements, setMovements] = useState<StockMovement[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<'all' | 'in' | 'out' | 'adjustment'>('all');
   const [dateFilter, setDateFilter] = useState<'7days' | '30days' | '90days' | 'all'>('30days');
-  
+
   const debouncedSearch = useDebounce(searchQuery, 300);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ function StockMovementsTab({ products }: { products: Product[] }) {
 
   const fetchMovements = () => {
     setLoading(true);
-    
+
     setTimeout(() => {
       // STATIC MOCK DATA - Stock movements history
       const mockMovements: StockMovement[] = [
@@ -307,7 +307,7 @@ function StockMovementsTab({ products }: { products: Product[] }) {
       adjustment: 'bg-amber-50 text-amber-700 border-amber-200'
     };
     const labels = { in: 'Stock In', out: 'Stock Out', adjustment: 'Adjustment' };
-    
+
     return (
       <span className={`px-2 py-1 rounded-full text-xs font-medium border ${styles[type as keyof typeof styles]}`}>
         {labels[type as keyof typeof labels]}
@@ -320,7 +320,7 @@ function StockMovementsTab({ products }: { products: Product[] }) {
     const totalIn = movements.filter(m => m.type === 'in').reduce((sum, m) => sum + m.quantity, 0);
     const totalOut = movements.filter(m => m.type === 'out').reduce((sum, m) => sum + Math.abs(m.quantity), 0);
     const adjustments = movements.filter(m => m.type === 'adjustment').length;
-    
+
     return { totalIn, totalOut, adjustments, total: movements.length };
   }, [movements]);
 
@@ -345,7 +345,7 @@ function StockMovementsTab({ products }: { products: Product[] }) {
             <FileText className="h-8 w-8 text-neutral-400" />
           </div>
         </div>
-        
+
         <div className="card p-4">
           <div className="flex items-center justify-between">
             <div>
@@ -355,7 +355,7 @@ function StockMovementsTab({ products }: { products: Product[] }) {
             <ArrowUpCircle className="h-8 w-8 text-green-400" />
           </div>
         </div>
-        
+
         <div className="card p-4">
           <div className="flex items-center justify-between">
             <div>
@@ -365,7 +365,7 @@ function StockMovementsTab({ products }: { products: Product[] }) {
             <ArrowDownCircle className="h-8 w-8 text-red-400" />
           </div>
         </div>
-        
+
         <div className="card p-4">
           <div className="flex items-center justify-between">
             <div>
@@ -466,11 +466,10 @@ function StockMovementsTab({ products }: { products: Product[] }) {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`text-sm font-semibold ${
-                      movement.type === 'in' ? 'text-green-600' :
-                      movement.type === 'out' ? 'text-red-600' :
-                      movement.quantity > 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>
+                    <span className={`text-sm font-semibold ${movement.type === 'in' ? 'text-green-600' :
+                        movement.type === 'out' ? 'text-red-600' :
+                          movement.quantity > 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
                       {movement.type === 'in' ? '+' : movement.type === 'out' ? '-' : movement.quantity > 0 ? '+' : ''}{Math.abs(movement.quantity)}
                     </span>
                   </td>
@@ -533,7 +532,7 @@ export default function Inventory() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  
+
   // Bulk selection state
   const [selectedProducts, setSelectedProducts] = useState<Set<number>>(new Set());
   const [bulkDeleting, setBulkDeleting] = useState(false);
@@ -667,7 +666,7 @@ export default function Inventory() {
 
   const handleBulkDelete = async () => {
     if (selectedProducts.size === 0) return;
-    
+
     const count = selectedProducts.size;
     if (!confirm(`Are you sure you want to delete ${count} product${count > 1 ? 's' : ''}? This action cannot be undone.`)) {
       return;
@@ -763,7 +762,7 @@ export default function Inventory() {
             <Upload className="w-4 h-4" />
             <span className="hidden sm:inline">Import</span>
           </button>
-          <button 
+          <button
             onClick={handleOpenCreateModal}
             className="btn-primary flex items-center gap-2"
           >
@@ -851,31 +850,28 @@ export default function Inventory() {
         <div className="flex space-x-8">
           <button
             onClick={() => setActiveTab('products')}
-            className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
-              activeTab === 'products'
+            className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'products'
                 ? 'border-neutral-900 text-neutral-900'
                 : 'border-transparent text-neutral-500 hover:text-neutral-700'
-            }`}
+              }`}
           >
             Products
           </button>
           <button
             onClick={() => setActiveTab('movements')}
-            className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
-              activeTab === 'movements'
+            className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'movements'
                 ? 'border-neutral-900 text-neutral-900'
                 : 'border-transparent text-neutral-500 hover:text-neutral-700'
-            }`}
+              }`}
           >
             Stock Movements
           </button>
           <button
             onClick={() => setActiveTab('alerts')}
-            className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
-              activeTab === 'alerts'
+            className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'alerts'
                 ? 'border-neutral-900 text-neutral-900'
                 : 'border-transparent text-neutral-500 hover:text-neutral-700'
-            }`}
+              }`}
           >
             Low Stock Alerts
           </button>
@@ -967,7 +963,7 @@ export default function Inventory() {
                   <h3 className="font-medium text-red-900">Error loading products</h3>
                   <p className="text-sm text-red-700 mt-1">{error}</p>
                 </div>
-                <button 
+                <button
                   onClick={fetchProducts}
                   className="ml-auto btn-secondary text-sm"
                 >
@@ -1097,7 +1093,7 @@ export default function Inventory() {
                     <p className="text-neutral-600 mb-4">
                       {lowStockProducts.length} products need attention
                     </p>
-                    
+
                     {lowStockProducts.length > 0 ? (
                       <div className="space-y-3">
                         {lowStockProducts.map(product => (

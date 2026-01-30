@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, AlertTriangle, CheckCircle, XCircle, Brain, Activity } from 'lucide-react';
+import { Shield, AlertTriangle, CheckCircle, Brain, Activity } from 'lucide-react';
 
 const mockTransactions = [
   {
@@ -68,17 +68,15 @@ export default function FraudDetection() {
         <div className="flex gap-2">
           <button
             onClick={() => setTimeRange('today')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              timeRange === 'today' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
-            }`}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${timeRange === 'today' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+              }`}
           >
             Today
           </button>
           <button
             onClick={() => setTimeRange('week')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              timeRange === 'week' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
-            }`}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${timeRange === 'week' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+              }`}
           >
             This Week
           </button>
@@ -155,13 +153,12 @@ export default function FraudDetection() {
           {mockTransactions.map((txn) => (
             <div
               key={txn.id}
-              className={`p-4 rounded-lg border-2 ${
-                txn.status === 'flagged'
+              className={`p-4 rounded-lg border-2 ${txn.status === 'flagged'
                   ? 'border-red-200 bg-red-50'
                   : txn.status === 'review'
-                  ? 'border-orange-200 bg-orange-50'
-                  : 'border-green-200 bg-green-50'
-              }`}
+                    ? 'border-orange-200 bg-orange-50'
+                    : 'border-green-200 bg-green-50'
+                }`}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
@@ -191,9 +188,8 @@ export default function FraudDetection() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className={`text-2xl font-bold ${
-                    txn.riskScore > 70 ? 'text-red-600' : txn.riskScore > 40 ? 'text-orange-600' : 'text-green-600'
-                  }`}>
+                  <div className={`text-2xl font-bold ${txn.riskScore > 70 ? 'text-red-600' : txn.riskScore > 40 ? 'text-orange-600' : 'text-green-600'
+                    }`}>
                     {txn.riskScore}
                   </div>
                   <div className="text-xs text-neutral-500">Risk Score</div>

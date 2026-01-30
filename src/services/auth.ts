@@ -11,6 +11,7 @@ export interface User {
   email: string;
   first_name: string;
   last_name: string;
+  full_name?: string; // Added for compatibility
   phone?: string;
   is_active: boolean;
   is_verified: boolean;
@@ -58,12 +59,12 @@ export const authService = {
       credentials
     );
     const data = handleApiResponse<AuthResponse>(response);
-    
+
     // Store tokens and user in localStorage
     localStorage.setItem('authToken', data.tokens.accessToken);
     localStorage.setItem('refreshToken', data.tokens.refreshToken);
     localStorage.setItem('user', JSON.stringify(data.user));
-    
+
     return data;
   },
 
@@ -78,12 +79,12 @@ export const authService = {
       userData
     );
     const data = handleApiResponse<AuthResponse>(response);
-    
+
     // Store tokens and user in localStorage
     localStorage.setItem('authToken', data.tokens.accessToken);
     localStorage.setItem('refreshToken', data.tokens.refreshToken);
     localStorage.setItem('user', JSON.stringify(data.user));
-    
+
     return data;
   },
 
@@ -145,11 +146,11 @@ export const authService = {
         { refreshToken }
       );
       const data = handleApiResponse(response);
-      
+
       // Update tokens in localStorage
       localStorage.setItem('authToken', data.tokens.accessToken);
       localStorage.setItem('refreshToken', data.tokens.refreshToken);
-      
+
       return {
         accessToken: data.tokens.accessToken,
         refreshToken: data.tokens.refreshToken

@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import {
   TrendingUp,
-  TrendingDown,
   Package,
   Truck,
   Users,
   DollarSign,
   ShoppingCart,
   Clock,
-  Calendar,
   BarChart3,
   PieChart,
   Activity,
@@ -136,9 +134,9 @@ export default function Analytics() {
 
   const MetricCard = ({ icon: Icon, label, current, previous, trend, format = 'number' }: any) => {
     const isPositive = trend >= 0;
-    const displayValue = format === 'currency' ? formatCurrency(current) : 
-                        format === 'percentage' ? `${current}%` : 
-                        current.toLocaleString();
+    const displayValue = format === 'currency' ? formatCurrency(current) :
+      format === 'percentage' ? `${current}%` :
+        current.toLocaleString();
 
     return (
       <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:shadow-md transition-shadow">
@@ -146,9 +144,8 @@ export default function Analytics() {
           <div className="bg-primary-50 p-3 rounded-lg">
             <Icon className="h-6 w-6 text-primary-600" />
           </div>
-          <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-sm font-medium ${
-            isPositive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-          }`}>
+          <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-sm font-medium ${isPositive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+            }`}>
             {isPositive ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
             {Math.abs(trend).toFixed(1)}%
           </div>
@@ -180,18 +177,17 @@ export default function Analytics() {
           <h1 className="text-3xl font-bold text-neutral-900">LogiMind Analytics</h1>
           <p className="text-neutral-600 mt-2">Comprehensive insights and performance metrics</p>
         </div>
-        
+
         {/* Time Range Filter */}
         <div className="flex gap-2">
           {(['7days', '30days', '90days', '1year'] as const).map((range) => (
             <button
               key={range}
               onClick={() => setTimeRange(range)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                timeRange === range
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${timeRange === range
                   ? 'bg-primary-600 text-white'
                   : 'bg-white text-neutral-700 border border-neutral-300 hover:bg-neutral-50'
-              }`}
+                }`}
             >
               {range === '7days' ? '7 Days' : range === '30days' ? '30 Days' : range === '90days' ? '90 Days' : '1 Year'}
             </button>
@@ -241,13 +237,13 @@ export default function Analytics() {
             Revenue & Orders Trend
           </h2>
         </div>
-        
+
         {/* Simple Bar Chart Visualization */}
         <div className="space-y-4">
           {data.monthlyRevenue.map((item, idx) => {
             const maxRevenue = Math.max(...data.monthlyRevenue.map(m => m.revenue));
             const revenueWidth = (item.revenue / maxRevenue) * 100;
-            
+
             return (
               <div key={idx} className="space-y-1">
                 <div className="flex items-center justify-between text-sm">
@@ -277,7 +273,7 @@ export default function Analytics() {
             <PieChart className="h-5 w-5 text-primary-600" />
             Orders by Status
           </h2>
-          
+
           <div className="space-y-4">
             {data.ordersByStatus.map((item, idx) => {
               const colors = [
@@ -286,7 +282,7 @@ export default function Analytics() {
                 'bg-amber-500',
                 'bg-neutral-400'
               ];
-              
+
               return (
                 <div key={idx}>
                   <div className="flex items-center justify-between mb-2">
@@ -317,7 +313,7 @@ export default function Analytics() {
             <Package className="h-5 w-5 text-primary-600" />
             Top Selling Products
           </h2>
-          
+
           <div className="space-y-4">
             {data.topProducts.map((product, idx) => (
               <div key={idx} className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors">
@@ -347,7 +343,7 @@ export default function Analytics() {
             <MapPin className="h-5 w-5 text-primary-600" />
             Top Performing Regions
           </h2>
-          
+
           <div className="space-y-3">
             {data.topRegions.map((region, idx) => (
               <div key={idx} className="flex items-center justify-between p-3 border border-neutral-200 rounded-lg hover:border-primary-300 transition-colors">
@@ -372,13 +368,13 @@ export default function Analytics() {
             <Activity className="h-5 w-5 text-primary-600" />
             Performance Metrics
           </h2>
-          
+
           <div className="space-y-4">
             {data.performanceMetrics.map((metric, idx) => {
               const progress = (metric.value / metric.target) * 100;
               const isAboveTarget = metric.value >= metric.target;
               const isBelowTarget = metric.metric === 'Return Rate' ? metric.value < metric.target : false;
-              
+
               return (
                 <div key={idx}>
                   <div className="flex items-center justify-between mb-2">
@@ -394,9 +390,8 @@ export default function Analytics() {
                   </div>
                   <div className="w-full bg-neutral-100 rounded-full h-2">
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${
-                        progress >= 100 ? 'bg-green-500' : progress >= 80 ? 'bg-blue-500' : 'bg-amber-500'
-                      }`}
+                      className={`h-full rounded-full transition-all duration-500 ${progress >= 100 ? 'bg-green-500' : progress >= 80 ? 'bg-blue-500' : 'bg-amber-500'
+                        }`}
                       style={{ width: `${Math.min(progress, 100)}%` }}
                     ></div>
                   </div>
