@@ -22,8 +22,8 @@ export const registerValidation = [
     .withMessage('Password must contain at least one uppercase letter')
     .matches(/[0-9]/)
     .withMessage('Password must contain at least one number')
-    .matches(/[@$!%*?&]/)
-    .withMessage('Password must contain at least one special character (@$!%*?&)'),
+    .matches(/[^a-zA-Z0-9]/)
+    .withMessage('Password must contain at least one special character'),
 
   body('firstName')
     .trim()
@@ -100,8 +100,8 @@ export const resetPasswordValidation = [
     .withMessage('Password must contain at least one uppercase letter')
     .matches(/[0-9]/)
     .withMessage('Password must contain at least one number')
-    .matches(/[@$!%*?&]/)
-    .withMessage('Password must contain at least one special character (@$!%*?&)'),
+    .matches(/[^a-zA-Z0-9]/)
+    .withMessage('Password must contain at least one special character'),
 
   body('confirmPassword')
     .custom((value, { req }) => value === req.body.password)
@@ -122,8 +122,8 @@ export const changePasswordValidation = [
     .withMessage('New password must contain at least one uppercase letter')
     .matches(/[0-9]/)
     .withMessage('New password must contain at least one number')
-    .matches(/[@$!%*?&]/)
-    .withMessage('New password must contain at least one special character (@$!%*?&)')
+    .matches(/[^a-zA-Z0-9]/)
+    .withMessage('New password must contain at least one special character')
     .custom((value, { req }) => value !== req.body.currentPassword)
     .withMessage('New password must be different from current password'),
 
