@@ -1,372 +1,371 @@
-$i$m$p$o$r$t$ ${$ $u$s$e$S$t$a$t$e$ $}$ $f$r$o$m$ $'$r$e$a$c$t$'$;$$
-$i$m$p$o$r$t$ ${$ $C$l$o$u$d$,$ $T$r$e$n$d$i$n$g$D$o$w$n$,$ $T$a$r$g$e$t$,$ $I$n$d$i$a$n$R$u$p$e$e$,$ $L$e$a$f$,$ $A$r$r$o$w$R$i$g$h$t$,$ $B$a$r$C$h$a$r$t$3$ $}$ $f$r$o$m$ $'$l$u$c$i$d$e$-$r$e$a$c$t$'$;$$
-$i$m$p$o$r$t$ ${$ $L$i$n$e$C$h$a$r$t$,$ $L$i$n$e$,$ $X$A$x$i$s$,$ $Y$A$x$i$s$,$ $C$a$r$t$e$s$i$a$n$G$r$i$d$,$ $T$o$o$l$t$i$p$,$ $R$e$s$p$o$n$s$i$v$e$C$o$n$t$a$i$n$e$r$ $}$ $f$r$o$m$ $'$r$e$c$h$a$r$t$s$'$;$$
-$i$m$p$o$r$t$ ${$ $L$i$n$k$ $}$ $f$r$o$m$ $'$r$e$a$c$t$-$r$o$u$t$e$r$-$d$o$m$'$;$$
-$$
-$/$/$ $M$o$c$k$ $d$a$t$a$ $f$o$r$ $m$o$n$t$h$l$y$ $e$m$i$s$s$i$o$n$s$$
-$c$o$n$s$t$ $m$o$n$t$h$l$y$E$m$i$s$s$i$o$n$s$ $=$ $[$$
-$ $ ${$ $m$o$n$t$h$:$ $'$J$a$n$'$,$ $b$a$s$e$l$i$n$e$:$ $3$2$0$,$ $a$c$t$u$a$l$:$ $2$4$5$,$ $r$e$d$u$c$e$d$:$ $7$5$,$ $t$a$r$g$e$t$:$ $2$5$0$ $}$,$$
-$ $ ${$ $m$o$n$t$h$:$ $'$F$e$b$'$,$ $b$a$s$e$l$i$n$e$:$ $3$1$0$,$ $a$c$t$u$a$l$:$ $2$2$8$,$ $r$e$d$u$c$e$d$:$ $8$2$,$ $t$a$r$g$e$t$:$ $2$4$0$ $}$,$$
-$ $ ${$ $m$o$n$t$h$:$ $'$M$a$r$'$,$ $b$a$s$e$l$i$n$e$:$ $3$3$0$,$ $a$c$t$u$a$l$:$ $2$4$2$,$ $r$e$d$u$c$e$d$:$ $8$8$,$ $t$a$r$g$e$t$:$ $2$4$5$ $}$,$$
-$ $ ${$ $m$o$n$t$h$:$ $'$A$p$r$'$,$ $b$a$s$e$l$i$n$e$:$ $3$1$5$,$ $a$c$t$u$a$l$:$ $2$1$8$,$ $r$e$d$u$c$e$d$:$ $9$7$,$ $t$a$r$g$e$t$:$ $2$3$5$ $}$,$$
-$ $ ${$ $m$o$n$t$h$:$ $'$M$a$y$'$,$ $b$a$s$e$l$i$n$e$:$ $3$2$5$,$ $a$c$t$u$a$l$:$ $2$2$5$,$ $r$e$d$u$c$e$d$:$ $1$0$0$,$ $t$a$r$g$e$t$:$ $2$4$0$ $}$,$$
-$ $ ${$ $m$o$n$t$h$:$ $'$J$u$n$'$,$ $b$a$s$e$l$i$n$e$:$ $3$4$0$,$ $a$c$t$u$a$l$:$ $2$3$4$,$ $r$e$d$u$c$e$d$:$ $1$0$6$,$ $t$a$r$g$e$t$:$ $2$5$0$ $}$,$$
-$]$;$$
-$$
-$c$o$n$s$t$ $r$o$u$t$e$C$a$r$b$o$n$D$a$t$a$ $=$ $[$$
-$ $ ${$$
-$ $ $ $ $r$o$u$t$e$:$ $'$R$T$-$0$0$1$'$,$$
-$ $ $ $ $n$a$m$e$:$ $'$M$e$t$r$o$ $A$r$e$a$ $D$i$s$t$r$i$b$u$t$i$o$n$'$,$$
-$ $ $ $ $d$i$s$t$a$n$c$e$:$ $'$1$4$5$ $k$m$'$,$$
-$ $ $ $ $c$o$2$S$t$a$n$d$a$r$d$:$ $'$4$2$ $k$g$'$,$$
-$ $ $ $ $c$o$2$G$r$e$e$n$:$ $'$1$3$ $k$g$'$,$$
-$ $ $ $ $s$a$v$e$d$:$ $'$2$9$ $k$g$'$,$$
-$ $ $ $ $r$e$d$u$c$t$i$o$n$:$ $'$6$9$%$'$,$$
-$ $ $ $ $m$e$t$h$o$d$:$ $'$E$V$ $F$l$e$e$t$'$,$$
-$ $ $ $ $s$t$a$t$u$s$:$ $'$a$c$t$i$v$e$'$$
-$ $ $}$,$$
-$ $ ${$$
-$ $ $ $ $r$o$u$t$e$:$ $'$R$T$-$0$0$2$'$,$$
-$ $ $ $ $n$a$m$e$:$ $'$I$n$d$u$s$t$r$i$a$l$ $Z$o$n$e$ $D$e$l$i$v$e$r$y$'$,$$
-$ $ $ $ $d$i$s$t$a$n$c$e$:$ $'$9$8$ $k$m$'$,$$
-$ $ $ $ $c$o$2$S$t$a$n$d$a$r$d$:$ $'$2$8$ $k$g$'$,$$
-$ $ $ $ $c$o$2$G$r$e$e$n$:$ $'$9$ $k$g$'$,$$
-$ $ $ $ $s$a$v$e$d$:$ $'$1$9$ $k$g$'$,$$
-$ $ $ $ $r$e$d$u$c$t$i$o$n$:$ $'$6$8$%$'$,$$
-$ $ $ $ $m$e$t$h$o$d$:$ $'$O$p$t$i$m$i$z$e$d$ $R$o$u$t$e$'$,$$
-$ $ $ $ $s$t$a$t$u$s$:$ $'$a$c$t$i$v$e$'$$
-$ $ $}$,$$
-$ $ ${$$
-$ $ $ $ $r$o$u$t$e$:$ $'$R$T$-$0$0$3$'$,$$
-$ $ $ $ $n$a$m$e$:$ $'$S$u$b$u$r$b$a$n$ $E$x$p$r$e$s$s$'$,$$
-$ $ $ $ $d$i$s$t$a$n$c$e$:$ $'$1$8$7$ $k$m$'$,$$
-$ $ $ $ $c$o$2$S$t$a$n$d$a$r$d$:$ $'$5$4$ $k$g$'$,$$
-$ $ $ $ $c$o$2$G$r$e$e$n$:$ $'$2$0$ $k$g$'$,$$
-$ $ $ $ $s$a$v$e$d$:$ $'$3$4$ $k$g$'$,$$
-$ $ $ $ $r$e$d$u$c$t$i$o$n$:$ $'$6$3$%$'$,$$
-$ $ $ $ $m$e$t$h$o$d$:$ $'$E$V$ $+$ $O$p$t$i$m$i$z$a$t$i$o$n$'$,$$
-$ $ $ $ $s$t$a$t$u$s$:$ $'$a$c$t$i$v$e$'$$
-$ $ $}$,$$
-$ $ ${$$
-$ $ $ $ $r$o$u$t$e$:$ $'$R$T$-$0$0$4$'$,$$
-$ $ $ $ $n$a$m$e$:$ $'$C$i$t$y$ $C$e$n$t$e$r$ $L$o$o$p$'$,$$
-$ $ $ $ $d$i$s$t$a$n$c$e$:$ $'$7$6$ $k$m$'$,$$
-$ $ $ $ $c$o$2$S$t$a$n$d$a$r$d$:$ $'$2$2$ $k$g$'$,$$
-$ $ $ $ $c$o$2$G$r$e$e$n$:$ $'$7$ $k$g$'$,$$
-$ $ $ $ $s$a$v$e$d$:$ $'$1$5$ $k$g$'$,$$
-$ $ $ $ $r$e$d$u$c$t$i$o$n$:$ $'$6$8$%$'$,$$
-$ $ $ $ $m$e$t$h$o$d$:$ $'$E$V$ $F$l$e$e$t$'$,$$
-$ $ $ $ $s$t$a$t$u$s$:$ $'$c$o$m$p$l$e$t$e$d$'$$
-$ $ $}$$
-$]$;$$
-$$
-$e$x$p$o$r$t$ $d$e$f$a$u$l$t$ $f$u$n$c$t$i$o$n$ $C$a$r$b$o$n$F$o$o$t$p$r$i$n$t$($)$ ${$$
-$ $ $c$o$n$s$t$ $[$t$i$m$e$R$a$n$g$e$,$ $s$e$t$T$i$m$e$R$a$n$g$e$]$ $=$ $u$s$e$S$t$a$t$e$($'$6$m$o$n$t$h$s$'$)$;$$
-$$
-$ $ $r$e$t$u$r$n$ $($$
-$ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$6$"$>$$
-$ $ $ $ $ $ ${$/$*$ $H$e$a$d$e$r$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$h$1$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$3$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$C$l$o$u$d$ $c$l$a$s$s$N$a$m$e$=$"$w$-$8$ $h$-$8$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $C$a$r$b$o$n$ $F$o$o$t$p$r$i$n$t$ $T$r$a$c$k$i$n$g$$
-$ $ $ $ $ $ $ $ $ $ $<$/$h$1$>$$
-$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$2$"$>$R$e$a$l$-$t$i$m$e$ $C$O$â$‚$‚$ $m$o$n$i$t$o$r$i$n$g$ $w$i$t$h$ $3$0$%$ $r$e$d$u$c$t$i$o$n$ $a$c$h$i$e$v$e$d$ $a$c$r$o$s$s$ $a$l$l$ $r$o$u$t$e$s$<$/$p$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
-$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$T$i$m$e$R$a$n$g$e$($'$3$m$o$n$t$h$s$'$)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$p$x$-$4$ $p$y$-$2$ $r$o$u$n$d$e$d$-$l$g$ $f$o$n$t$-$m$e$d$i$u$m$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $$${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$i$m$e$R$a$n$g$e$ $=$=$=$ $'$3$m$o$n$t$h$s$'$ $?$ $'$b$g$-$n$e$u$t$r$a$l$-$9$0$0$ $t$e$x$t$-$w$h$i$t$e$'$ $:$ $'$b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$2$0$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
-$ $ $ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $3$ $M$o$n$t$h$s$$
-$ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
-$ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
-$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$T$i$m$e$R$a$n$g$e$($'$6$m$o$n$t$h$s$'$)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$p$x$-$4$ $p$y$-$2$ $r$o$u$n$d$e$d$-$l$g$ $f$o$n$t$-$m$e$d$i$u$m$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $$${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$i$m$e$R$a$n$g$e$ $=$=$=$ $'$6$m$o$n$t$h$s$'$ $?$ $'$b$g$-$n$e$u$t$r$a$l$-$9$0$0$ $t$e$x$t$-$w$h$i$t$e$'$ $:$ $'$b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$2$0$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
-$ $ $ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $6$ $M$o$n$t$h$s$$
-$ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
-$ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
-$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$T$i$m$e$R$a$n$g$e$($'$1$y$e$a$r$'$)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$p$x$-$4$ $p$y$-$2$ $r$o$u$n$d$e$d$-$l$g$ $f$o$n$t$-$m$e$d$i$u$m$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $$${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$i$m$e$R$a$n$g$e$ $=$=$=$ $'$1$y$e$a$r$'$ $?$ $'$b$g$-$n$e$u$t$r$a$l$-$9$0$0$ $t$e$x$t$-$w$h$i$t$e$'$ $:$ $'$b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$2$0$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
-$ $ $ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $1$ $Y$e$a$r$$
-$ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $C$a$r$b$o$n$ $T$r$a$c$k$i$n$g$ $I$n$f$o$ $B$a$n$n$e$r$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$r$ $f$r$o$m$-$e$m$e$r$a$l$d$-$5$0$ $t$o$-$g$r$e$e$n$-$5$0$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$e$m$e$r$a$l$d$-$1$0$0$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$1$2$ $h$-$1$2$ $b$g$-$e$m$e$r$a$l$d$-$6$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $f$l$e$x$-$s$h$r$i$n$k$-$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$L$e$a$f$ $c$l$a$s$s$N$a$m$e$=$"$w$-$6$ $h$-$6$ $t$e$x$t$-$w$h$i$t$e$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$C$a$r$b$o$n$ $T$r$a$c$k$i$n$g$ $S$y$s$t$e$m$ $A$c$t$i$v$e$<$/$h$3$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $R$e$a$l$-$t$i$m$e$ $C$O$â$‚$‚$ $m$o$n$i$t$o$r$i$n$g$ $a$c$r$o$s$s$ $a$l$l$ $r$o$u$t$e$s$ $w$i$t$h$ $a$u$t$o$m$a$t$e$d$ $c$a$r$b$o$n$ $a$c$c$o$u$n$t$i$n$g$.$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $T$a$r$g$e$t$:$ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$"$>$N$e$t$ $Z$e$r$o$ $b$y$ $2$0$3$0$<$/$s$p$a$n$>$ $($a$l$i$g$n$e$d$ $w$i$t$h$ $P$a$r$i$s$ $A$g$r$e$e$m$e$n$t$)$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$4$ $m$t$-$3$ $t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$â$œ$“$ $I$S$O$ $1$4$0$6$4$ $C$e$r$t$i$f$i$e$d$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$â$œ$“$ $U$N$ $S$D$G$ $G$o$a$l$s$ $7$,$ $9$,$ $1$3$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$â$œ$“$ $8$4$7$ $t$o$n$s$ $C$O$â$‚$‚$ $s$a$v$e$d$ $t$h$i$s$ $y$e$a$r$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $K$e$y$ $M$e$t$r$i$c$s$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $m$d$:$g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$4$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$T$o$t$a$l$ $C$O$â$‚$‚$ $E$m$i$t$t$e$d$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$C$l$o$u$d$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$2$,$4$5$0$ $t$o$n$s$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$ $m$t$-$1$"$>$â$†$“$ $3$0$%$ $v$s$ $l$a$s$t$ $y$e$a$r$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$C$O$â$‚$‚$ $R$e$d$u$c$e$d$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$T$r$e$n$d$i$n$g$D$o$w$n$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$"$>$8$4$7$ $t$o$n$s$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$t$-$1$"$>$V$i$a$ $r$o$u$t$e$ $o$p$t$i$m$i$z$a$t$i$o$n$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$C$a$r$b$o$n$ $T$a$r$g$e$t$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$T$a$r$g$e$t$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$b$l$u$e$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$8$5$%$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$b$l$u$e$-$6$0$0$ $m$t$-$1$"$>$O$n$ $t$r$a$c$k$ $f$o$r$ $2$0$3$0$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$C$a$r$b$o$n$ $C$r$e$d$i$t$s$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$I$n$d$i$a$n$R$u$p$e$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$â$‚$¹$1$2$.$4$L$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$t$-$1$"$>$O$f$f$s$e$t$ $p$u$r$c$h$a$s$e$d$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $E$m$i$s$s$i$o$n$s$ $T$r$e$n$d$ $C$h$a$r$t$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$C$O$â$‚$‚$ $E$m$i$s$s$i$o$n$s$ $T$r$e$n$d$<$/$h$3$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$M$o$n$t$h$l$y$ $e$m$i$s$s$i$o$n$s$ $v$s$ $b$a$s$e$l$i$n$e$ $a$n$d$ $t$a$r$g$e$t$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$B$a$r$C$h$a$r$t$3$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$n$e$u$t$r$a$l$-$4$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ $<$R$e$s$p$o$n$s$i$v$e$C$o$n$t$a$i$n$e$r$ $w$i$d$t$h$=$"$1$0$0$%$"$ $h$e$i$g$h$t$=${$3$0$0$}$>$$
-$ $ $ $ $ $ $ $ $ $ $<$L$i$n$e$C$h$a$r$t$ $d$a$t$a$=${$m$o$n$t$h$l$y$E$m$i$s$s$i$o$n$s$}$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$C$a$r$t$e$s$i$a$n$G$r$i$d$ $s$t$r$o$k$e$D$a$s$h$a$r$r$a$y$=$"$3$ $3$"$ $s$t$r$o$k$e$=$"$#$e$5$e$7$e$b$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$X$A$x$i$s$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$a$t$a$K$e$y$=$"$m$o$n$t$h$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$=$"$#$6$b$7$2$8$0$"$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$y$l$e$=${${$ $f$o$n$t$S$i$z$e$:$ $'$1$2$p$x$'$ $}$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$Y$A$x$i$s$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$=$"$#$6$b$7$2$8$0$"$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$y$l$e$=${${$ $f$o$n$t$S$i$z$e$:$ $'$1$2$p$x$'$ $}$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=${${$ $v$a$l$u$e$:$ $'$C$O$â$‚$‚$ $($t$o$n$s$)$'$,$ $a$n$g$l$e$:$ $-$9$0$,$ $p$o$s$i$t$i$o$n$:$ $'$i$n$s$i$d$e$L$e$f$t$'$ $}$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$T$o$o$l$t$i$p$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$o$n$t$e$n$t$S$t$y$l$e$=${${$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $b$a$c$k$g$r$o$u$n$d$C$o$l$o$r$:$ $'$w$h$i$t$e$'$,$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $b$o$r$d$e$r$:$ $'$1$p$x$ $s$o$l$i$d$ $#$e$5$e$7$e$b$'$,$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $b$o$r$d$e$r$R$a$d$i$u$s$:$ $'$8$p$x$'$,$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $f$o$n$t$S$i$z$e$:$ $'$1$2$p$x$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$L$i$n$e$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$y$p$e$=$"$m$o$n$o$t$o$n$e$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$a$t$a$K$e$y$=$"$b$a$s$e$l$i$n$e$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$=$"$#$9$c$a$3$a$f$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$W$i$d$t$h$=${$2$}$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $n$a$m$e$=$"$B$a$s$e$l$i$n$e$"$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$o$t$=${${$ $f$i$l$l$:$ $'$#$9$c$a$3$a$f$'$,$ $r$:$ $4$ $}$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$L$i$n$e$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$y$p$e$=$"$m$o$n$o$t$o$n$e$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$a$t$a$K$e$y$=$"$a$c$t$u$a$l$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$=$"$#$1$0$b$9$8$1$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$W$i$d$t$h$=${$2$}$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $n$a$m$e$=$"$A$c$t$u$a$l$"$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$o$t$=${${$ $f$i$l$l$:$ $'$#$1$0$b$9$8$1$'$,$ $r$:$ $4$ $}$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$L$i$n$e$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $t$y$p$e$=$"$m$o$n$o$t$o$n$e$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$a$t$a$K$e$y$=$"$t$a$r$g$e$t$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$=$"$#$3$b$8$2$f$6$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$W$i$d$t$h$=${$2$}$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$r$o$k$e$D$a$s$h$a$r$r$a$y$=$"$5$ $5$"$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $n$a$m$e$=$"$T$a$r$g$e$t$"$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $d$o$t$=${${$ $f$i$l$l$:$ $'$#$3$b$8$2$f$6$'$,$ $r$:$ $4$ $}$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$L$i$n$e$C$h$a$r$t$>$$
-$ $ $ $ $ $ $ $ $<$/$R$e$s$p$o$n$s$i$v$e$C$o$n$t$a$i$n$e$r$>$$
-$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$m$t$-$4$ $g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$3$ $g$a$p$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$c$e$n$t$e$r$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $g$a$p$-$2$ $m$b$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$3$ $h$-$3$ $b$g$-$n$e$u$t$r$a$l$-$4$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$"$>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$B$a$s$e$l$i$n$e$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$1$,$9$6$5$ $t$o$n$s$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$c$e$n$t$e$r$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $g$a$p$-$2$ $m$b$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$3$ $h$-$3$ $b$g$-$e$m$e$r$a$l$d$-$5$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$"$>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$A$c$t$u$a$l$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$"$>$1$,$3$9$2$ $t$o$n$s$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$c$e$n$t$e$r$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $g$a$p$-$2$ $m$b$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$3$ $h$-$3$ $b$g$-$b$l$u$e$-$5$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$"$>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$T$a$r$g$e$t$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$b$l$u$e$-$6$0$0$"$>$1$,$4$6$0$ $t$o$n$s$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $R$o$u$t$e$-$b$y$-$R$o$u$t$e$ $C$a$r$b$o$n$ $A$n$a$l$y$s$i$s$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$R$o$u$t$e$-$b$y$-$R$o$u$t$e$ $C$a$r$b$o$n$ $A$n$a$l$y$s$i$s$<$/$h$3$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$D$e$t$a$i$l$e$d$ $C$O$â$‚$‚$ $b$r$e$a$k$d$o$w$n$ $p$e$r$ $d$e$l$i$v$e$r$y$ $r$o$u$t$e$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$L$i$n$k$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $t$o$=$"$/$s$u$s$t$a$i$n$a$b$i$l$i$t$y$/$g$r$e$e$n$-$r$o$u$t$i$n$g$"$$
-$ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$ $h$o$v$e$r$:$t$e$x$t$-$e$m$e$r$a$l$d$-$7$0$0$"$$
-$ $ $ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $V$i$e$w$ $G$r$e$e$n$ $R$o$u$t$i$n$g$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$A$r$r$o$w$R$i$g$h$t$ $c$l$a$s$s$N$a$m$e$=$"$w$-$4$ $h$-$4$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$L$i$n$k$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$o$v$e$r$f$l$o$w$-$x$-$a$u$t$o$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$t$a$b$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$e$a$d$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$r$ $c$l$a$s$s$N$a$m$e$=$"$b$o$r$d$e$r$-$b$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$e$f$t$ $p$y$-$3$ $p$x$-$4$ $t$e$x$t$-$x$s$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$R$o$u$t$e$<$/$t$h$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$e$f$t$ $p$y$-$3$ $p$x$-$4$ $t$e$x$t$-$x$s$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$N$a$m$e$<$/$t$h$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$e$f$t$ $p$y$-$3$ $p$x$-$4$ $t$e$x$t$-$x$s$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$D$i$s$t$a$n$c$e$<$/$t$h$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$e$f$t$ $p$y$-$3$ $p$x$-$4$ $t$e$x$t$-$x$s$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$S$t$a$n$d$a$r$d$ $C$O$â$‚$‚$<$/$t$h$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$e$f$t$ $p$y$-$3$ $p$x$-$4$ $t$e$x$t$-$x$s$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$G$r$e$e$n$ $C$O$â$‚$‚$<$/$t$h$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$e$f$t$ $p$y$-$3$ $p$x$-$4$ $t$e$x$t$-$x$s$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$S$a$v$e$d$<$/$t$h$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$e$f$t$ $p$y$-$3$ $p$x$-$4$ $t$e$x$t$-$x$s$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$M$e$t$h$o$d$<$/$t$h$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$h$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$e$f$t$ $p$y$-$3$ $p$x$-$4$ $t$e$x$t$-$x$s$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $u$p$p$e$r$c$a$s$e$"$>$S$t$a$t$u$s$<$/$t$h$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$r$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$h$e$a$d$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$t$b$o$d$y$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$r$o$u$t$e$C$a$r$b$o$n$D$a$t$a$.$m$a$p$($($r$o$u$t$e$)$ $=$>$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$r$ $k$e$y$=${$r$o$u$t$e$.$r$o$u$t$e$}$ $c$l$a$s$s$N$a$m$e$=$"$b$o$r$d$e$r$-$b$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$1$0$0$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$5$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$y$-$3$ $p$x$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$o$n$o$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$r$o$u$t$e$.$r$o$u$t$e$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$y$-$3$ $p$x$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$"$>${$r$o$u$t$e$.$n$a$m$e$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$y$-$3$ $p$x$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$"$>${$r$o$u$t$e$.$d$i$s$t$a$n$c$e$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$y$-$3$ $p$x$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$r$e$d$-$6$0$0$ $f$o$n$t$-$m$e$d$i$u$m$"$>${$r$o$u$t$e$.$c$o$2$S$t$a$n$d$a$r$d$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$y$-$3$ $p$x$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$ $f$o$n$t$-$m$e$d$i$u$m$"$>${$r$o$u$t$e$.$c$o$2$G$r$e$e$n$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$y$-$3$ $p$x$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$ $f$o$n$t$-$b$o$l$d$"$>${$r$o$u$t$e$.$s$a$v$e$d$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$l$-$1$"$>$(${$r$o$u$t$e$.$r$e$d$u$c$t$i$o$n$}$)$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$y$-$3$ $p$x$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $b$g$-$e$m$e$r$a$l$d$-$1$0$0$ $t$e$x$t$-$e$m$e$r$a$l$d$-$7$0$0$ $p$x$-$2$ $p$y$-$1$ $r$o$u$n$d$e$d$-$f$u$l$l$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$r$o$u$t$e$.$m$e$t$h$o$d$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$t$d$ $c$l$a$s$s$N$a$m$e$=$"$p$y$-$3$ $p$x$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=${$`$t$e$x$t$-$x$s$ $p$x$-$2$ $p$y$-$1$ $r$o$u$n$d$e$d$-$f$u$l$l$ $$${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $r$o$u$t$e$.$s$t$a$t$u$s$ $=$=$=$ $'$a$c$t$i$v$e$'$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$b$g$-$g$r$e$e$n$-$1$0$0$ $t$e$x$t$-$g$r$e$e$n$-$7$0$0$'$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $'$b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$r$o$u$t$e$.$s$t$a$t$u$s$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$d$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$r$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$t$b$o$d$y$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$t$a$b$l$e$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$m$t$-$4$ $p$-$4$ $b$g$-$e$m$e$r$a$l$d$-$5$0$ $r$o$u$n$d$e$d$-$l$g$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$e$m$e$r$a$l$d$-$1$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$3$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$L$e$a$f$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$ $f$l$e$x$-$s$h$r$i$n$k$-$0$ $m$t$-$0$.$5$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$h$4$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$E$n$v$i$r$o$n$m$e$n$t$a$l$ $I$m$p$a$c$t$<$/$h$4$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $T$h$e$s$e$ $C$O$â$‚$‚$ $r$e$d$u$c$t$i$o$n$s$ $a$r$e$ $e$q$u$i$v$a$l$e$n$t$ $t$o$:$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$u$l$ $c$l$a$s$s$N$a$m$e$=$"$m$t$-$2$ $s$p$a$c$e$-$y$-$1$ $t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$l$i$>$â$€$¢$ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$3$8$ $t$r$e$e$s$ $p$l$a$n$t$e$d$<$/$s$p$a$n$>$ $a$n$d$ $g$r$o$w$n$ $f$o$r$ $1$0$ $y$e$a$r$s$<$/$l$i$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$l$i$>$â$€$¢$ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$9$,$2$0$0$ $k$m$<$/$s$p$a$n$>$ $d$r$i$v$e$n$ $b$y$ $a$n$ $a$v$e$r$a$g$e$ $g$a$s$o$l$i$n$e$ $c$a$r$ $r$e$m$o$v$e$d$<$/$l$i$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$l$i$>$â$€$¢$ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$9$7$ $t$o$n$s$<$/$s$p$a$n$>$ $o$f$ $w$a$s$t$e$ $r$e$c$y$c$l$e$d$ $i$n$s$t$e$a$d$ $o$f$ $l$a$n$d$f$i$l$l$e$d$<$/$l$i$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$u$l$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $R$e$l$a$t$e$d$ $P$a$g$e$s$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $m$d$:$g$r$i$d$-$c$o$l$s$-$2$ $g$a$p$-$4$"$>$$
-$ $ $ $ $ $ $ $ $<$L$i$n$k$ $$
-$ $ $ $ $ $ $ $ $ $ $t$o$=$"$/$s$u$s$t$a$i$n$a$b$i$l$i$t$y$/$g$r$e$e$n$-$r$o$u$t$i$n$g$"$$
-$ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $h$o$v$e$r$:$s$h$a$d$o$w$-$l$g$ $t$r$a$n$s$i$t$i$o$n$-$s$h$a$d$o$w$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$t$r$a$n$s$p$a$r$e$n$t$ $h$o$v$e$r$:$b$o$r$d$e$r$-$e$m$e$r$a$l$d$-$2$0$0$"$$
-$ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$h$4$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$G$r$e$e$n$ $R$o$u$t$e$ $O$p$t$i$m$i$z$a$t$i$o$n$<$/$h$4$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$A$r$r$o$w$R$i$g$h$t$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $V$i$e$w$ $E$V$-$f$i$r$s$t$ $r$o$u$t$i$n$g$ $s$t$r$a$t$e$g$i$e$s$ $a$n$d$ $c$h$a$r$g$i$n$g$ $s$t$a$t$i$o$n$ $n$e$t$w$o$r$k$$
-$ $ $ $ $ $ $ $ $ $ $<$/$p$>$$
-$ $ $ $ $ $ $ $ $<$/$L$i$n$k$>$$
-$$
-$ $ $ $ $ $ $ $ $<$L$i$n$k$ $$
-$ $ $ $ $ $ $ $ $ $ $t$o$=$"$/$s$u$s$t$a$i$n$a$b$i$l$i$t$y$/$e$s$g$-$r$e$p$o$r$t$i$n$g$"$$
-$ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $h$o$v$e$r$:$s$h$a$d$o$w$-$l$g$ $t$r$a$n$s$i$t$i$o$n$-$s$h$a$d$o$w$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$t$r$a$n$s$p$a$r$e$n$t$ $h$o$v$e$r$:$b$o$r$d$e$r$-$e$m$e$r$a$l$d$-$2$0$0$"$$
-$ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$h$4$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$E$S$G$ $R$e$p$o$r$t$i$n$g$<$/$h$4$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$A$r$r$o$w$R$i$g$h$t$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$e$m$e$r$a$l$d$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $C$o$m$p$l$e$t$e$ $s$u$s$t$a$i$n$a$b$i$l$i$t$y$ $s$c$o$r$e$c$a$r$d$ $a$n$d$ $U$N$ $S$D$G$ $g$o$a$l$ $a$l$i$g$n$m$e$n$t$$
-$ $ $ $ $ $ $ $ $ $ $<$/$p$>$$
-$ $ $ $ $ $ $ $ $<$/$L$i$n$k$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $<$/$d$i$v$>$$
-$ $ $)$;$$
-$}$$
-$
+import { useState } from 'react';
+import { Cloud, TrendingDown, Target, IndianRupee, Leaf, ArrowRight, BarChart3 } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Link } from 'react-router-dom';
+
+// Mock data for monthly emissions
+const monthlyEmissions = [
+  { month: 'Jan', baseline: 320, actual: 245, reduced: 75, target: 250 },
+  { month: 'Feb', baseline: 310, actual: 228, reduced: 82, target: 240 },
+  { month: 'Mar', baseline: 330, actual: 242, reduced: 88, target: 245 },
+  { month: 'Apr', baseline: 315, actual: 218, reduced: 97, target: 235 },
+  { month: 'May', baseline: 325, actual: 225, reduced: 100, target: 240 },
+  { month: 'Jun', baseline: 340, actual: 234, reduced: 106, target: 250 },
+];
+
+const routeCarbonData = [
+  {
+    route: 'RT-001',
+    name: 'Metro Area Distribution',
+    distance: '145 km',
+    co2Standard: '42 kg',
+    co2Green: '13 kg',
+    saved: '29 kg',
+    reduction: '69%',
+    method: 'EV Fleet',
+    status: 'active'
+  },
+  {
+    route: 'RT-002',
+    name: 'Industrial Zone Delivery',
+    distance: '98 km',
+    co2Standard: '28 kg',
+    co2Green: '9 kg',
+    saved: '19 kg',
+    reduction: '68%',
+    method: 'Optimized Route',
+    status: 'active'
+  },
+  {
+    route: 'RT-003',
+    name: 'Suburban Express',
+    distance: '187 km',
+    co2Standard: '54 kg',
+    co2Green: '20 kg',
+    saved: '34 kg',
+    reduction: '63%',
+    method: 'EV + Optimization',
+    status: 'active'
+  },
+  {
+    route: 'RT-004',
+    name: 'City Center Loop',
+    distance: '76 km',
+    co2Standard: '22 kg',
+    co2Green: '7 kg',
+    saved: '15 kg',
+    reduction: '68%',
+    method: 'EV Fleet',
+    status: 'completed'
+  }
+];
+
+export default function CarbonFootprint() {
+  const [timeRange, setTimeRange] = useState('6months');
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-neutral-900 flex items-center gap-3">
+            <Cloud className="w-8 h-8 text-emerald-600" />
+            Carbon Footprint Tracking
+          </h1>
+          <p className="text-neutral-600 mt-2">Real-time COâ‚‚ monitoring with 30% reduction achieved across all routes</p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setTimeRange('3months')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              timeRange === '3months' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+            }`}
+          >
+            3 Months
+          </button>
+          <button
+            onClick={() => setTimeRange('6months')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              timeRange === '6months' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+            }`}
+          >
+            6 Months
+          </button>
+          <button
+            onClick={() => setTimeRange('1year')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              timeRange === '1year' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+            }`}
+          >
+            1 Year
+          </button>
+        </div>
+      </div>
+
+      {/* Carbon Tracking Info Banner */}
+      <div className="card p-6 bg-gradient-to-r from-emerald-50 to-green-50 border-2 border-emerald-100">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Leaf className="w-6 h-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-neutral-900">Carbon Tracking System Active</h3>
+            <p className="text-sm text-neutral-600 mt-1">
+              Real-time COâ‚‚ monitoring across all routes with automated carbon accounting. 
+              Target: <span className="font-bold text-emerald-600">Net Zero by 2030</span> (aligned with Paris Agreement)
+            </p>
+            <div className="flex gap-4 mt-3 text-xs text-neutral-500">
+              <span>âœ“ ISO 14064 Certified</span>
+              <span>âœ“ UN SDG Goals 7, 9, 13</span>
+              <span>âœ“ 847 tons COâ‚‚ saved this year</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="card p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-neutral-600">Total COâ‚‚ Emitted</span>
+            <Cloud className="w-5 h-5 text-neutral-600" />
+          </div>
+          <div className="text-3xl font-bold text-neutral-900">2,450 tons</div>
+          <div className="text-xs text-green-600 mt-1">â†“ 30% vs last year</div>
+        </div>
+
+        <div className="card p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-neutral-600">COâ‚‚ Reduced</span>
+            <TrendingDown className="w-5 h-5 text-emerald-600" />
+          </div>
+          <div className="text-3xl font-bold text-emerald-600">847 tons</div>
+          <div className="text-xs text-neutral-500 mt-1">Via route optimization</div>
+        </div>
+
+        <div className="card p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-neutral-600">Carbon Target</span>
+            <Target className="w-5 h-5 text-blue-600" />
+          </div>
+          <div className="text-3xl font-bold text-neutral-900">85%</div>
+          <div className="text-xs text-blue-600 mt-1">On track for 2030</div>
+        </div>
+
+        <div className="card p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-neutral-600">Carbon Credits</span>
+            <IndianRupee className="w-5 h-5 text-emerald-600" />
+          </div>
+          <div className="text-3xl font-bold text-neutral-900">â‚¹12.4L</div>
+          <div className="text-xs text-neutral-500 mt-1">Offset purchased</div>
+        </div>
+      </div>
+
+      {/* Emissions Trend Chart */}
+      <div className="card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-bold text-neutral-900">COâ‚‚ Emissions Trend</h3>
+            <p className="text-sm text-neutral-600 mt-1">Monthly emissions vs baseline and target</p>
+          </div>
+          <BarChart3 className="w-5 h-5 text-neutral-400" />
+        </div>
+
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={monthlyEmissions}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis 
+              dataKey="month" 
+              stroke="#6b7280"
+              style={{ fontSize: '12px' }}
+            />
+            <YAxis 
+              stroke="#6b7280"
+              style={{ fontSize: '12px' }}
+              label={{ value: 'COâ‚‚ (tons)', angle: -90, position: 'insideLeft' }}
+            />
+            <Tooltip 
+              contentStyle={{ 
+                backgroundColor: 'white', 
+                border: '1px solid #e5e7eb',
+                borderRadius: '8px',
+                fontSize: '12px'
+              }}
+            />
+            <Line 
+              type="monotone" 
+              dataKey="baseline" 
+              stroke="#9ca3af" 
+              strokeWidth={2} 
+              name="Baseline"
+              dot={{ fill: '#9ca3af', r: 4 }}
+            />
+            <Line 
+              type="monotone" 
+              dataKey="actual" 
+              stroke="#10b981" 
+              strokeWidth={2} 
+              name="Actual"
+              dot={{ fill: '#10b981', r: 4 }}
+            />
+            <Line 
+              type="monotone" 
+              dataKey="target" 
+              stroke="#3b82f6" 
+              strokeWidth={2} 
+              strokeDasharray="5 5" 
+              name="Target"
+              dot={{ fill: '#3b82f6', r: 4 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+
+        <div className="mt-4 grid grid-cols-3 gap-4">
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <div className="w-3 h-3 bg-neutral-400 rounded-full"></div>
+              <span className="text-xs text-neutral-600">Baseline</span>
+            </div>
+            <div className="text-sm font-bold text-neutral-900">1,965 tons</div>
+          </div>
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+              <span className="text-xs text-neutral-600">Actual</span>
+            </div>
+            <div className="text-sm font-bold text-emerald-600">1,392 tons</div>
+          </div>
+          <div className="text-center">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+              <span className="text-xs text-neutral-600">Target</span>
+            </div>
+            <div className="text-sm font-bold text-blue-600">1,460 tons</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Route-by-Route Carbon Analysis */}
+      <div className="card p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="text-lg font-bold text-neutral-900">Route-by-Route Carbon Analysis</h3>
+            <p className="text-sm text-neutral-600 mt-1">Detailed COâ‚‚ breakdown per delivery route</p>
+          </div>
+          <Link 
+            to="/sustainability/green-routing"
+            className="flex items-center gap-2 text-sm font-medium text-emerald-600 hover:text-emerald-700"
+          >
+            View Green Routing
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-neutral-200">
+                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase">Route</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase">Name</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase">Distance</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase">Standard COâ‚‚</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase">Green COâ‚‚</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase">Saved</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase">Method</th>
+                <th className="text-left py-3 px-4 text-xs font-semibold text-neutral-600 uppercase">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {routeCarbonData.map((route) => (
+                <tr key={route.route} className="border-b border-neutral-100 hover:bg-neutral-50">
+                  <td className="py-3 px-4">
+                    <span className="font-mono text-sm font-medium text-neutral-900">{route.route}</span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className="text-sm text-neutral-700">{route.name}</span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className="text-sm text-neutral-700">{route.distance}</span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className="text-sm text-red-600 font-medium">{route.co2Standard}</span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className="text-sm text-emerald-600 font-medium">{route.co2Green}</span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <div>
+                      <span className="text-sm text-emerald-600 font-bold">{route.saved}</span>
+                      <span className="text-xs text-neutral-500 ml-1">({route.reduction})</span>
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">
+                      {route.method}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className={`text-xs px-2 py-1 rounded-full ${
+                      route.status === 'active' 
+                        ? 'bg-green-100 text-green-700' 
+                        : 'bg-neutral-100 text-neutral-700'
+                    }`}>
+                      {route.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="mt-4 p-4 bg-emerald-50 rounded-lg border border-emerald-100">
+          <div className="flex items-start gap-3">
+            <Leaf className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-sm font-bold text-neutral-900">Environmental Impact</h4>
+              <p className="text-xs text-neutral-600 mt-1">
+                These COâ‚‚ reductions are equivalent to:
+              </p>
+              <ul className="mt-2 space-y-1 text-xs text-neutral-600">
+                <li>â€¢ <span className="font-medium">38 trees planted</span> and grown for 10 years</li>
+                <li>â€¢ <span className="font-medium">9,200 km</span> driven by an average gasoline car removed</li>
+                <li>â€¢ <span className="font-medium">97 tons</span> of waste recycled instead of landfilled</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Related Pages */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Link 
+          to="/sustainability/green-routing"
+          className="card p-6 hover:shadow-lg transition-shadow border-2 border-transparent hover:border-emerald-200"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="font-bold text-neutral-900">Green Route Optimization</h4>
+            <ArrowRight className="w-5 h-5 text-emerald-600" />
+          </div>
+          <p className="text-sm text-neutral-600">
+            View EV-first routing strategies and charging station network
+          </p>
+        </Link>
+
+        <Link 
+          to="/sustainability/esg-reporting"
+          className="card p-6 hover:shadow-lg transition-shadow border-2 border-transparent hover:border-emerald-200"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="font-bold text-neutral-900">ESG Reporting</h4>
+            <ArrowRight className="w-5 h-5 text-emerald-600" />
+          </div>
+          <p className="text-sm text-neutral-600">
+            Complete sustainability scorecard and UN SDG goal alignment
+          </p>
+        </Link>
+      </div>
+    </div>
+  );
+}

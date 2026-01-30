@@ -1,441 +1,440 @@
-$i$m$p$o$r$t$ ${$ $u$s$e$S$t$a$t$e$,$ $u$s$e$E$f$f$e$c$t$ $}$ $f$r$o$m$ $'$r$e$a$c$t$'$;$$
-$i$m$p$o$r$t$ ${$$
-$ $ $T$r$e$n$d$i$n$g$U$p$,$$
-$ $ $P$a$c$k$a$g$e$,$$
-$ $ $T$r$u$c$k$,$$
-$ $ $U$s$e$r$s$,$$
-$ $ $D$o$l$l$a$r$S$i$g$n$,$$
-$ $ $S$h$o$p$p$i$n$g$C$a$r$t$,$$
-$ $ $C$l$o$c$k$,$$
-$ $ $B$a$r$C$h$a$r$t$3$,$$
-$ $ $P$i$e$C$h$a$r$t$,$$
-$ $ $A$c$t$i$v$i$t$y$,$$
-$ $ $M$a$p$P$i$n$,$$
-$ $ $A$l$e$r$t$C$i$r$c$l$e$,$$
-$ $ $C$h$e$c$k$C$i$r$c$l$e$,$$
-$ $ $A$r$r$o$w$U$p$R$i$g$h$t$,$$
-$ $ $A$r$r$o$w$D$o$w$n$R$i$g$h$t$$
-$}$ $f$r$o$m$ $'$l$u$c$i$d$e$-$r$e$a$c$t$'$;$$
-$$
-$i$n$t$e$r$f$a$c$e$ $A$n$a$l$y$t$i$c$s$D$a$t$a$ ${$$
-$ $ $r$e$v$e$n$u$e$:$ ${$$
-$ $ $ $ $c$u$r$r$e$n$t$:$ $n$u$m$b$e$r$;$$
-$ $ $ $ $p$r$e$v$i$o$u$s$:$ $n$u$m$b$e$r$;$$
-$ $ $ $ $t$r$e$n$d$:$ $n$u$m$b$e$r$;$$
-$ $ $}$;$$
-$ $ $o$r$d$e$r$s$:$ ${$$
-$ $ $ $ $c$u$r$r$e$n$t$:$ $n$u$m$b$e$r$;$$
-$ $ $ $ $p$r$e$v$i$o$u$s$:$ $n$u$m$b$e$r$;$$
-$ $ $ $ $t$r$e$n$d$:$ $n$u$m$b$e$r$;$$
-$ $ $}$;$$
-$ $ $c$u$s$t$o$m$e$r$s$:$ ${$$
-$ $ $ $ $c$u$r$r$e$n$t$:$ $n$u$m$b$e$r$;$$
-$ $ $ $ $p$r$e$v$i$o$u$s$:$ $n$u$m$b$e$r$;$$
-$ $ $ $ $t$r$e$n$d$:$ $n$u$m$b$e$r$;$$
-$ $ $}$;$$
-$ $ $d$e$l$i$v$e$r$y$R$a$t$e$:$ ${$$
-$ $ $ $ $c$u$r$r$e$n$t$:$ $n$u$m$b$e$r$;$$
-$ $ $ $ $p$r$e$v$i$o$u$s$:$ $n$u$m$b$e$r$;$$
-$ $ $ $ $t$r$e$n$d$:$ $n$u$m$b$e$r$;$$
-$ $ $}$;$$
-$ $ $m$o$n$t$h$l$y$R$e$v$e$n$u$e$:$ $A$r$r$a$y$<${$ $m$o$n$t$h$:$ $s$t$r$i$n$g$;$ $r$e$v$e$n$u$e$:$ $n$u$m$b$e$r$;$ $o$r$d$e$r$s$:$ $n$u$m$b$e$r$ $}$>$;$$
-$ $ $o$r$d$e$r$s$B$y$S$t$a$t$u$s$:$ $A$r$r$a$y$<${$ $s$t$a$t$u$s$:$ $s$t$r$i$n$g$;$ $c$o$u$n$t$:$ $n$u$m$b$e$r$;$ $p$e$r$c$e$n$t$a$g$e$:$ $n$u$m$b$e$r$ $}$>$;$$
-$ $ $t$o$p$P$r$o$d$u$c$t$s$:$ $A$r$r$a$y$<${$ $n$a$m$e$:$ $s$t$r$i$n$g$;$ $s$a$l$e$s$:$ $n$u$m$b$e$r$;$ $r$e$v$e$n$u$e$:$ $n$u$m$b$e$r$ $}$>$;$$
-$ $ $t$o$p$R$e$g$i$o$n$s$:$ $A$r$r$a$y$<${$ $r$e$g$i$o$n$:$ $s$t$r$i$n$g$;$ $o$r$d$e$r$s$:$ $n$u$m$b$e$r$;$ $r$e$v$e$n$u$e$:$ $n$u$m$b$e$r$ $}$>$;$$
-$ $ $p$e$r$f$o$r$m$a$n$c$e$M$e$t$r$i$c$s$:$ $A$r$r$a$y$<${$ $m$e$t$r$i$c$:$ $s$t$r$i$n$g$;$ $v$a$l$u$e$:$ $n$u$m$b$e$r$;$ $t$a$r$g$e$t$:$ $n$u$m$b$e$r$;$ $u$n$i$t$:$ $s$t$r$i$n$g$ $}$>$;$$
-$}$$
-$$
-$e$x$p$o$r$t$ $d$e$f$a$u$l$t$ $f$u$n$c$t$i$o$n$ $A$n$a$l$y$t$i$c$s$($)$ ${$$
-$ $ $c$o$n$s$t$ $[$d$a$t$a$,$ $s$e$t$D$a$t$a$]$ $=$ $u$s$e$S$t$a$t$e$<$A$n$a$l$y$t$i$c$s$D$a$t$a$ $|$ $n$u$l$l$>$($n$u$l$l$)$;$$
-$ $ $c$o$n$s$t$ $[$l$o$a$d$i$n$g$,$ $s$e$t$L$o$a$d$i$n$g$]$ $=$ $u$s$e$S$t$a$t$e$($t$r$u$e$)$;$$
-$ $ $c$o$n$s$t$ $[$t$i$m$e$R$a$n$g$e$,$ $s$e$t$T$i$m$e$R$a$n$g$e$]$ $=$ $u$s$e$S$t$a$t$e$<$'$7$d$a$y$s$'$ $|$ $'$3$0$d$a$y$s$'$ $|$ $'$9$0$d$a$y$s$'$ $|$ $'$1$y$e$a$r$'$>$($'$3$0$d$a$y$s$'$)$;$$
-$$
-$ $ $u$s$e$E$f$f$e$c$t$($($)$ $=$>$ ${$$
-$ $ $ $ $f$e$t$c$h$A$n$a$l$y$t$i$c$s$($)$;$$
-$ $ $}$,$ $[$t$i$m$e$R$a$n$g$e$]$)$;$$
-$$
-$ $ $c$o$n$s$t$ $f$e$t$c$h$A$n$a$l$y$t$i$c$s$ $=$ $($)$ $=$>$ ${$$
-$ $ $ $ $s$e$t$L$o$a$d$i$n$g$($t$r$u$e$)$;$$
-$$
-$ $ $ $ $s$e$t$T$i$m$e$o$u$t$($($)$ $=$>$ ${$$
-$ $ $ $ $ $ $/$/$ $S$T$A$T$I$C$ $M$O$C$K$ $A$N$A$L$Y$T$I$C$S$ $D$A$T$A$$
-$ $ $ $ $ $ $c$o$n$s$t$ $m$o$c$k$D$a$t$a$:$ $A$n$a$l$y$t$i$c$s$D$a$t$a$ $=$ ${$$
-$ $ $ $ $ $ $ $ $r$e$v$e$n$u$e$:$ ${$$
-$ $ $ $ $ $ $ $ $ $ $c$u$r$r$e$n$t$:$ $2$8$4$7$5$0$0$,$$
-$ $ $ $ $ $ $ $ $ $ $p$r$e$v$i$o$u$s$:$ $2$4$5$6$0$0$0$,$$
-$ $ $ $ $ $ $ $ $ $ $t$r$e$n$d$:$ $1$5$.$9$$
-$ $ $ $ $ $ $ $ $}$,$$
-$ $ $ $ $ $ $ $ $o$r$d$e$r$s$:$ ${$$
-$ $ $ $ $ $ $ $ $ $ $c$u$r$r$e$n$t$:$ $1$2$4$7$,$$
-$ $ $ $ $ $ $ $ $ $ $p$r$e$v$i$o$u$s$:$ $1$0$8$9$,$$
-$ $ $ $ $ $ $ $ $ $ $t$r$e$n$d$:$ $1$4$.$5$$
-$ $ $ $ $ $ $ $ $}$,$$
-$ $ $ $ $ $ $ $ $c$u$s$t$o$m$e$r$s$:$ ${$$
-$ $ $ $ $ $ $ $ $ $ $c$u$r$r$e$n$t$:$ $5$2$3$,$$
-$ $ $ $ $ $ $ $ $ $ $p$r$e$v$i$o$u$s$:$ $4$8$7$,$$
-$ $ $ $ $ $ $ $ $ $ $t$r$e$n$d$:$ $7$.$4$$
-$ $ $ $ $ $ $ $ $}$,$$
-$ $ $ $ $ $ $ $ $d$e$l$i$v$e$r$y$R$a$t$e$:$ ${$$
-$ $ $ $ $ $ $ $ $ $ $c$u$r$r$e$n$t$:$ $9$6$.$8$,$$
-$ $ $ $ $ $ $ $ $ $ $p$r$e$v$i$o$u$s$:$ $9$4$.$2$,$$
-$ $ $ $ $ $ $ $ $ $ $t$r$e$n$d$:$ $2$.$8$$
-$ $ $ $ $ $ $ $ $}$,$$
-$ $ $ $ $ $ $ $ $m$o$n$t$h$l$y$R$e$v$e$n$u$e$:$ $[$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$o$n$t$h$:$ $'$A$p$r$'$,$ $r$e$v$e$n$u$e$:$ $1$8$5$0$0$0$0$,$ $o$r$d$e$r$s$:$ $8$4$2$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$o$n$t$h$:$ $'$M$a$y$'$,$ $r$e$v$e$n$u$e$:$ $2$1$2$0$0$0$0$,$ $o$r$d$e$r$s$:$ $9$5$6$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$o$n$t$h$:$ $'$J$u$n$'$,$ $r$e$v$e$n$u$e$:$ $2$4$5$6$0$0$0$,$ $o$r$d$e$r$s$:$ $1$0$8$9$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$o$n$t$h$:$ $'$J$u$l$'$,$ $r$e$v$e$n$u$e$:$ $2$6$8$0$0$0$0$,$ $o$r$d$e$r$s$:$ $1$1$7$8$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$o$n$t$h$:$ $'$A$u$g$'$,$ $r$e$v$e$n$u$e$:$ $2$3$4$0$0$0$0$,$ $o$r$d$e$r$s$:$ $1$0$3$4$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$o$n$t$h$:$ $'$S$e$p$'$,$ $r$e$v$e$n$u$e$:$ $2$5$8$0$0$0$0$,$ $o$r$d$e$r$s$:$ $1$1$5$6$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$o$n$t$h$:$ $'$O$c$t$'$,$ $r$e$v$e$n$u$e$:$ $2$8$4$7$5$0$0$,$ $o$r$d$e$r$s$:$ $1$2$4$7$ $}$$
-$ $ $ $ $ $ $ $ $]$,$$
-$ $ $ $ $ $ $ $ $o$r$d$e$r$s$B$y$S$t$a$t$u$s$:$ $[$$
-$ $ $ $ $ $ $ $ $ $ ${$ $s$t$a$t$u$s$:$ $'$D$e$l$i$v$e$r$e$d$'$,$ $c$o$u$n$t$:$ $1$0$8$9$,$ $p$e$r$c$e$n$t$a$g$e$:$ $8$7$.$3$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $s$t$a$t$u$s$:$ $'$I$n$ $T$r$a$n$s$i$t$'$,$ $c$o$u$n$t$:$ $9$8$,$ $p$e$r$c$e$n$t$a$g$e$:$ $7$.$9$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $s$t$a$t$u$s$:$ $'$P$r$o$c$e$s$s$i$n$g$'$,$ $c$o$u$n$t$:$ $4$2$,$ $p$e$r$c$e$n$t$a$g$e$:$ $3$.$4$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $s$t$a$t$u$s$:$ $'$P$e$n$d$i$n$g$'$,$ $c$o$u$n$t$:$ $1$8$,$ $p$e$r$c$e$n$t$a$g$e$:$ $1$.$4$ $}$$
-$ $ $ $ $ $ $ $ $]$,$$
-$ $ $ $ $ $ $ $ $t$o$p$P$r$o$d$u$c$t$s$:$ $[$$
-$ $ $ $ $ $ $ $ $ $ ${$ $n$a$m$e$:$ $'$I$n$d$u$s$t$r$i$a$l$ $E$q$u$i$p$m$e$n$t$ $S$e$t$'$,$ $s$a$l$e$s$:$ $2$3$4$,$ $r$e$v$e$n$u$e$:$ $1$1$7$0$0$0$0$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $n$a$m$e$:$ $'$M$e$d$i$c$a$l$ $S$u$p$p$l$i$e$s$ $B$u$n$d$l$e$'$,$ $s$a$l$e$s$:$ $1$8$9$,$ $r$e$v$e$n$u$e$:$ $9$4$5$0$0$0$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $n$a$m$e$:$ $'$E$l$e$c$t$r$o$n$i$c$s$ $C$o$m$p$o$n$e$n$t$s$'$,$ $s$a$l$e$s$:$ $1$5$6$,$ $r$e$v$e$n$u$e$:$ $7$8$0$0$0$0$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $n$a$m$e$:$ $'$C$o$n$s$t$r$u$c$t$i$o$n$ $M$a$t$e$r$i$a$l$s$'$,$ $s$a$l$e$s$:$ $1$4$2$,$ $r$e$v$e$n$u$e$:$ $7$1$0$0$0$0$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $n$a$m$e$:$ $'$O$f$f$i$c$e$ $F$u$r$n$i$t$u$r$e$ $P$a$c$k$a$g$e$'$,$ $s$a$l$e$s$:$ $9$8$,$ $r$e$v$e$n$u$e$:$ $4$9$0$0$0$0$ $}$$
-$ $ $ $ $ $ $ $ $]$,$$
-$ $ $ $ $ $ $ $ $t$o$p$R$e$g$i$o$n$s$:$ $[$$
-$ $ $ $ $ $ $ $ $ $ ${$ $r$e$g$i$o$n$:$ $'$M$u$m$b$a$i$,$ $M$a$h$a$r$a$s$h$t$r$a$'$,$ $o$r$d$e$r$s$:$ $3$4$2$,$ $r$e$v$e$n$u$e$:$ $8$5$5$0$0$0$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $r$e$g$i$o$n$:$ $'$D$e$l$h$i$ $N$C$R$'$,$ $o$r$d$e$r$s$:$ $2$9$8$,$ $r$e$v$e$n$u$e$:$ $7$4$5$0$0$0$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $r$e$g$i$o$n$:$ $'$B$a$n$g$a$l$o$r$e$,$ $K$a$r$n$a$t$a$k$a$'$,$ $o$r$d$e$r$s$:$ $2$6$7$,$ $r$e$v$e$n$u$e$:$ $6$6$7$5$0$0$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $r$e$g$i$o$n$:$ $'$C$h$e$n$n$a$i$,$ $T$a$m$i$l$ $N$a$d$u$'$,$ $o$r$d$e$r$s$:$ $1$8$9$,$ $r$e$v$e$n$u$e$:$ $4$7$2$5$0$0$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $r$e$g$i$o$n$:$ $'$P$u$n$e$,$ $M$a$h$a$r$a$s$h$t$r$a$'$,$ $o$r$d$e$r$s$:$ $1$5$1$,$ $r$e$v$e$n$u$e$:$ $3$7$7$5$0$0$ $}$$
-$ $ $ $ $ $ $ $ $]$,$$
-$ $ $ $ $ $ $ $ $p$e$r$f$o$r$m$a$n$c$e$M$e$t$r$i$c$s$:$ $[$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$e$t$r$i$c$:$ $'$A$v$e$r$a$g$e$ $D$e$l$i$v$e$r$y$ $T$i$m$e$'$,$ $v$a$l$u$e$:$ $2$.$8$,$ $t$a$r$g$e$t$:$ $3$.$0$,$ $u$n$i$t$:$ $'$d$a$y$s$'$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$e$t$r$i$c$:$ $'$O$r$d$e$r$ $F$u$l$f$i$l$l$m$e$n$t$ $R$a$t$e$'$,$ $v$a$l$u$e$:$ $9$6$.$8$,$ $t$a$r$g$e$t$:$ $9$5$.$0$,$ $u$n$i$t$:$ $'$%$'$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$e$t$r$i$c$:$ $'$C$u$s$t$o$m$e$r$ $S$a$t$i$s$f$a$c$t$i$o$n$'$,$ $v$a$l$u$e$:$ $4$.$7$,$ $t$a$r$g$e$t$:$ $4$.$5$,$ $u$n$i$t$:$ $'$/$5$'$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$e$t$r$i$c$:$ $'$I$n$v$e$n$t$o$r$y$ $T$u$r$n$o$v$e$r$'$,$ $v$a$l$u$e$:$ $8$.$2$,$ $t$a$r$g$e$t$:$ $7$.$0$,$ $u$n$i$t$:$ $'$x$'$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$e$t$r$i$c$:$ $'$O$n$-$T$i$m$e$ $D$e$l$i$v$e$r$y$'$,$ $v$a$l$u$e$:$ $9$4$.$5$,$ $t$a$r$g$e$t$:$ $9$0$.$0$,$ $u$n$i$t$:$ $'$%$'$ $}$,$$
-$ $ $ $ $ $ $ $ $ $ ${$ $m$e$t$r$i$c$:$ $'$R$e$t$u$r$n$ $R$a$t$e$'$,$ $v$a$l$u$e$:$ $1$.$8$,$ $t$a$r$g$e$t$:$ $3$.$0$,$ $u$n$i$t$:$ $'$%$'$ $}$$
-$ $ $ $ $ $ $ $ $]$$
-$ $ $ $ $ $ $}$;$$
-$$
-$ $ $ $ $ $ $s$e$t$D$a$t$a$($m$o$c$k$D$a$t$a$)$;$$
-$ $ $ $ $ $ $s$e$t$L$o$a$d$i$n$g$($f$a$l$s$e$)$;$$
-$ $ $ $ $}$,$ $1$0$0$)$;$$
-$ $ $}$;$$
-$$
-$ $ $c$o$n$s$t$ $f$o$r$m$a$t$C$u$r$r$e$n$c$y$ $=$ $($a$m$o$u$n$t$:$ $n$u$m$b$e$r$)$ $=$>$ ${$$
-$ $ $ $ $r$e$t$u$r$n$ $n$e$w$ $I$n$t$l$.$N$u$m$b$e$r$F$o$r$m$a$t$($'$e$n$-$U$S$'$,$ ${$$
-$ $ $ $ $ $ $s$t$y$l$e$:$ $'$c$u$r$r$e$n$c$y$'$,$$
-$ $ $ $ $ $ $c$u$r$r$e$n$c$y$:$ $'$U$S$D$'$,$$
-$ $ $ $ $ $ $m$a$x$i$m$u$m$F$r$a$c$t$i$o$n$D$i$g$i$t$s$:$ $0$,$$
-$ $ $ $ $}$)$.$f$o$r$m$a$t$($a$m$o$u$n$t$)$;$$
-$ $ $}$;$$
-$$
-$ $ $c$o$n$s$t$ $M$e$t$r$i$c$C$a$r$d$ $=$ $(${$ $i$c$o$n$:$ $I$c$o$n$,$ $l$a$b$e$l$,$ $c$u$r$r$e$n$t$,$ $p$r$e$v$i$o$u$s$,$ $t$r$e$n$d$,$ $f$o$r$m$a$t$ $=$ $'$n$u$m$b$e$r$'$ $}$:$ $a$n$y$)$ $=$>$ ${$$
-$ $ $ $ $c$o$n$s$t$ $i$s$P$o$s$i$t$i$v$e$ $=$ $t$r$e$n$d$ $>$=$ $0$;$$
-$ $ $ $ $c$o$n$s$t$ $d$i$s$p$l$a$y$V$a$l$u$e$ $=$ $f$o$r$m$a$t$ $=$=$=$ $'$c$u$r$r$e$n$c$y$'$ $?$ $f$o$r$m$a$t$C$u$r$r$e$n$c$y$($c$u$r$r$e$n$t$)$ $:$$
-$ $ $ $ $ $ $f$o$r$m$a$t$ $=$=$=$ $'$p$e$r$c$e$n$t$a$g$e$'$ $?$ $`$$${$c$u$r$r$e$n$t$}$%$`$ $:$$
-$ $ $ $ $ $ $ $ $c$u$r$r$e$n$t$.$t$o$L$o$c$a$l$e$S$t$r$i$n$g$($)$;$$
-$$
-$ $ $ $ $r$e$t$u$r$n$ $($$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$x$l$ $s$h$a$d$o$w$-$s$m$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $p$-$6$ $h$o$v$e$r$:$s$h$a$d$o$w$-$m$d$ $t$r$a$n$s$i$t$i$o$n$-$s$h$a$d$o$w$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$p$r$i$m$a$r$y$-$5$0$ $p$-$3$ $r$o$u$n$d$e$d$-$l$g$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$I$c$o$n$ $c$l$a$s$s$N$a$m$e$=$"$h$-$6$ $w$-$6$ $t$e$x$t$-$p$r$i$m$a$r$y$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=${$`$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$1$ $p$x$-$2$ $p$y$-$1$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $$${$i$s$P$o$s$i$t$i$v$e$ $?$ $'$b$g$-$g$r$e$e$n$-$5$0$ $t$e$x$t$-$g$r$e$e$n$-$7$0$0$'$ $:$ $'$b$g$-$r$e$d$-$5$0$ $t$e$x$t$-$r$e$d$-$7$0$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ ${$i$s$P$o$s$i$t$i$v$e$ $?$ $<$A$r$r$o$w$U$p$R$i$g$h$t$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$"$ $/$>$ $:$ $<$A$r$r$o$w$D$o$w$n$R$i$g$h$t$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$"$ $/$>$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ ${$M$a$t$h$.$a$b$s$($t$r$e$n$d$)$.$t$o$F$i$x$e$d$($1$)$}$%$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$1$"$>${$d$i$s$p$l$a$y$V$a$l$u$e$}$<$/$h$3$>$$
-$ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>${$l$a$b$e$l$}$<$/$p$>$$
-$ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$t$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $v$s$.$ $p$r$e$v$i$o$u$s$ $p$e$r$i$o$d$:$ ${$f$o$r$m$a$t$ $=$=$=$ $'$c$u$r$r$e$n$c$y$'$ $?$ $f$o$r$m$a$t$C$u$r$r$e$n$c$y$($p$r$e$v$i$o$u$s$)$ $:$ $p$r$e$v$i$o$u$s$.$t$o$L$o$c$a$l$e$S$t$r$i$n$g$($)$}$$
-$ $ $ $ $ $ $ $ $<$/$p$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $)$;$$
-$ $ $}$;$$
-$$
-$ $ $i$f$ $($l$o$a$d$i$n$g$)$ ${$$
-$ $ $ $ $r$e$t$u$r$n$ $($$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $h$-$6$4$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$a$n$i$m$a$t$e$-$s$p$i$n$ $r$o$u$n$d$e$d$-$f$u$l$l$ $h$-$1$2$ $w$-$1$2$ $b$o$r$d$e$r$-$b$-$2$ $b$o$r$d$e$r$-$p$r$i$m$a$r$y$-$6$0$0$"$>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $)$;$$
-$ $ $}$$
-$$
-$ $ $i$f$ $($!$d$a$t$a$)$ $r$e$t$u$r$n$ $n$u$l$l$;$$
-$$
-$ $ $r$e$t$u$r$n$ $($$
-$ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$6$"$>$$
-$ $ $ $ $ $ ${$/$*$ $H$e$a$d$e$r$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$h$1$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$L$o$g$i$M$i$n$d$ $A$n$a$l$y$t$i$c$s$<$/$h$1$>$$
-$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$2$"$>$C$o$m$p$r$e$h$e$n$s$i$v$e$ $i$n$s$i$g$h$t$s$ $a$n$d$ $p$e$r$f$o$r$m$a$n$c$e$ $m$e$t$r$i$c$s$<$/$p$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ ${$/$*$ $T$i$m$e$ $R$a$n$g$e$ $F$i$l$t$e$r$ $*$/$}$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ ${$($[$'$7$d$a$y$s$'$,$ $'$3$0$d$a$y$s$'$,$ $'$9$0$d$a$y$s$'$,$ $'$1$y$e$a$r$'$]$ $a$s$ $c$o$n$s$t$)$.$m$a$p$($($r$a$n$g$e$)$ $=$>$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $k$e$y$=${$r$a$n$g$e$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$T$i$m$e$R$a$n$g$e$($r$a$n$g$e$)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$p$x$-$4$ $p$y$-$2$ $r$o$u$n$d$e$d$-$l$g$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $$${$t$i$m$e$R$a$n$g$e$ $=$=$=$ $r$a$n$g$e$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$b$g$-$p$r$i$m$a$r$y$-$6$0$0$ $t$e$x$t$-$w$h$i$t$e$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $'$b$g$-$w$h$i$t$e$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$3$0$0$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$5$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$r$a$n$g$e$ $=$=$=$ $'$7$d$a$y$s$'$ $?$ $'$7$ $D$a$y$s$'$ $:$ $r$a$n$g$e$ $=$=$=$ $'$3$0$d$a$y$s$'$ $?$ $'$3$0$ $D$a$y$s$'$ $:$ $r$a$n$g$e$ $=$=$=$ $'$9$0$d$a$y$s$'$ $?$ $'$9$0$ $D$a$y$s$'$ $:$ $'$1$ $Y$e$a$r$'$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
-$ $ $ $ $ $ $ $ $ $ $)$)$}$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $K$e$y$ $M$e$t$r$i$c$s$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $m$d$:$g$r$i$d$-$c$o$l$s$-$2$ $l$g$:$g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $<$M$e$t$r$i$c$C$a$r$d$$
-$ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$D$o$l$l$a$r$S$i$g$n$}$$
-$ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$T$o$t$a$l$ $R$e$v$e$n$u$e$"$$
-$ $ $ $ $ $ $ $ $ $ $c$u$r$r$e$n$t$=${$d$a$t$a$.$r$e$v$e$n$u$e$.$c$u$r$r$e$n$t$}$$
-$ $ $ $ $ $ $ $ $ $ $p$r$e$v$i$o$u$s$=${$d$a$t$a$.$r$e$v$e$n$u$e$.$p$r$e$v$i$o$u$s$}$$
-$ $ $ $ $ $ $ $ $ $ $t$r$e$n$d$=${$d$a$t$a$.$r$e$v$e$n$u$e$.$t$r$e$n$d$}$$
-$ $ $ $ $ $ $ $ $ $ $f$o$r$m$a$t$=$"$c$u$r$r$e$n$c$y$"$$
-$ $ $ $ $ $ $ $ $/$>$$
-$ $ $ $ $ $ $ $ $<$M$e$t$r$i$c$C$a$r$d$$
-$ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$S$h$o$p$p$i$n$g$C$a$r$t$}$$
-$ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$T$o$t$a$l$ $O$r$d$e$r$s$"$$
-$ $ $ $ $ $ $ $ $ $ $c$u$r$r$e$n$t$=${$d$a$t$a$.$o$r$d$e$r$s$.$c$u$r$r$e$n$t$}$$
-$ $ $ $ $ $ $ $ $ $ $p$r$e$v$i$o$u$s$=${$d$a$t$a$.$o$r$d$e$r$s$.$p$r$e$v$i$o$u$s$}$$
-$ $ $ $ $ $ $ $ $ $ $t$r$e$n$d$=${$d$a$t$a$.$o$r$d$e$r$s$.$t$r$e$n$d$}$$
-$ $ $ $ $ $ $ $ $/$>$$
-$ $ $ $ $ $ $ $ $<$M$e$t$r$i$c$C$a$r$d$$
-$ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$U$s$e$r$s$}$$
-$ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$A$c$t$i$v$e$ $C$u$s$t$o$m$e$r$s$"$$
-$ $ $ $ $ $ $ $ $ $ $c$u$r$r$e$n$t$=${$d$a$t$a$.$c$u$s$t$o$m$e$r$s$.$c$u$r$r$e$n$t$}$$
-$ $ $ $ $ $ $ $ $ $ $p$r$e$v$i$o$u$s$=${$d$a$t$a$.$c$u$s$t$o$m$e$r$s$.$p$r$e$v$i$o$u$s$}$$
-$ $ $ $ $ $ $ $ $ $ $t$r$e$n$d$=${$d$a$t$a$.$c$u$s$t$o$m$e$r$s$.$t$r$e$n$d$}$$
-$ $ $ $ $ $ $ $ $/$>$$
-$ $ $ $ $ $ $ $ $<$M$e$t$r$i$c$C$a$r$d$$
-$ $ $ $ $ $ $ $ $ $ $i$c$o$n$=${$C$h$e$c$k$C$i$r$c$l$e$}$$
-$ $ $ $ $ $ $ $ $ $ $l$a$b$e$l$=$"$D$e$l$i$v$e$r$y$ $S$u$c$c$e$s$s$ $R$a$t$e$"$$
-$ $ $ $ $ $ $ $ $ $ $c$u$r$r$e$n$t$=${$d$a$t$a$.$d$e$l$i$v$e$r$y$R$a$t$e$.$c$u$r$r$e$n$t$}$$
-$ $ $ $ $ $ $ $ $ $ $p$r$e$v$i$o$u$s$=${$d$a$t$a$.$d$e$l$i$v$e$r$y$R$a$t$e$.$p$r$e$v$i$o$u$s$}$$
-$ $ $ $ $ $ $ $ $ $ $t$r$e$n$d$=${$d$a$t$a$.$d$e$l$i$v$e$r$y$R$a$t$e$.$t$r$e$n$d$}$$
-$ $ $ $ $ $ $ $ $ $ $f$o$r$m$a$t$=$"$p$e$r$c$e$n$t$a$g$e$"$$
-$ $ $ $ $ $ $ $ $/$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $R$e$v$e$n$u$e$ $&$ $O$r$d$e$r$s$ $C$h$a$r$t$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$x$l$ $s$h$a$d$o$w$-$s$m$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$B$a$r$C$h$a$r$t$3$ $c$l$a$s$s$N$a$m$e$=$"$h$-$5$ $w$-$5$ $t$e$x$t$-$p$r$i$m$a$r$y$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $R$e$v$e$n$u$e$ $&$ $O$r$d$e$r$s$ $T$r$e$n$d$$
-$ $ $ $ $ $ $ $ $ $ $<$/$h$2$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ ${$/$*$ $S$i$m$p$l$e$ $B$a$r$ $C$h$a$r$t$ $V$i$s$u$a$l$i$z$a$t$i$o$n$ $*$/$}$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ ${$d$a$t$a$.$m$o$n$t$h$l$y$R$e$v$e$n$u$e$.$m$a$p$($($i$t$e$m$,$ $i$d$x$)$ $=$>$ ${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $c$o$n$s$t$ $m$a$x$R$e$v$e$n$u$e$ $=$ $M$a$t$h$.$m$a$x$($.$.$.$d$a$t$a$.$m$o$n$t$h$l$y$R$e$v$e$n$u$e$.$m$a$p$($m$ $=$>$ $m$.$r$e$v$e$n$u$e$)$)$;$$
-$ $ $ $ $ $ $ $ $ $ $ $ $c$o$n$s$t$ $r$e$v$e$n$u$e$W$i$d$t$h$ $=$ $($i$t$e$m$.$r$e$v$e$n$u$e$ $/$ $m$a$x$R$e$v$e$n$u$e$)$ $*$ $1$0$0$;$$
-$$
-$ $ $ $ $ $ $ $ $ $ $ $ $r$e$t$u$r$n$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$i$d$x$}$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $t$e$x$t$-$s$m$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $w$-$1$2$"$>${$i$t$e$m$.$m$o$n$t$h$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>${$i$t$e$m$.$o$r$d$e$r$s$}$ $o$r$d$e$r$s$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$f$o$r$m$a$t$C$u$r$r$e$n$c$y$($i$t$e$m$.$r$e$v$e$n$u$e$)$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $h$-$8$ $r$e$l$a$t$i$v$e$ $o$v$e$r$f$l$o$w$-$h$i$d$d$e$n$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$r$ $f$r$o$m$-$p$r$i$m$a$r$y$-$5$0$0$ $t$o$-$p$r$i$m$a$r$y$-$6$0$0$ $h$-$f$u$l$l$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$r$a$n$s$i$t$i$o$n$-$a$l$l$ $d$u$r$a$t$i$o$n$-$5$0$0$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$e$n$d$ $p$r$-$3$"$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$y$l$e$=${${$ $w$i$d$t$h$:$ $`$$${$r$e$v$e$n$u$e$W$i$d$t$h$}$%$`$ $}$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$w$h$i$t$e$"$>${$r$e$v$e$n$u$e$W$i$d$t$h$.$t$o$F$i$x$e$d$($0$)$}$%$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $)$;$$
-$ $ $ $ $ $ $ $ $ $ $}$)$}$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $T$w$o$ $C$o$l$u$m$n$ $L$a$y$o$u$t$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $l$g$:$g$r$i$d$-$c$o$l$s$-$2$ $g$a$p$-$6$"$>$$
-$ $ $ $ $ $ $ $ ${$/$*$ $O$r$d$e$r$s$ $b$y$ $S$t$a$t$u$s$ $*$/$}$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$x$l$ $s$h$a$d$o$w$-$s$m$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$6$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$P$i$e$C$h$a$r$t$ $c$l$a$s$s$N$a$m$e$=$"$h$-$5$ $w$-$5$ $t$e$x$t$-$p$r$i$m$a$r$y$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $O$r$d$e$r$s$ $b$y$ $S$t$a$t$u$s$$
-$ $ $ $ $ $ $ $ $ $ $<$/$h$2$>$$
-$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ ${$d$a$t$a$.$o$r$d$e$r$s$B$y$S$t$a$t$u$s$.$m$a$p$($($i$t$e$m$,$ $i$d$x$)$ $=$>$ ${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$o$n$s$t$ $c$o$l$o$r$s$ $=$ $[$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $'$b$g$-$g$r$e$e$n$-$5$0$0$'$,$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $'$b$g$-$b$l$u$e$-$5$0$0$'$,$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $'$b$g$-$a$m$b$e$r$-$5$0$0$'$,$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $'$b$g$-$n$e$u$t$r$a$l$-$4$0$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $]$;$$
-$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $r$e$t$u$r$n$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$i$d$x$}$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=${$`$w$-$3$ $h$-$3$ $r$o$u$n$d$e$d$-$f$u$l$l$ $$${$c$o$l$o$r$s$[$i$d$x$]$}$`$}$>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$"$>${$i$t$e$m$.$s$t$a$t$u$s$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$r$i$g$h$t$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$i$t$e$m$.$c$o$u$n$t$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$l$-$2$"$>$(${$i$t$e$m$.$p$e$r$c$e$n$t$a$g$e$}$%$)$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $h$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$$${$c$o$l$o$r$s$[$i$d$x$]$}$ $h$-$f$u$l$l$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$r$a$n$s$i$t$i$o$n$-$a$l$l$ $d$u$r$a$t$i$o$n$-$5$0$0$`$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$y$l$e$=${${$ $w$i$d$t$h$:$ $`$$${$i$t$e$m$.$p$e$r$c$e$n$t$a$g$e$}$%$`$ $}$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$;$$
-$ $ $ $ $ $ $ $ $ $ $ $ $}$)$}$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ ${$/$*$ $T$o$p$ $P$r$o$d$u$c$t$s$ $*$/$}$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$x$l$ $s$h$a$d$o$w$-$s$m$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$6$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$P$a$c$k$a$g$e$ $c$l$a$s$s$N$a$m$e$=$"$h$-$5$ $w$-$5$ $t$e$x$t$-$p$r$i$m$a$r$y$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $T$o$p$ $S$e$l$l$i$n$g$ $P$r$o$d$u$c$t$s$$
-$ $ $ $ $ $ $ $ $ $ $<$/$h$2$>$$
-$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ ${$d$a$t$a$.$t$o$p$P$r$o$d$u$c$t$s$.$m$a$p$($($p$r$o$d$u$c$t$,$ $i$d$x$)$ $=$>$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$i$d$x$}$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $p$-$3$ $b$g$-$n$e$u$t$r$a$l$-$5$0$ $r$o$u$n$d$e$d$-$l$g$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$3$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$8$ $h$-$8$ $b$g$-$p$r$i$m$a$r$y$-$1$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$p$r$i$m$a$r$y$-$6$0$0$"$>$#${$i$d$x$ $+$ $1$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$p$r$o$d$u$c$t$.$n$a$m$e$}$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>${$p$r$o$d$u$c$t$.$s$a$l$e$s$}$ $u$n$i$t$s$ $s$o$l$d$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$r$i$g$h$t$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$f$o$r$m$a$t$C$u$r$r$e$n$c$y$($p$r$o$d$u$c$t$.$r$e$v$e$n$u$e$)$}$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $)$)$}$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $T$w$o$ $C$o$l$u$m$n$ $L$a$y$o$u$t$ $-$ $R$e$g$i$o$n$s$ $&$ $P$e$r$f$o$r$m$a$n$c$e$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $l$g$:$g$r$i$d$-$c$o$l$s$-$2$ $g$a$p$-$6$"$>$$
-$ $ $ $ $ $ $ $ ${$/$*$ $T$o$p$ $R$e$g$i$o$n$s$ $*$/$}$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$x$l$ $s$h$a$d$o$w$-$s$m$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$6$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$M$a$p$P$i$n$ $c$l$a$s$s$N$a$m$e$=$"$h$-$5$ $w$-$5$ $t$e$x$t$-$p$r$i$m$a$r$y$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $T$o$p$ $P$e$r$f$o$r$m$i$n$g$ $R$e$g$i$o$n$s$$
-$ $ $ $ $ $ $ $ $ $ $<$/$h$2$>$$
-$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$3$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ ${$d$a$t$a$.$t$o$p$R$e$g$i$o$n$s$.$m$a$p$($($r$e$g$i$o$n$,$ $i$d$x$)$ $=$>$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$i$d$x$}$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $p$-$3$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $r$o$u$n$d$e$d$-$l$g$ $h$o$v$e$r$:$b$o$r$d$e$r$-$p$r$i$m$a$r$y$-$3$0$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$3$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$T$r$u$c$k$ $c$l$a$s$s$N$a$m$e$=$"$h$-$5$ $w$-$5$ $t$e$x$t$-$n$e$u$t$r$a$l$-$4$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$r$e$g$i$o$n$.$r$e$g$i$o$n$}$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>${$r$e$g$i$o$n$.$o$r$d$e$r$s$}$ $o$r$d$e$r$s$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$r$i$g$h$t$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$f$o$r$m$a$t$C$u$r$r$e$n$c$y$($r$e$g$i$o$n$.$r$e$v$e$n$u$e$)$}$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $)$)$}$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ ${$/$*$ $P$e$r$f$o$r$m$a$n$c$e$ $M$e$t$r$i$c$s$ $*$/$}$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$x$l$ $s$h$a$d$o$w$-$s$m$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$6$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$A$c$t$i$v$i$t$y$ $c$l$a$s$s$N$a$m$e$=$"$h$-$5$ $w$-$5$ $t$e$x$t$-$p$r$i$m$a$r$y$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $P$e$r$f$o$r$m$a$n$c$e$ $M$e$t$r$i$c$s$$
-$ $ $ $ $ $ $ $ $ $ $<$/$h$2$>$$
-$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ ${$d$a$t$a$.$p$e$r$f$o$r$m$a$n$c$e$M$e$t$r$i$c$s$.$m$a$p$($($m$e$t$r$i$c$,$ $i$d$x$)$ $=$>$ ${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$o$n$s$t$ $p$r$o$g$r$e$s$s$ $=$ $($m$e$t$r$i$c$.$v$a$l$u$e$ $/$ $m$e$t$r$i$c$.$t$a$r$g$e$t$)$ $*$ $1$0$0$;$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$o$n$s$t$ $i$s$A$b$o$v$e$T$a$r$g$e$t$ $=$ $m$e$t$r$i$c$.$v$a$l$u$e$ $>$=$ $m$e$t$r$i$c$.$t$a$r$g$e$t$;$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$o$n$s$t$ $i$s$B$e$l$o$w$T$a$r$g$e$t$ $=$ $m$e$t$r$i$c$.$m$e$t$r$i$c$ $=$=$=$ $'$R$e$t$u$r$n$ $R$a$t$e$'$ $?$ $m$e$t$r$i$c$.$v$a$l$u$e$ $<$ $m$e$t$r$i$c$.$t$a$r$g$e$t$ $:$ $f$a$l$s$e$;$$
-$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $r$e$t$u$r$n$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$i$d$x$}$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$"$>${$m$e$t$r$i$c$.$m$e$t$r$i$c$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$m$e$t$r$i$c$.$v$a$l$u$e$}${$m$e$t$r$i$c$.$u$n$i$t$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$($i$s$A$b$o$v$e$T$a$r$g$e$t$ $|$|$ $i$s$B$e$l$o$w$T$a$r$g$e$t$)$ $&$&$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$h$e$c$k$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$ $t$e$x$t$-$g$r$e$e$n$-$5$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$f$u$l$l$ $b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $h$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$h$-$f$u$l$l$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$r$a$n$s$i$t$i$o$n$-$a$l$l$ $d$u$r$a$t$i$o$n$-$5$0$0$ $$${$p$r$o$g$r$e$s$s$ $>$=$ $1$0$0$ $?$ $'$b$g$-$g$r$e$e$n$-$5$0$0$'$ $:$ $p$r$o$g$r$e$s$s$ $>$=$ $8$0$ $?$ $'$b$g$-$b$l$u$e$-$5$0$0$'$ $:$ $'$b$g$-$a$m$b$e$r$-$5$0$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $s$t$y$l$e$=${${$ $w$i$d$t$h$:$ $`$$${$M$a$t$h$.$m$i$n$($p$r$o$g$r$e$s$s$,$ $1$0$0$)$}$%$`$ $}$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$t$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$T$a$r$g$e$t$:$ ${$m$e$t$r$i$c$.$t$a$r$g$e$t$}${$m$e$t$r$i$c$.$u$n$i$t$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>${$p$r$o$g$r$e$s$s$.$t$o$F$i$x$e$d$($0$)$}$%$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$;$$
-$ $ $ $ $ $ $ $ $ $ $ $ $}$)$}$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $I$n$s$i$g$h$t$s$ $B$a$n$n$e$r$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$r$ $f$r$o$m$-$p$r$i$m$a$r$y$-$5$0$ $t$o$-$p$r$i$m$a$r$y$-$1$0$0$ $r$o$u$n$d$e$d$-$x$l$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$p$r$i$m$a$r$y$-$2$0$0$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$b$g$-$p$r$i$m$a$r$y$-$6$0$0$ $p$-$3$ $r$o$u$n$d$e$d$-$l$g$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$A$l$e$r$t$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$h$-$6$ $w$-$6$ $t$e$x$t$-$w$h$i$t$e$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$s$e$m$i$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$2$"$>$A$I$-$P$o$w$e$r$e$d$ $I$n$s$i$g$h$t$s$<$/$h$3$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$u$l$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$2$ $t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$l$i$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$T$r$e$n$d$i$n$g$U$p$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$ $m$t$-$0$.$5$ $f$l$e$x$-$s$h$r$i$n$k$-$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$R$e$v$e$n$u$e$ $i$s$ $u$p$ $1$5$.$9$%$ $c$o$m$p$a$r$e$d$ $t$o$ $l$a$s$t$ $p$e$r$i$o$d$,$ $w$i$t$h$ $s$t$r$o$n$g$ $g$r$o$w$t$h$ $i$n$ $i$n$d$u$s$t$r$i$a$l$ $e$q$u$i$p$m$e$n$t$ $s$a$l$e$s$.$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$l$i$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$l$i$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$h$e$c$k$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$ $m$t$-$0$.$5$ $f$l$e$x$-$s$h$r$i$n$k$-$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$D$e$l$i$v$e$r$y$ $s$u$c$c$e$s$s$ $r$a$t$e$ $o$f$ $9$6$.$8$%$ $e$x$c$e$e$d$s$ $t$a$r$g$e$t$.$ $O$n$-$t$i$m$e$ $d$e$l$i$v$e$r$y$ $p$e$r$f$o$r$m$a$n$c$e$ $i$s$ $e$x$c$e$l$l$e$n$t$ $a$t$ $9$4$.$5$%$.$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$l$i$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$l$i$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$l$o$c$k$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$ $t$e$x$t$-$b$l$u$e$-$6$0$0$ $m$t$-$0$.$5$ $f$l$e$x$-$s$h$r$i$n$k$-$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$A$v$e$r$a$g$e$ $d$e$l$i$v$e$r$y$ $t$i$m$e$ $o$f$ $2$.$8$ $d$a$y$s$ $i$s$ $b$e$a$t$i$n$g$ $t$h$e$ $3$-$d$a$y$ $t$a$r$g$e$t$.$ $C$o$n$s$i$d$e$r$ $o$p$t$i$m$i$z$i$n$g$ $r$o$u$t$e$s$ $i$n$ $D$e$l$h$i$ $N$C$R$.$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$l$i$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$l$i$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$M$a$p$P$i$n$ $c$l$a$s$s$N$a$m$e$=$"$h$-$4$ $w$-$4$ $t$e$x$t$-$a$m$b$e$r$-$6$0$0$ $m$t$-$0$.$5$ $f$l$e$x$-$s$h$r$i$n$k$-$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$M$u$m$b$a$i$ $a$n$d$ $D$e$l$h$i$ $N$C$R$ $a$r$e$ $y$o$u$r$ $t$o$p$ $m$a$r$k$e$t$s$.$ $C$o$n$s$i$d$e$r$ $e$x$p$a$n$d$i$n$g$ $w$a$r$e$h$o$u$s$e$ $c$a$p$a$c$i$t$y$ $i$n$ $B$a$n$g$a$l$o$r$e$.$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$l$i$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$u$l$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $<$/$d$i$v$>$$
-$ $ $)$;$$
-$}$$
-$
+import { useState, useEffect } from 'react';
+import {
+  TrendingUp,
+  Package,
+  Truck,
+  Users,
+  DollarSign,
+  ShoppingCart,
+  Clock,
+  BarChart3,
+  PieChart,
+  Activity,
+  MapPin,
+  AlertCircle,
+  CheckCircle,
+  ArrowUpRight,
+  ArrowDownRight
+} from 'lucide-react';
+
+interface AnalyticsData {
+  revenue: {
+    current: number;
+    previous: number;
+    trend: number;
+  };
+  orders: {
+    current: number;
+    previous: number;
+    trend: number;
+  };
+  customers: {
+    current: number;
+    previous: number;
+    trend: number;
+  };
+  deliveryRate: {
+    current: number;
+    previous: number;
+    trend: number;
+  };
+  monthlyRevenue: Array<{ month: string; revenue: number; orders: number }>;
+  ordersByStatus: Array<{ status: string; count: number; percentage: number }>;
+  topProducts: Array<{ name: string; sales: number; revenue: number }>;
+  topRegions: Array<{ region: string; orders: number; revenue: number }>;
+  performanceMetrics: Array<{ metric: string; value: number; target: number; unit: string }>;
+}
+
+export default function Analytics() {
+  const [data, setData] = useState<AnalyticsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState<'7days' | '30days' | '90days' | '1year'>('30days');
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [timeRange]);
+
+  const fetchAnalytics = () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      // STATIC MOCK ANALYTICS DATA
+      const mockData: AnalyticsData = {
+        revenue: {
+          current: 2847500,
+          previous: 2456000,
+          trend: 15.9
+        },
+        orders: {
+          current: 1247,
+          previous: 1089,
+          trend: 14.5
+        },
+        customers: {
+          current: 523,
+          previous: 487,
+          trend: 7.4
+        },
+        deliveryRate: {
+          current: 96.8,
+          previous: 94.2,
+          trend: 2.8
+        },
+        monthlyRevenue: [
+          { month: 'Apr', revenue: 1850000, orders: 842 },
+          { month: 'May', revenue: 2120000, orders: 956 },
+          { month: 'Jun', revenue: 2456000, orders: 1089 },
+          { month: 'Jul', revenue: 2680000, orders: 1178 },
+          { month: 'Aug', revenue: 2340000, orders: 1034 },
+          { month: 'Sep', revenue: 2580000, orders: 1156 },
+          { month: 'Oct', revenue: 2847500, orders: 1247 }
+        ],
+        ordersByStatus: [
+          { status: 'Delivered', count: 1089, percentage: 87.3 },
+          { status: 'In Transit', count: 98, percentage: 7.9 },
+          { status: 'Processing', count: 42, percentage: 3.4 },
+          { status: 'Pending', count: 18, percentage: 1.4 }
+        ],
+        topProducts: [
+          { name: 'Industrial Equipment Set', sales: 234, revenue: 1170000 },
+          { name: 'Medical Supplies Bundle', sales: 189, revenue: 945000 },
+          { name: 'Electronics Components', sales: 156, revenue: 780000 },
+          { name: 'Construction Materials', sales: 142, revenue: 710000 },
+          { name: 'Office Furniture Package', sales: 98, revenue: 490000 }
+        ],
+        topRegions: [
+          { region: 'Mumbai, Maharashtra', orders: 342, revenue: 855000 },
+          { region: 'Delhi NCR', orders: 298, revenue: 745000 },
+          { region: 'Bangalore, Karnataka', orders: 267, revenue: 667500 },
+          { region: 'Chennai, Tamil Nadu', orders: 189, revenue: 472500 },
+          { region: 'Pune, Maharashtra', orders: 151, revenue: 377500 }
+        ],
+        performanceMetrics: [
+          { metric: 'Average Delivery Time', value: 2.8, target: 3.0, unit: 'days' },
+          { metric: 'Order Fulfillment Rate', value: 96.8, target: 95.0, unit: '%' },
+          { metric: 'Customer Satisfaction', value: 4.7, target: 4.5, unit: '/5' },
+          { metric: 'Inventory Turnover', value: 8.2, target: 7.0, unit: 'x' },
+          { metric: 'On-Time Delivery', value: 94.5, target: 90.0, unit: '%' },
+          { metric: 'Return Rate', value: 1.8, target: 3.0, unit: '%' }
+        ]
+      };
+
+      setData(mockData);
+      setLoading(false);
+    }, 100);
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const MetricCard = ({ icon: Icon, label, current, previous, trend, format = 'number' }: any) => {
+    const isPositive = trend >= 0;
+    const displayValue = format === 'currency' ? formatCurrency(current) :
+      format === 'percentage' ? `${current}%` :
+        current.toLocaleString();
+
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 hover:shadow-md transition-shadow">
+        <div className="flex items-start justify-between mb-4">
+          <div className="bg-primary-50 p-3 rounded-lg">
+            <Icon className="h-6 w-6 text-primary-600" />
+          </div>
+          <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-sm font-medium ${isPositive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
+            }`}>
+            {isPositive ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+            {Math.abs(trend).toFixed(1)}%
+          </div>
+        </div>
+        <h3 className="text-2xl font-bold text-neutral-900 mb-1">{displayValue}</h3>
+        <p className="text-sm text-neutral-600">{label}</p>
+        <p className="text-xs text-neutral-500 mt-2">
+          vs. previous period: {format === 'currency' ? formatCurrency(previous) : previous.toLocaleString()}
+        </p>
+      </div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+
+  if (!data) return null;
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-neutral-900">LogiMind Analytics</h1>
+          <p className="text-neutral-600 mt-2">Comprehensive insights and performance metrics</p>
+        </div>
+
+        {/* Time Range Filter */}
+        <div className="flex gap-2">
+          {(['7days', '30days', '90days', '1year'] as const).map((range) => (
+            <button
+              key={range}
+              onClick={() => setTimeRange(range)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${timeRange === range
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-white text-neutral-700 border border-neutral-300 hover:bg-neutral-50'
+                }`}
+            >
+              {range === '7days' ? '7 Days' : range === '30days' ? '30 Days' : range === '90days' ? '90 Days' : '1 Year'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <MetricCard
+          icon={DollarSign}
+          label="Total Revenue"
+          current={data.revenue.current}
+          previous={data.revenue.previous}
+          trend={data.revenue.trend}
+          format="currency"
+        />
+        <MetricCard
+          icon={ShoppingCart}
+          label="Total Orders"
+          current={data.orders.current}
+          previous={data.orders.previous}
+          trend={data.orders.trend}
+        />
+        <MetricCard
+          icon={Users}
+          label="Active Customers"
+          current={data.customers.current}
+          previous={data.customers.previous}
+          trend={data.customers.trend}
+        />
+        <MetricCard
+          icon={CheckCircle}
+          label="Delivery Success Rate"
+          current={data.deliveryRate.current}
+          previous={data.deliveryRate.previous}
+          trend={data.deliveryRate.trend}
+          format="percentage"
+        />
+      </div>
+
+      {/* Revenue & Orders Chart */}
+      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold text-neutral-900 flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-primary-600" />
+            Revenue & Orders Trend
+          </h2>
+        </div>
+
+        {/* Simple Bar Chart Visualization */}
+        <div className="space-y-4">
+          {data.monthlyRevenue.map((item, idx) => {
+            const maxRevenue = Math.max(...data.monthlyRevenue.map(m => m.revenue));
+            const revenueWidth = (item.revenue / maxRevenue) * 100;
+
+            return (
+              <div key={idx} className="space-y-1">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="font-medium text-neutral-700 w-12">{item.month}</span>
+                  <span className="text-neutral-600">{item.orders} orders</span>
+                  <span className="font-semibold text-neutral-900">{formatCurrency(item.revenue)}</span>
+                </div>
+                <div className="w-full bg-neutral-100 rounded-full h-8 relative overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-primary-500 to-primary-600 h-full rounded-full transition-all duration-500 flex items-center justify-end pr-3"
+                    style={{ width: `${revenueWidth}%` }}
+                  >
+                    <span className="text-xs font-medium text-white">{revenueWidth.toFixed(0)}%</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Two Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Orders by Status */}
+        <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6">
+          <h2 className="text-lg font-semibold text-neutral-900 mb-6 flex items-center gap-2">
+            <PieChart className="h-5 w-5 text-primary-600" />
+            Orders by Status
+          </h2>
+
+          <div className="space-y-4">
+            {data.ordersByStatus.map((item, idx) => {
+              const colors = [
+                'bg-green-500',
+                'bg-blue-500',
+                'bg-amber-500',
+                'bg-neutral-400'
+              ];
+
+              return (
+                <div key={idx}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${colors[idx]}`}></div>
+                      <span className="text-sm font-medium text-neutral-700">{item.status}</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-sm font-semibold text-neutral-900">{item.count}</span>
+                      <span className="text-xs text-neutral-500 ml-2">({item.percentage}%)</span>
+                    </div>
+                  </div>
+                  <div className="w-full bg-neutral-100 rounded-full h-2">
+                    <div
+                      className={`${colors[idx]} h-full rounded-full transition-all duration-500`}
+                      style={{ width: `${item.percentage}%` }}
+                    ></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Top Products */}
+        <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6">
+          <h2 className="text-lg font-semibold text-neutral-900 mb-6 flex items-center gap-2">
+            <Package className="h-5 w-5 text-primary-600" />
+            Top Selling Products
+          </h2>
+
+          <div className="space-y-4">
+            {data.topProducts.map((product, idx) => (
+              <div key={idx} className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                    <span className="text-sm font-bold text-primary-600">#{idx + 1}</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-neutral-900">{product.name}</p>
+                    <p className="text-xs text-neutral-500">{product.sales} units sold</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-neutral-900">{formatCurrency(product.revenue)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Two Column Layout - Regions & Performance */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Top Regions */}
+        <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6">
+          <h2 className="text-lg font-semibold text-neutral-900 mb-6 flex items-center gap-2">
+            <MapPin className="h-5 w-5 text-primary-600" />
+            Top Performing Regions
+          </h2>
+
+          <div className="space-y-3">
+            {data.topRegions.map((region, idx) => (
+              <div key={idx} className="flex items-center justify-between p-3 border border-neutral-200 rounded-lg hover:border-primary-300 transition-colors">
+                <div className="flex items-center gap-3">
+                  <Truck className="h-5 w-5 text-neutral-400" />
+                  <div>
+                    <p className="text-sm font-medium text-neutral-900">{region.region}</p>
+                    <p className="text-xs text-neutral-500">{region.orders} orders</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-neutral-900">{formatCurrency(region.revenue)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Performance Metrics */}
+        <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6">
+          <h2 className="text-lg font-semibold text-neutral-900 mb-6 flex items-center gap-2">
+            <Activity className="h-5 w-5 text-primary-600" />
+            Performance Metrics
+          </h2>
+
+          <div className="space-y-4">
+            {data.performanceMetrics.map((metric, idx) => {
+              const progress = (metric.value / metric.target) * 100;
+              const isAboveTarget = metric.value >= metric.target;
+              const isBelowTarget = metric.metric === 'Return Rate' ? metric.value < metric.target : false;
+
+              return (
+                <div key={idx}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-neutral-700">{metric.metric}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-neutral-900">
+                        {metric.value}{metric.unit}
+                      </span>
+                      {(isAboveTarget || isBelowTarget) && (
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      )}
+                    </div>
+                  </div>
+                  <div className="w-full bg-neutral-100 rounded-full h-2">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${progress >= 100 ? 'bg-green-500' : progress >= 80 ? 'bg-blue-500' : 'bg-amber-500'
+                        }`}
+                      style={{ width: `${Math.min(progress, 100)}%` }}
+                    ></div>
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-xs text-neutral-500">Target: {metric.target}{metric.unit}</span>
+                    <span className="text-xs text-neutral-500">{progress.toFixed(0)}%</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Insights Banner */}
+      <div className="bg-gradient-to-r from-primary-50 to-primary-100 rounded-xl border border-primary-200 p-6">
+        <div className="flex items-start gap-4">
+          <div className="bg-primary-600 p-3 rounded-lg">
+            <AlertCircle className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-semibold text-neutral-900 mb-2">AI-Powered Insights</h3>
+            <ul className="space-y-2 text-sm text-neutral-700">
+              <li className="flex items-start gap-2">
+                <TrendingUp className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Revenue is up 15.9% compared to last period, with strong growth in industrial equipment sales.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <span>Delivery success rate of 96.8% exceeds target. On-time delivery performance is excellent at 94.5%.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <Clock className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <span>Average delivery time of 2.8 days is beating the 3-day target. Consider optimizing routes in Delhi NCR.</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <MapPin className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                <span>Mumbai and Delhi NCR are your top markets. Consider expanding warehouse capacity in Bangalore.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

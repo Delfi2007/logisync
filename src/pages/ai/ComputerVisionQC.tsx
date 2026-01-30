@@ -1,314 +1,313 @@
-$i$m$p$o$r$t$ ${$ $u$s$e$S$t$a$t$e$ $}$ $f$r$o$m$ $'$r$e$a$c$t$'$;$$
-$i$m$p$o$r$t$ ${$ $C$a$m$e$r$a$,$ $C$h$e$c$k$C$i$r$c$l$e$,$ $X$C$i$r$c$l$e$,$ $A$l$e$r$t$T$r$i$a$n$g$l$e$,$ $E$y$e$,$ $S$p$a$r$k$l$e$s$ $}$ $f$r$o$m$ $'$l$u$c$i$d$e$-$r$e$a$c$t$'$;$$
-$$
-$c$o$n$s$t$ $m$o$c$k$I$n$s$p$e$c$t$i$o$n$s$ $=$ $[$$
-$ $ ${$$
-$ $ $ $ $i$d$:$ $'$I$N$S$-$2$4$0$1$'$,$$
-$ $ $ $ $p$r$o$d$u$c$t$:$ $'$L$a$p$t$o$p$ $P$r$o$ $1$5$"$'$,$$
-$ $ $ $ $b$a$t$c$h$:$ $'$B$A$T$C$H$-$8$8$2$1$'$,$$
-$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $'$2$0$2$5$-$0$1$-$2$2$ $1$4$:$4$5$:$2$3$'$,$$
-$ $ $ $ $s$t$a$t$u$s$:$ $'$p$a$s$s$e$d$'$,$$
-$ $ $ $ $c$o$n$f$i$d$e$n$c$e$:$ $9$8$.$5$,$$
-$ $ $ $ $d$e$f$e$c$t$s$:$ $[$]$,$$
-$ $ $ $ $i$m$a$g$e$U$r$l$:$ $'$ð$Ÿ$’$»$'$$
-$ $ $}$,$$
-$ $ ${$$
-$ $ $ $ $i$d$:$ $'$I$N$S$-$2$4$0$2$'$,$$
-$ $ $ $ $p$r$o$d$u$c$t$:$ $'$W$i$r$e$l$e$s$s$ $M$o$u$s$e$'$,$$
-$ $ $ $ $b$a$t$c$h$:$ $'$B$A$T$C$H$-$8$8$2$2$'$,$$
-$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $'$2$0$2$5$-$0$1$-$2$2$ $1$4$:$4$7$:$1$5$'$,$$
-$ $ $ $ $s$t$a$t$u$s$:$ $'$f$a$i$l$e$d$'$,$$
-$ $ $ $ $c$o$n$f$i$d$e$n$c$e$:$ $9$6$.$2$,$$
-$ $ $ $ $d$e$f$e$c$t$s$:$ $[$'$S$u$r$f$a$c$e$ $s$c$r$a$t$c$h$ $d$e$t$e$c$t$e$d$'$,$ $'$C$o$l$o$r$ $v$a$r$i$a$n$c$e$ $1$5$%$'$]$,$$
-$ $ $ $ $i$m$a$g$e$U$r$l$:$ $'$ð$Ÿ$–$±$ï$¸$$'$$
-$ $ $}$,$$
-$ $ ${$$
-$ $ $ $ $i$d$:$ $'$I$N$S$-$2$4$0$3$'$,$$
-$ $ $ $ $p$r$o$d$u$c$t$:$ $'$U$S$B$-$C$ $C$h$a$r$g$e$r$'$,$$
-$ $ $ $ $b$a$t$c$h$:$ $'$B$A$T$C$H$-$8$8$2$3$'$,$$
-$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $'$2$0$2$5$-$0$1$-$2$2$ $1$4$:$4$9$:$0$8$'$,$$
-$ $ $ $ $s$t$a$t$u$s$:$ $'$w$a$r$n$i$n$g$'$,$$
-$ $ $ $ $c$o$n$f$i$d$e$n$c$e$:$ $9$2$.$1$,$$
-$ $ $ $ $d$e$f$e$c$t$s$:$ $[$'$M$i$n$o$r$ $d$i$s$c$o$l$o$r$a$t$i$o$n$'$]$,$$
-$ $ $ $ $i$m$a$g$e$U$r$l$:$ $'$ð$Ÿ$”$Œ$'$$
-$ $ $}$,$$
-$ $ ${$$
-$ $ $ $ $i$d$:$ $'$I$N$S$-$2$4$0$4$'$,$$
-$ $ $ $ $p$r$o$d$u$c$t$:$ $'$M$o$n$i$t$o$r$ $2$7$"$'$,$$
-$ $ $ $ $b$a$t$c$h$:$ $'$B$A$T$C$H$-$8$8$2$4$'$,$$
-$ $ $ $ $t$i$m$e$s$t$a$m$p$:$ $'$2$0$2$5$-$0$1$-$2$2$ $1$4$:$5$1$:$4$2$'$,$$
-$ $ $ $ $s$t$a$t$u$s$:$ $'$p$a$s$s$e$d$'$,$$
-$ $ $ $ $c$o$n$f$i$d$e$n$c$e$:$ $9$9$.$1$,$$
-$ $ $ $ $d$e$f$e$c$t$s$:$ $[$]$,$$
-$ $ $ $ $i$m$a$g$e$U$r$l$:$ $'$ð$Ÿ$–$¥$ï$¸$$'$$
-$ $ $}$$
-$]$;$$
-$$
-$c$o$n$s$t$ $d$e$f$e$c$t$C$a$t$e$g$o$r$i$e$s$ $=$ $[$$
-$ $ ${$ $t$y$p$e$:$ $'$S$u$r$f$a$c$e$ $D$e$f$e$c$t$s$'$,$ $d$e$t$e$c$t$e$d$:$ $1$2$,$ $r$a$t$e$:$ $'$2$.$4$%$'$,$ $t$r$e$n$d$:$ $'$d$o$w$n$'$ $}$,$$
-$ $ ${$ $t$y$p$e$:$ $'$D$i$m$e$n$s$i$o$n$a$l$ $V$a$r$i$a$n$c$e$'$,$ $d$e$t$e$c$t$e$d$:$ $3$,$ $r$a$t$e$:$ $'$0$.$6$%$'$,$ $t$r$e$n$d$:$ $'$s$t$a$b$l$e$'$ $}$,$$
-$ $ ${$ $t$y$p$e$:$ $'$C$o$l$o$r$ $I$n$c$o$n$s$i$s$t$e$n$c$y$'$,$ $d$e$t$e$c$t$e$d$:$ $8$,$ $r$a$t$e$:$ $'$1$.$6$%$'$,$ $t$r$e$n$d$:$ $'$d$o$w$n$'$ $}$,$$
-$ $ ${$ $t$y$p$e$:$ $'$A$s$s$e$m$b$l$y$ $E$r$r$o$r$s$'$,$ $d$e$t$e$c$t$e$d$:$ $1$,$ $r$a$t$e$:$ $'$0$.$2$%$'$,$ $t$r$e$n$d$:$ $'$d$o$w$n$'$ $}$$
-$]$;$$
-$$
-$e$x$p$o$r$t$ $d$e$f$a$u$l$t$ $f$u$n$c$t$i$o$n$ $C$o$m$p$u$t$e$r$V$i$s$i$o$n$Q$C$($)$ ${$$
-$ $ $c$o$n$s$t$ $[$v$i$e$w$M$o$d$e$,$ $s$e$t$V$i$e$w$M$o$d$e$]$ $=$ $u$s$e$S$t$a$t$e$($'$r$e$a$l$t$i$m$e$'$)$;$$
-$$
-$ $ $c$o$n$s$t$ $p$a$s$s$e$d$C$o$u$n$t$ $=$ $m$o$c$k$I$n$s$p$e$c$t$i$o$n$s$.$f$i$l$t$e$r$($i$ $=$>$ $i$.$s$t$a$t$u$s$ $=$=$=$ $'$p$a$s$s$e$d$'$)$.$l$e$n$g$t$h$;$$
-$ $ $c$o$n$s$t$ $f$a$i$l$e$d$C$o$u$n$t$ $=$ $m$o$c$k$I$n$s$p$e$c$t$i$o$n$s$.$f$i$l$t$e$r$($i$ $=$>$ $i$.$s$t$a$t$u$s$ $=$=$=$ $'$f$a$i$l$e$d$'$)$.$l$e$n$g$t$h$;$$
-$ $ $c$o$n$s$t$ $w$a$r$n$i$n$g$C$o$u$n$t$ $=$ $m$o$c$k$I$n$s$p$e$c$t$i$o$n$s$.$f$i$l$t$e$r$($i$ $=$>$ $i$.$s$t$a$t$u$s$ $=$=$=$ $'$w$a$r$n$i$n$g$'$)$.$l$e$n$g$t$h$;$$
-$$
-$ $ $r$e$t$u$r$n$ $($$
-$ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$6$"$>$$
-$ $ $ $ $ $ ${$/$*$ $H$e$a$d$e$r$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$h$1$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$3$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$C$a$m$e$r$a$ $c$l$a$s$s$N$a$m$e$=$"$w$-$8$ $h$-$8$ $t$e$x$t$-$i$n$d$i$g$o$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $C$o$m$p$u$t$e$r$ $V$i$s$i$o$n$ $Q$u$a$l$i$t$y$ $C$o$n$t$r$o$l$$
-$ $ $ $ $ $ $ $ $ $ $<$/$h$1$>$$
-$ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$2$"$>$C$N$N$-$b$a$s$e$d$ $d$e$f$e$c$t$ $d$e$t$e$c$t$i$o$n$ $w$i$t$h$ $9$9$.$2$%$ $a$c$c$u$r$a$c$y$ $f$o$r$ $a$u$t$o$m$a$t$e$d$ $q$u$a$l$i$t$y$ $a$s$s$u$r$a$n$c$e$<$/$p$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
-$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$V$i$e$w$M$o$d$e$($'$r$e$a$l$t$i$m$e$'$)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$p$x$-$4$ $p$y$-$2$ $r$o$u$n$d$e$d$-$l$g$ $f$o$n$t$-$m$e$d$i$u$m$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $$${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $v$i$e$w$M$o$d$e$ $=$=$=$ $'$r$e$a$l$t$i$m$e$'$ $?$ $'$b$g$-$n$e$u$t$r$a$l$-$9$0$0$ $t$e$x$t$-$w$h$i$t$e$'$ $:$ $'$b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$2$0$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
-$ $ $ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $R$e$a$l$-$T$i$m$e$$
-$ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
-$ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$$
-$ $ $ $ $ $ $ $ $ $ $ $ $o$n$C$l$i$c$k$=${$($)$ $=$>$ $s$e$t$V$i$e$w$M$o$d$e$($'$h$i$s$t$o$r$y$'$)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$p$x$-$4$ $p$y$-$2$ $r$o$u$n$d$e$d$-$l$g$ $f$o$n$t$-$m$e$d$i$u$m$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $$${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $v$i$e$w$M$o$d$e$ $=$=$=$ $'$h$i$s$t$o$r$y$'$ $?$ $'$b$g$-$n$e$u$t$r$a$l$-$9$0$0$ $t$e$x$t$-$w$h$i$t$e$'$ $:$ $'$b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$2$0$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
-$ $ $ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $H$i$s$t$o$r$y$$
-$ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $A$I$ $M$o$d$e$l$ $I$n$f$o$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$r$ $f$r$o$m$-$i$n$d$i$g$o$-$5$0$ $t$o$-$p$u$r$p$l$e$-$5$0$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$i$n$d$i$g$o$-$1$0$0$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$1$2$ $h$-$1$2$ $b$g$-$i$n$d$i$g$o$-$6$0$0$ $r$o$u$n$d$e$d$-$l$g$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $f$l$e$x$-$s$h$r$i$n$k$-$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$E$y$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$6$ $h$-$6$ $t$e$x$t$-$w$h$i$t$e$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$D$e$e$p$ $L$e$a$r$n$i$n$g$ $V$i$s$i$o$n$ $S$y$s$t$e$m$ $A$c$t$i$v$e$<$/$h$3$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$p$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $Y$O$L$O$v$8$ $+$ $R$e$s$N$e$t$5$0$ $e$n$s$e$m$b$l$e$ $f$o$r$ $m$u$l$t$i$-$c$l$a$s$s$ $d$e$f$e$c$t$ $d$e$t$e$c$t$i$o$n$ $a$t$ $p$r$o$d$u$c$t$i$o$n$ $s$p$e$e$d$ $($1$2$0$ $i$t$e$m$s$/$m$i$n$)$.$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $A$c$c$u$r$a$c$y$:$ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$i$n$d$i$g$o$-$6$0$0$"$>$9$9$.$2$%$<$/$s$p$a$n$>$ $w$i$t$h$ $0$.$4$%$ $f$a$l$s$e$ $r$e$j$e$c$t$i$o$n$ $r$a$t$e$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $g$a$p$-$4$ $m$t$-$3$ $t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$M$o$d$e$l$s$:$ $Y$O$L$O$v$8$ $+$ $R$e$s$N$e$t$5$0$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$T$r$a$i$n$i$n$g$ $i$m$a$g$e$s$:$ $2$8$4$k$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$>$P$r$o$c$e$s$s$i$n$g$ $s$p$e$e$d$:$ $8$m$s$/$i$m$a$g$e$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $K$e$y$ $M$e$t$r$i$c$s$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$1$ $m$d$:$g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$4$"$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$g$r$e$e$n$-$2$0$0$ $b$g$-$g$r$e$e$n$-$5$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$P$a$s$s$e$d$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$C$h$e$c$k$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$"$>${$p$a$s$s$e$d$C$o$u$n$t$}$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$9$7$.$6$%$ $p$a$s$s$ $r$a$t$e$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$r$e$d$-$2$0$0$ $b$g$-$r$e$d$-$5$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$F$a$i$l$e$d$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$X$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$r$e$d$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$r$e$d$-$6$0$0$"$>${$f$a$i$l$e$d$C$o$u$n$t$}$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$D$e$f$e$c$t$s$ $d$e$t$e$c$t$e$d$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$o$r$a$n$g$e$-$2$0$0$ $b$g$-$o$r$a$n$g$e$-$5$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$W$a$r$n$i$n$g$s$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$A$l$e$r$t$T$r$i$a$n$g$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$o$r$a$n$g$e$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$o$r$a$n$g$e$-$6$0$0$"$>${$w$a$r$n$i$n$g$C$o$u$n$t$}$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$M$a$n$u$a$l$ $r$e$v$i$e$w$ $n$e$e$d$e$d$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>$I$n$s$p$e$c$t$i$o$n$s$ $T$o$d$a$y$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$C$a$m$e$r$a$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$i$n$d$i$g$o$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$3$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$1$,$2$4$7$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$i$n$d$i$g$o$-$6$0$0$ $m$t$-$1$"$>$1$2$0$ $i$t$e$m$s$/$m$i$n$ $a$v$g$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $L$i$v$e$ $I$n$s$p$e$c$t$i$o$n$ $F$e$e$d$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$C$a$m$e$r$a$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $L$i$v$e$ $I$n$s$p$e$c$t$i$o$n$ $F$e$e$d$$
-$ $ $ $ $ $ $ $ $<$/$h$2$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$3$"$>$$
-$ $ $ $ $ $ $ $ $ $ ${$m$o$c$k$I$n$s$p$e$c$t$i$o$n$s$.$m$a$p$($($i$n$s$p$e$c$t$i$o$n$)$ $=$>$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $k$e$y$=${$i$n$s$p$e$c$t$i$o$n$.$i$d$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$l$a$s$s$N$a$m$e$=${$`$p$-$4$ $r$o$u$n$d$e$d$-$l$g$ $b$o$r$d$e$r$-$2$ $$${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $i$n$s$p$e$c$t$i$o$n$.$s$t$a$t$u$s$ $=$=$=$ $'$p$a$s$s$e$d$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$b$o$r$d$e$r$-$g$r$e$e$n$-$2$0$0$ $b$g$-$g$r$e$e$n$-$5$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $i$n$s$p$e$c$t$i$o$n$.$s$t$a$t$u$s$ $=$=$=$ $'$f$a$i$l$e$d$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$b$o$r$d$e$r$-$r$e$d$-$2$0$0$ $b$g$-$r$e$d$-$5$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $'$b$o$r$d$e$r$-$o$r$a$n$g$e$-$2$0$0$ $b$g$-$o$r$a$n$g$e$-$5$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$5$x$l$"$>${$i$n$s$p$e$c$t$i$o$n$.$i$m$a$g$e$U$r$l$}$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $m$b$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$3$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$i$n$s$p$e$c$t$i$o$n$.$p$r$o$d$u$c$t$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $p$x$-$2$ $p$y$-$1$ $b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>${$i$n$s$p$e$c$t$i$o$n$.$i$d$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$"$>${$i$n$s$p$e$c$t$i$o$n$.$b$a$t$c$h$}$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$n$s$p$e$c$t$i$o$n$.$s$t$a$t$u$s$ $=$=$=$ $'$p$a$s$s$e$d$'$ $&$&$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $p$x$-$2$ $p$y$-$1$ $b$g$-$g$r$e$e$n$-$6$0$0$ $t$e$x$t$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$f$u$l$l$ $f$o$n$t$-$m$e$d$i$u$m$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$h$e$c$k$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$3$ $h$-$3$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $P$A$S$S$E$D$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$n$s$p$e$c$t$i$o$n$.$s$t$a$t$u$s$ $=$=$=$ $'$f$a$i$l$e$d$'$ $&$&$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $p$x$-$2$ $p$y$-$1$ $b$g$-$r$e$d$-$6$0$0$ $t$e$x$t$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$f$u$l$l$ $f$o$n$t$-$m$e$d$i$u$m$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$X$C$i$r$c$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$3$ $h$-$3$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $F$A$I$L$E$D$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$n$s$p$e$c$t$i$o$n$.$s$t$a$t$u$s$ $=$=$=$ $'$w$a$r$n$i$n$g$'$ $&$&$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $p$x$-$2$ $p$y$-$1$ $b$g$-$o$r$a$n$g$e$-$6$0$0$ $t$e$x$t$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$f$u$l$l$ $f$o$n$t$-$m$e$d$i$u$m$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$A$l$e$r$t$T$r$i$a$n$g$l$e$ $c$l$a$s$s$N$a$m$e$=$"$w$-$3$ $h$-$3$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $W$A$R$N$I$N$G$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$r$i$g$h$t$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$2$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$i$n$d$i$g$o$-$6$0$0$"$>${$i$n$s$p$e$c$t$i$o$n$.$c$o$n$f$i$d$e$n$c$e$}$%$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$C$o$n$f$i$d$e$n$c$e$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$b$-$2$"$>${$i$n$s$p$e$c$t$i$o$n$.$t$i$m$e$s$t$a$m$p$}$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$n$s$p$e$c$t$i$o$n$.$d$e$f$e$c$t$s$.$l$e$n$g$t$h$ $>$ $0$ $&$&$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$m$t$-$2$ $p$t$-$2$ $b$o$r$d$e$r$-$t$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$2$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $m$b$-$1$"$>$D$e$t$e$c$t$e$d$ $D$e$f$e$c$t$s$:$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $f$l$e$x$-$w$r$a$p$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$n$s$p$e$c$t$i$o$n$.$d$e$f$e$c$t$s$.$m$a$p$($($d$e$f$e$c$t$,$ $i$d$x$)$ $=$>$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $k$e$y$=${$i$d$x$}$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $p$x$-$2$ $p$y$-$1$ $b$g$-$w$h$i$t$e$ $r$o$u$n$d$e$d$ $b$o$r$d$e$r$ $b$o$r$d$e$r$-$r$e$d$-$3$0$0$ $t$e$x$t$-$r$e$d$-$7$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$d$e$f$e$c$t$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$n$s$p$e$c$t$i$o$n$.$s$t$a$t$u$s$ $!$=$=$ $'$p$a$s$s$e$d$'$ $&$&$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$m$t$-$3$ $f$l$e$x$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$2$ $b$g$-$n$e$u$t$r$a$l$-$9$0$0$ $t$e$x$t$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$l$g$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$8$0$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $V$i$e$w$ $F$u$l$l$ $A$n$a$l$y$s$i$s$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$2$ $b$g$-$w$h$i$t$e$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$n$e$u$t$r$a$l$-$3$0$0$ $r$o$u$n$d$e$d$-$l$g$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$5$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $M$a$n$u$a$l$ $R$e$v$i$e$w$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$i$n$s$p$e$c$t$i$o$n$.$s$t$a$t$u$s$ $=$=$=$ $'$w$a$r$n$i$n$g$'$ $&$&$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$b$u$t$t$o$n$ $c$l$a$s$s$N$a$m$e$=$"$p$x$-$4$ $p$y$-$2$ $b$g$-$g$r$e$e$n$-$6$0$0$ $t$e$x$t$-$w$h$i$t$e$ $r$o$u$n$d$e$d$-$l$g$ $h$o$v$e$r$:$b$g$-$g$r$e$e$n$-$7$0$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$ $t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $O$v$e$r$r$i$d$e$ $&$ $A$p$p$r$o$v$e$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$b$u$t$t$o$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $)$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $)$)$}$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $D$e$f$e$c$t$ $C$a$t$e$g$o$r$i$e$s$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$"$>$D$e$f$e$c$t$ $C$a$t$e$g$o$r$i$e$s$ $-$ $L$a$s$t$ $2$4$ $H$o$u$r$s$<$/$h$2$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$3$"$>$$
-$ $ $ $ $ $ $ $ $ $ ${$d$e$f$e$c$t$C$a$t$e$g$o$r$i$e$s$.$m$a$p$($($c$a$t$e$g$o$r$y$,$ $i$d$x$)$ $=$>$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$i$d$x$}$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$b$e$t$w$e$e$n$ $p$-$4$ $b$g$-$n$e$u$t$r$a$l$-$5$0$ $r$o$u$n$d$e$d$-$l$g$ $h$o$v$e$r$:$b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $t$r$a$n$s$i$t$i$o$n$-$c$o$l$o$r$s$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$c$a$t$e$g$o$r$y$.$t$y$p$e$}$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$6$0$0$ $m$t$-$1$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $D$e$t$e$c$t$e$d$:$ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>${$c$a$t$e$g$o$r$y$.$d$e$t$e$c$t$e$d$}$<$/$s$p$a$n$>$ $i$n$s$t$a$n$c$e$s$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$r$i$g$h$t$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>${$c$a$t$e$g$o$r$y$.$r$a$t$e$}$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$"$>$D$e$f$e$c$t$ $r$a$t$e$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=${$`$p$x$-$3$ $p$y$-$1$ $r$o$u$n$d$e$d$-$f$u$l$l$ $t$e$x$t$-$x$s$ $f$o$n$t$-$m$e$d$i$u$m$ $$${$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $c$a$t$e$g$o$r$y$.$t$r$e$n$d$ $=$=$=$ $'$d$o$w$n$'$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $?$ $'$b$g$-$g$r$e$e$n$-$1$0$0$ $t$e$x$t$-$g$r$e$e$n$-$7$0$0$'$ $$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $:$ $'$b$g$-$y$e$l$l$o$w$-$1$0$0$ $t$e$x$t$-$y$e$l$l$o$w$-$7$0$0$'$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $}$`$}$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ ${$c$a$t$e$g$o$r$y$.$t$r$e$n$d$ $=$=$=$ $'$d$o$w$n$'$ $?$ $'$â$†$“$ $I$m$p$r$o$v$i$n$g$'$ $:$ $'$â$†$’$ $S$t$a$b$l$e$'$}$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $)$)$}$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $C$a$m$e$r$a$ $G$r$i$d$ $S$i$m$u$l$a$t$i$o$n$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$"$>$$
-$ $ $ $ $ $ $ $ $<$h$2$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$l$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$4$"$>$I$n$s$p$e$c$t$i$o$n$ $S$t$a$t$i$o$n$s$<$/$h$2$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$g$r$i$d$ $g$r$i$d$-$c$o$l$s$-$4$ $g$a$p$-$4$"$>$$
-$ $ $ $ $ $ $ $ $ $ ${$[$1$,$ $2$,$ $3$,$ $4$]$.$m$a$p$($($s$t$a$t$i$o$n$)$ $=$>$ $($$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $k$e$y$=${$s$t$a$t$i$o$n$}$ $c$l$a$s$s$N$a$m$e$=$"$p$-$4$ $b$g$-$n$e$u$t$r$a$l$-$1$0$0$ $r$o$u$n$d$e$d$-$l$g$ $t$e$x$t$-$c$e$n$t$e$r$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$C$a$m$e$r$a$ $c$l$a$s$s$N$a$m$e$=$"$w$-$8$ $h$-$8$ $t$e$x$t$-$n$e$u$t$r$a$l$-$4$0$0$ $m$x$-$a$u$t$o$ $m$b$-$2$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$s$m$ $f$o$n$t$-$m$e$d$i$u$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$"$>$S$t$a$t$i$o$n$ ${$s$t$a$t$i$o$n$}$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $j$u$s$t$i$f$y$-$c$e$n$t$e$r$ $g$a$p$-$1$ $m$t$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$g$r$e$e$n$-$5$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $a$n$i$m$a$t$e$-$p$u$l$s$e$"$>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$g$r$e$e$n$-$6$0$0$"$>$A$c$t$i$v$e$<$/$s$p$a$n$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$x$s$ $t$e$x$t$-$n$e$u$t$r$a$l$-$5$0$0$ $m$t$-$1$"$>$3$2$ $i$t$e$m$s$/$m$i$n$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $)$)$}$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$$
-$ $ $ $ $ $ ${$/$*$ $A$I$ $I$n$s$i$g$h$t$s$ $*$/$}$$
-$ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$c$a$r$d$ $p$-$6$ $b$g$-$g$r$a$d$i$e$n$t$-$t$o$-$b$r$ $f$r$o$m$-$p$u$r$p$l$e$-$5$0$ $t$o$-$i$n$d$i$g$o$-$5$0$ $b$o$r$d$e$r$-$2$ $b$o$r$d$e$r$-$p$u$r$p$l$e$-$1$0$0$"$>$$
-$ $ $ $ $ $ $ $ $<$h$3$ $c$l$a$s$s$N$a$m$e$=$"$t$e$x$t$-$l$g$ $f$o$n$t$-$b$o$l$d$ $t$e$x$t$-$n$e$u$t$r$a$l$-$9$0$0$ $m$b$-$3$ $f$l$e$x$ $i$t$e$m$s$-$c$e$n$t$e$r$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$S$p$a$r$k$l$e$s$ $c$l$a$s$s$N$a$m$e$=$"$w$-$5$ $h$-$5$ $t$e$x$t$-$p$u$r$p$l$e$-$6$0$0$"$ $/$>$$
-$ $ $ $ $ $ $ $ $ $ $A$I$ $I$n$s$i$g$h$t$s$ $&$ $Q$u$a$l$i$t$y$ $T$r$e$n$d$s$$
-$ $ $ $ $ $ $ $ $<$/$h$3$>$$
-$ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$s$p$a$c$e$-$y$-$2$ $t$e$x$t$-$s$m$ $t$e$x$t$-$n$e$u$t$r$a$l$-$7$0$0$"$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$i$n$d$i$g$o$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$S$y$s$t$e$m$ $P$e$r$f$o$r$m$a$n$c$e$:$<$/$s$p$a$n$>$ $9$9$.$2$%$ $d$e$t$e$c$t$i$o$n$ $a$c$c$u$r$a$c$y$ $w$i$t$h$ $0$.$4$%$ $f$a$l$s$e$ $r$e$j$e$c$t$i$o$n$ $r$a$t$e$ $-$ $p$r$o$c$e$s$s$i$n$g$ $1$2$0$ $i$t$e$m$s$/$m$i$n$ $a$c$r$o$s$s$ $4$ $s$t$a$t$i$o$n$s$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$p$u$r$p$l$e$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$Q$u$a$l$i$t$y$ $I$m$p$r$o$v$e$m$e$n$t$:$<$/$s$p$a$n$>$ $S$u$r$f$a$c$e$ $d$e$f$e$c$t$ $r$a$t$e$ $d$e$c$r$e$a$s$e$d$ $2$3$%$ $t$h$i$s$ $w$e$e$k$ $a$f$t$e$r$ $i$d$e$n$t$i$f$y$i$n$g$ $S$u$p$p$l$i$e$r$ $B$ $m$a$t$e$r$i$a$l$ $i$s$s$u$e$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$g$r$e$e$n$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$C$o$s$t$ $S$a$v$i$n$g$s$:$<$/$s$p$a$n$>$ $A$u$t$o$m$a$t$e$d$ $Q$C$ $r$e$d$u$c$e$d$ $m$a$n$u$a$l$ $i$n$s$p$e$c$t$i$o$n$ $c$o$s$t$s$ $b$y$ $$$1$2$,$4$0$0$/$m$o$n$t$h$ $w$h$i$l$e$ $i$m$p$r$o$v$i$n$g$ $d$e$f$e$c$t$ $d$e$t$e$c$t$i$o$n$ $b$y$ $4$7$%$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$f$l$e$x$ $i$t$e$m$s$-$s$t$a$r$t$ $g$a$p$-$2$"$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$d$i$v$ $c$l$a$s$s$N$a$m$e$=$"$w$-$2$ $h$-$2$ $b$g$-$o$r$a$n$g$e$-$6$0$0$ $r$o$u$n$d$e$d$-$f$u$l$l$ $m$t$-$1$.$5$"$>$<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $ $ $ $ $<$p$>$<$s$p$a$n$ $c$l$a$s$s$N$a$m$e$=$"$f$o$n$t$-$m$e$d$i$u$m$"$>$M$o$d$e$l$ $U$p$d$a$t$e$:$<$/$s$p$a$n$>$ $R$e$t$r$a$i$n$e$d$ $w$i$t$h$ $2$,$8$4$0$ $n$e$w$ $d$e$f$e$c$t$ $i$m$a$g$e$s$ $-$ $i$m$p$r$o$v$e$d$ $c$o$l$o$r$ $i$n$c$o$n$s$i$s$t$e$n$c$y$ $d$e$t$e$c$t$i$o$n$ $f$r$o$m$ $9$4$%$ $t$o$ $9$6$.$8$%$<$/$p$>$$
-$ $ $ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $ $ $<$/$d$i$v$>$$
-$ $ $ $ $<$/$d$i$v$>$$
-$ $ $)$;$$
-$}$$
-$
+import { useState } from 'react';
+import { Camera, CheckCircle, XCircle, AlertTriangle, Eye, Sparkles } from 'lucide-react';
+
+const mockInspections = [
+  {
+    id: 'INS-2401',
+    product: 'Laptop Pro 15"',
+    batch: 'BATCH-8821',
+    timestamp: '2025-01-22 14:45:23',
+    status: 'passed',
+    confidence: 98.5,
+    defects: [],
+    imageUrl: 'ðŸ’»'
+  },
+  {
+    id: 'INS-2402',
+    product: 'Wireless Mouse',
+    batch: 'BATCH-8822',
+    timestamp: '2025-01-22 14:47:15',
+    status: 'failed',
+    confidence: 96.2,
+    defects: ['Surface scratch detected', 'Color variance 15%'],
+    imageUrl: 'ðŸ–±ï¸'
+  },
+  {
+    id: 'INS-2403',
+    product: 'USB-C Charger',
+    batch: 'BATCH-8823',
+    timestamp: '2025-01-22 14:49:08',
+    status: 'warning',
+    confidence: 92.1,
+    defects: ['Minor discoloration'],
+    imageUrl: 'ðŸ”Œ'
+  },
+  {
+    id: 'INS-2404',
+    product: 'Monitor 27"',
+    batch: 'BATCH-8824',
+    timestamp: '2025-01-22 14:51:42',
+    status: 'passed',
+    confidence: 99.1,
+    defects: [],
+    imageUrl: 'ðŸ–¥ï¸'
+  }
+];
+
+const defectCategories = [
+  { type: 'Surface Defects', detected: 12, rate: '2.4%', trend: 'down' },
+  { type: 'Dimensional Variance', detected: 3, rate: '0.6%', trend: 'stable' },
+  { type: 'Color Inconsistency', detected: 8, rate: '1.6%', trend: 'down' },
+  { type: 'Assembly Errors', detected: 1, rate: '0.2%', trend: 'down' }
+];
+
+export default function ComputerVisionQC() {
+  const [viewMode, setViewMode] = useState('realtime');
+
+  const passedCount = mockInspections.filter(i => i.status === 'passed').length;
+  const failedCount = mockInspections.filter(i => i.status === 'failed').length;
+  const warningCount = mockInspections.filter(i => i.status === 'warning').length;
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-neutral-900 flex items-center gap-3">
+            <Camera className="w-8 h-8 text-indigo-600" />
+            Computer Vision Quality Control
+          </h1>
+          <p className="text-neutral-600 mt-2">CNN-based defect detection with 99.2% accuracy for automated quality assurance</p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setViewMode('realtime')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              viewMode === 'realtime' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+            }`}
+          >
+            Real-Time
+          </button>
+          <button
+            onClick={() => setViewMode('history')}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              viewMode === 'history' ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
+            }`}
+          >
+            History
+          </button>
+        </div>
+      </div>
+
+      {/* AI Model Info */}
+      <div className="card p-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-100">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0">
+            <Eye className="w-6 h-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className="text-lg font-bold text-neutral-900">Deep Learning Vision System Active</h3>
+            <p className="text-sm text-neutral-600 mt-1">
+              YOLOv8 + ResNet50 ensemble for multi-class defect detection at production speed (120 items/min).
+              Accuracy: <span className="font-bold text-indigo-600">99.2%</span> with 0.4% false rejection rate
+            </p>
+            <div className="flex gap-4 mt-3 text-xs text-neutral-500">
+              <span>Models: YOLOv8 + ResNet50</span>
+              <span>Training images: 284k</span>
+              <span>Processing speed: 8ms/image</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Key Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="card p-6 border-2 border-green-200 bg-green-50">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-neutral-600">Passed</span>
+            <CheckCircle className="w-5 h-5 text-green-600" />
+          </div>
+          <div className="text-3xl font-bold text-green-600">{passedCount}</div>
+          <div className="text-xs text-neutral-600 mt-1">97.6% pass rate</div>
+        </div>
+
+        <div className="card p-6 border-2 border-red-200 bg-red-50">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-neutral-600">Failed</span>
+            <XCircle className="w-5 h-5 text-red-600" />
+          </div>
+          <div className="text-3xl font-bold text-red-600">{failedCount}</div>
+          <div className="text-xs text-neutral-600 mt-1">Defects detected</div>
+        </div>
+
+        <div className="card p-6 border-2 border-orange-200 bg-orange-50">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-neutral-600">Warnings</span>
+            <AlertTriangle className="w-5 h-5 text-orange-600" />
+          </div>
+          <div className="text-3xl font-bold text-orange-600">{warningCount}</div>
+          <div className="text-xs text-neutral-600 mt-1">Manual review needed</div>
+        </div>
+
+        <div className="card p-6">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm text-neutral-600">Inspections Today</span>
+            <Camera className="w-5 h-5 text-indigo-600" />
+          </div>
+          <div className="text-3xl font-bold text-neutral-900">1,247</div>
+          <div className="text-xs text-indigo-600 mt-1">120 items/min avg</div>
+        </div>
+      </div>
+
+      {/* Live Inspection Feed */}
+      <div className="card p-6">
+        <h2 className="text-xl font-bold text-neutral-900 mb-4 flex items-center gap-2">
+          <Camera className="w-5 h-5" />
+          Live Inspection Feed
+        </h2>
+        <div className="space-y-3">
+          {mockInspections.map((inspection) => (
+            <div
+              key={inspection.id}
+              className={`p-4 rounded-lg border-2 ${
+                inspection.status === 'passed'
+                  ? 'border-green-200 bg-green-50'
+                  : inspection.status === 'failed'
+                  ? 'border-red-200 bg-red-50'
+                  : 'border-orange-200 bg-orange-50'
+              }`}
+            >
+              <div className="flex items-start gap-4">
+                <div className="text-5xl">{inspection.imageUrl}</div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-neutral-900">{inspection.product}</span>
+                      <span className="text-xs px-2 py-1 bg-neutral-100 rounded-full text-neutral-600">{inspection.id}</span>
+                      <span className="text-xs text-neutral-600">{inspection.batch}</span>
+                      {inspection.status === 'passed' && (
+                        <span className="text-xs px-2 py-1 bg-green-600 text-white rounded-full font-medium flex items-center gap-1">
+                          <CheckCircle className="w-3 h-3" />
+                          PASSED
+                        </span>
+                      )}
+                      {inspection.status === 'failed' && (
+                        <span className="text-xs px-2 py-1 bg-red-600 text-white rounded-full font-medium flex items-center gap-1">
+                          <XCircle className="w-3 h-3" />
+                          FAILED
+                        </span>
+                      )}
+                      {inspection.status === 'warning' && (
+                        <span className="text-xs px-2 py-1 bg-orange-600 text-white rounded-full font-medium flex items-center gap-1">
+                          <AlertTriangle className="w-3 h-3" />
+                          WARNING
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-indigo-600">{inspection.confidence}%</div>
+                      <div className="text-xs text-neutral-500">Confidence</div>
+                    </div>
+                  </div>
+                  <div className="text-xs text-neutral-500 mb-2">{inspection.timestamp}</div>
+                  
+                  {inspection.defects.length > 0 && (
+                    <div className="mt-2 pt-2 border-t border-neutral-200">
+                      <div className="text-xs font-medium text-neutral-700 mb-1">Detected Defects:</div>
+                      <div className="flex flex-wrap gap-2">
+                        {inspection.defects.map((defect, idx) => (
+                          <span key={idx} className="text-xs px-2 py-1 bg-white rounded border border-red-300 text-red-700">
+                            {defect}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {inspection.status !== 'passed' && (
+                <div className="mt-3 flex gap-2">
+                  <button className="px-4 py-2 bg-neutral-900 text-white rounded-lg hover:bg-neutral-800 transition-colors text-sm font-medium">
+                    View Full Analysis
+                  </button>
+                  <button className="px-4 py-2 bg-white text-neutral-700 border-2 border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors text-sm font-medium">
+                    Manual Review
+                  </button>
+                  {inspection.status === 'warning' && (
+                    <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+                      Override & Approve
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Defect Categories */}
+      <div className="card p-6">
+        <h2 className="text-xl font-bold text-neutral-900 mb-4">Defect Categories - Last 24 Hours</h2>
+        <div className="space-y-3">
+          {defectCategories.map((category, idx) => (
+            <div key={idx} className="flex items-center justify-between p-4 bg-neutral-50 rounded-lg hover:bg-neutral-100 transition-colors">
+              <div className="flex-1">
+                <div className="font-medium text-neutral-900">{category.type}</div>
+                <div className="text-sm text-neutral-600 mt-1">
+                  Detected: <span className="font-medium">{category.detected}</span> instances
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <div className="text-xl font-bold text-neutral-900">{category.rate}</div>
+                  <div className="text-xs text-neutral-500">Defect rate</div>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  category.trend === 'down' 
+                    ? 'bg-green-100 text-green-700' 
+                    : 'bg-yellow-100 text-yellow-700'
+                }`}>
+                  {category.trend === 'down' ? 'â†“ Improving' : 'â†’ Stable'}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Camera Grid Simulation */}
+      <div className="card p-6">
+        <h2 className="text-xl font-bold text-neutral-900 mb-4">Inspection Stations</h2>
+        <div className="grid grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((station) => (
+            <div key={station} className="p-4 bg-neutral-100 rounded-lg text-center">
+              <Camera className="w-8 h-8 text-neutral-400 mx-auto mb-2" />
+              <div className="text-sm font-medium text-neutral-900">Station {station}</div>
+              <div className="flex items-center justify-center gap-1 mt-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-xs text-green-600">Active</span>
+              </div>
+              <div className="text-xs text-neutral-500 mt-1">32 items/min</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* AI Insights */}
+      <div className="card p-6 bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-100">
+        <h3 className="text-lg font-bold text-neutral-900 mb-3 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-purple-600" />
+          AI Insights & Quality Trends
+        </h3>
+        <div className="space-y-2 text-sm text-neutral-700">
+          <div className="flex items-start gap-2">
+            <div className="w-2 h-2 bg-indigo-600 rounded-full mt-1.5"></div>
+            <p><span className="font-medium">System Performance:</span> 99.2% detection accuracy with 0.4% false rejection rate - processing 120 items/min across 4 stations</p>
+          </div>
+          <div className="flex items-start gap-2">
+            <div className="w-2 h-2 bg-purple-600 rounded-full mt-1.5"></div>
+            <p><span className="font-medium">Quality Improvement:</span> Surface defect rate decreased 23% this week after identifying Supplier B material issue</p>
+          </div>
+          <div className="flex items-start gap-2">
+            <div className="w-2 h-2 bg-green-600 rounded-full mt-1.5"></div>
+            <p><span className="font-medium">Cost Savings:</span> Automated QC reduced manual inspection costs by $12,400/month while improving defect detection by 47%</p>
+          </div>
+          <div className="flex items-start gap-2">
+            <div className="w-2 h-2 bg-orange-600 rounded-full mt-1.5"></div>
+            <p><span className="font-medium">Model Update:</span> Retrained with 2,840 new defect images - improved color inconsistency detection from 94% to 96.8%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
