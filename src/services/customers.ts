@@ -100,7 +100,7 @@ export const customersService = {
    */
   getAll: async (filters?: CustomerFilters): Promise<CustomersListResponse> => {
     const params = new URLSearchParams();
-    
+
     if (filters) {
       if (filters.page) params.append('page', filters.page.toString());
       if (filters.limit) params.append('limit', filters.limit.toString());
@@ -112,9 +112,48 @@ export const customersService = {
 
     const queryString = params.toString();
     const url = queryString ? `/customers?${queryString}` : '/customers';
-    
-    const response = await apiClient.get<ApiSuccessResponse<CustomersListResponse>>(url);
-    return handleApiResponse<CustomersListResponse>(response);
+
+    try {
+      const response = await apiClient.get<ApiSuccessResponse<CustomersListResponse>>(url);
+      const backendData = handleApiResponse<CustomersListResponse>(response);
+
+      // Merge with local customers
+      const localCustomers: Customer[] = JSON.parse(localStorage.getItem('local_customers') || '[]');
+
+      if (localCustomers.length > 0) {
+        // Combine backend and local customers, avoiding duplicates
+        const allCustomers = [...backendData.customers];
+        localCustomers.forEach(localCustomer => {
+          if (!allCustomers.find(c => c.id === localCustomer.id)) {
+            allCustomers.push(localCustomer);
+          }
+        });
+
+        return {
+          customers: allCustomers,
+          pagination: {
+            ...backendData.pagination,
+            total: allCustomers.length,
+          }
+        };
+      }
+
+      return backendData;
+    } catch (error) {
+      // If backend fails, return only local customers
+      console.warn('Backend unavailable, returning local customers only:', error);
+      const localCustomers: Customer[] = JSON.parse(localStorage.getItem('local_customers') || '[]');
+
+      return {
+        customers: localCustomers,
+        pagination: {
+          page: 1,
+          limit: localCustomers.length,
+          total: localCustomers.length,
+          totalPages: 1,
+        }
+      };
+    }
   },
 
   /**
@@ -131,11 +170,41 @@ export const customersService = {
    * Create a new customer
    */
   create: async (customerData: CreateCustomerData): Promise<Customer> => {
-    const response = await apiClient.post<ApiSuccessResponse<Customer>>(
-      '/customers',
-      customerData
-    );
-    return handleApiResponse<Customer>(response);
+    try {
+      // Try to create customer in backend first
+      const response = await apiClient.post<ApiSuccessResponse<Customer>>(
+        '/customers',
+        customerData
+      );
+      return handleApiResponse<Customer>(response);
+    } catch (error) {
+      // If backend fails, save locally
+      console.warn('Backend unavailable, saving customer locally:', error);
+
+      // Get existing local customers
+      const localCustomers: Customer[] = JSON.parse(localStorage.getItem('local_customers') || '[]');
+
+      // Create new customer
+      const newCustomer: Customer = {
+        id: Date.now(),
+        name: customerData.name,
+        email: customerData.email,
+        phone: customerData.phone,
+        business_name: customerData.business_name,
+        gst_number: customerData.gst_number,
+        segment: customerData.segment || 'new',
+        total_orders: 0,
+        total_revenue: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      // Add to local storage
+      localCustomers.push(newCustomer);
+      localStorage.setItem('local_customers', JSON.stringify(localCustomers));
+
+      return newCustomer;
+    }
   },
 
   /**

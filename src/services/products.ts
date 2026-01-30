@@ -89,7 +89,7 @@ export const productsService = {
    */
   getAll: async (filters?: ProductFilters): Promise<ProductsResponse> => {
     const params = new URLSearchParams();
-    
+
     if (filters) {
       if (filters.page) params.append('page', filters.page.toString());
       if (filters.limit) params.append('limit', filters.limit.toString());
@@ -99,11 +99,50 @@ export const productsService = {
       if (filters.sortBy) params.append('sortBy', filters.sortBy);
       if (filters.order) params.append('order', filters.order);
     }
-    
-    const response = await apiClient.get<ApiSuccessResponse<ProductsResponse>>(
-      `/products?${params.toString()}`
-    );
-    return handleApiResponse<ProductsResponse>(response);
+
+    try {
+      const response = await apiClient.get<ApiSuccessResponse<ProductsResponse>>(
+        `/products?${params.toString()}`
+      );
+      const backendData = handleApiResponse<ProductsResponse>(response);
+
+      // Merge with local products
+      const localProducts: Product[] = JSON.parse(localStorage.getItem('local_products') || '[]');
+
+      if (localProducts.length > 0) {
+        // Combine backend and local products, avoiding duplicates
+        const allProducts = [...backendData.products];
+        localProducts.forEach(localProduct => {
+          if (!allProducts.find(p => p.id === localProduct.id)) {
+            allProducts.push(localProduct);
+          }
+        });
+
+        return {
+          products: allProducts,
+          pagination: {
+            ...backendData.pagination,
+            totalItems: allProducts.length,
+          }
+        };
+      }
+
+      return backendData;
+    } catch (error) {
+      // If backend fails, return only local products
+      console.warn('Backend unavailable, returning local products only:', error);
+      const localProducts: Product[] = JSON.parse(localStorage.getItem('local_products') || '[]');
+
+      return {
+        products: localProducts,
+        pagination: {
+          page: 1,
+          limit: localProducts.length,
+          totalItems: localProducts.length,
+          totalPages: 1,
+        }
+      };
+    }
   },
 
   /**
@@ -124,11 +163,47 @@ export const productsService = {
    * @returns Created product
    */
   create: async (data: CreateProductData): Promise<Product> => {
-    const response = await apiClient.post<ApiSuccessResponse<Product>>(
-      '/products',
-      data
-    );
-    return handleApiResponse<Product>(response);
+    try {
+      // Try to save to backend first
+      const response = await apiClient.post<ApiSuccessResponse<Product>>(
+        '/products',
+        data
+      );
+      return handleApiResponse<Product>(response);
+    } catch (error) {
+      // If backend fails, save locally
+      console.warn('Backend unavailable, saving product locally:', error);
+
+      // Get existing local products
+      const localProducts = JSON.parse(localStorage.getItem('local_products') || '[]');
+
+      // Create new product with local ID
+      const newProduct: Product = {
+        id: Date.now(), // Use timestamp as ID
+        user_id: 1,
+        name: data.name,
+        sku: data.sku,
+        category: data.category || null,
+        description: data.description || null,
+        price: data.price,
+        cost: data.cost,
+        stock: data.stock,
+        reorder_level: data.reorder_level,
+        unit: data.unit || null,
+        supplier: data.supplier || null,
+        status: 'active',
+        needs_reorder: data.stock <= data.reorder_level,
+        margin_percentage: ((data.price - data.cost) / data.price) * 100,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      // Add to local storage
+      localProducts.push(newProduct);
+      localStorage.setItem('local_products', JSON.stringify(localProducts));
+
+      return newProduct;
+    }
   },
 
   /**
@@ -138,11 +213,53 @@ export const productsService = {
    * @returns Updated product
    */
   update: async (id: number, data: UpdateProductData): Promise<Product> => {
-    const response = await apiClient.put<ApiSuccessResponse<Product>>(
-      `/products/${id}`,
-      data
-    );
-    return handleApiResponse<Product>(response);
+    try {
+      // Try to update in backend first
+      const response = await apiClient.put<ApiSuccessResponse<Product>>(
+        `/products/${id}`,
+        data
+      );
+      return handleApiResponse<Product>(response);
+    } catch (error) {
+      // If backend fails, update locally
+      console.warn('Backend unavailable, updating product locally:', error);
+
+      // Get existing local products
+      const localProducts: Product[] = JSON.parse(localStorage.getItem('local_products') || '[]');
+
+      // Find and update the product
+      const productIndex = localProducts.findIndex(p => p.id === id);
+
+      if (productIndex === -1) {
+        throw new Error('Product not found in local storage');
+      }
+
+      // Update the product
+      const updatedProduct: Product = {
+        ...localProducts[productIndex],
+        ...data,
+        updated_at: new Date().toISOString(),
+      };
+
+      // Recalculate derived fields if price or cost changed
+      if (data.price !== undefined || data.cost !== undefined) {
+        const price = data.price ?? updatedProduct.price;
+        const cost = data.cost ?? updatedProduct.cost;
+        updatedProduct.margin_percentage = ((price - cost) / price) * 100;
+      }
+
+      if (data.stock !== undefined || data.reorder_level !== undefined) {
+        const stock = data.stock ?? updatedProduct.stock;
+        const reorderLevel = data.reorder_level ?? updatedProduct.reorder_level;
+        updatedProduct.needs_reorder = stock <= reorderLevel;
+      }
+
+      // Update in array
+      localProducts[productIndex] = updatedProduct;
+      localStorage.setItem('local_products', JSON.stringify(localProducts));
+
+      return updatedProduct;
+    }
   },
 
   /**
@@ -150,7 +267,27 @@ export const productsService = {
    * @param id Product ID
    */
   delete: async (id: number): Promise<void> => {
-    await apiClient.delete(`/products/${id}`);
+    try {
+      // Try to delete from backend first
+      await apiClient.delete(`/products/${id}`);
+    } catch (error) {
+      // If backend fails, delete from local storage
+      console.warn('Backend unavailable, deleting product locally:', error);
+
+      // Get existing local products
+      const localProducts: Product[] = JSON.parse(localStorage.getItem('local_products') || '[]');
+
+      // Filter out the product to delete
+      const updatedProducts = localProducts.filter(p => p.id !== id);
+
+      // Save back to localStorage
+      localStorage.setItem('local_products', JSON.stringify(updatedProducts));
+
+      // If product wasn't in local storage either, throw error
+      if (localProducts.length === updatedProducts.length) {
+        throw new Error('Product not found in local storage');
+      }
+    }
   },
 
   /**
@@ -182,11 +319,11 @@ export const productsService = {
    * Get low stock products
    * @returns List of products with low stock
    */
-  getLowStock: async (): Promise<{products: Product[], count: number}> => {
-    const response = await apiClient.get<ApiSuccessResponse<{products: Product[], count: number}>>(
+  getLowStock: async (): Promise<{ products: Product[], count: number }> => {
+    const response = await apiClient.get<ApiSuccessResponse<{ products: Product[], count: number }>>(
       '/products/alerts/low-stock'
     );
-    return handleApiResponse<{products: Product[], count: number}>(response);
+    return handleApiResponse<{ products: Product[], count: number }>(response);
   },
 };
 
