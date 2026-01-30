@@ -1,58 +1,89 @@
-import { query } from '../config/database.js';
+import { query, getDatabaseInfo } from '../config/database.js';
 import { hashPassword, comparePassword, validatePasswordStrength } from '../utils/password.js';
 import { generateTokenFromUser } from '../utils/jwt.js';
 import { asyncHandler, AppError } from '../middleware/errorHandler.js';
+
+// Check if we're in demo mode (no database)
+const isDemoMode = () => {
+  const dbInfo = getDatabaseInfo();
+  return dbInfo.isInMemory;
+};
 
 /**
  * Register a new user
  * POST /api/auth/register
  */
 export const register = asyncHandler(async (req, res) => {
-  const { email, password, full_name } = req.body;
-  
+  const { email, password, firstName, lastName, full_name } = req.body;
+
+  // In demo mode, accept any registration
+  if (isDemoMode()) {
+    const demoUser = {
+      id: Math.floor(Math.random() * 10000),
+      email: email.toLowerCase(),
+      full_name: full_name || `${firstName} ${lastName}`,
+      role: 'admin',
+      created_at: new Date().toISOString()
+    };
+
+    const token = generateTokenFromUser(demoUser);
+
+    return res.status(201).json({
+      success: true,
+      message: 'User registered successfully (Demo Mode)',
+      data: {
+        token,
+        user: demoUser
+      }
+    });
+  }
+
+  // Normal registration flow (with database)
+  const userFullName = full_name || `${firstName} ${lastName}`;
+
   // Validate required fields
-  if (!email || !password || !full_name) {
+  if (!email || !password || !userFullName) {
     throw new AppError('Email, password, and full name are required', 400);
   }
-  
+
   // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     throw new AppError('Invalid email format', 400);
   }
-  
+
   // Validate password strength
   const passwordValidation = validatePasswordStrength(password);
   if (!passwordValidation.valid) {
     throw new AppError('Password validation failed', 400, passwordValidation.errors);
   }
-  
+
   // Check if user already exists
   const existingUser = await query(
     'SELECT id FROM users WHERE email = $1',
     [email.toLowerCase()]
   );
-  
+
   if (existingUser.rows.length > 0) {
     throw new AppError('User with this email already exists', 409);
   }
-  
+
   // Hash password
   const password_hash = await hashPassword(password);
-  
+
   // Create user
   const result = await query(
     `INSERT INTO users (email, password_hash, full_name, role)
      VALUES ($1, $2, $3, $4)
      RETURNING id, email, full_name, role, created_at`,
-    [email.toLowerCase(), password_hash, full_name, 'user']
+    [email.toLowerCase(), password_hash, userFullName, 'user']
   );
-  
+
   const user = result.rows[0];
-  
+
   // Generate JWT token
   const token = generateTokenFromUser(user);
-  
+
   res.status(201).json({
     success: true,
     message: 'User registered successfully',
@@ -75,12 +106,35 @@ export const register = asyncHandler(async (req, res) => {
  */
 export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  
+
   // Validate required fields
   if (!email || !password) {
     throw new AppError('Email and password are required', 400);
   }
-  
+
+  // In demo mode, accept ANY email/password combination
+  if (isDemoMode()) {
+    const demoUser = {
+      id: 1,
+      email: email.toLowerCase(),
+      full_name: 'Demo User',
+      role: 'admin',
+      created_at: new Date().toISOString()
+    };
+
+    const token = generateTokenFromUser(demoUser);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Login successful (Demo Mode - No Database)',
+      data: {
+        token,
+        user: demoUser
+      }
+    });
+  }
+
+  // Normal login flow (with database)
   // Find user by email
   const result = await query(
     `SELECT id, email, password_hash, full_name, role, created_at
@@ -88,26 +142,26 @@ export const login = asyncHandler(async (req, res) => {
      WHERE email = $1`,
     [email.toLowerCase()]
   );
-  
+
   if (result.rows.length === 0) {
     throw new AppError('Invalid email or password', 401);
   }
-  
+
   const user = result.rows[0];
-  
+
   // Compare passwords
   const isPasswordValid = await comparePassword(password, user.password_hash);
-  
+
   if (!isPasswordValid) {
     throw new AppError('Invalid email or password', 401);
   }
-  
+
   // Generate JWT token
   const token = generateTokenFromUser(user);
-  
+
   // Remove password hash from response
   delete user.password_hash;
-  
+
   res.status(200).json({
     success: true,
     message: 'Login successful',
@@ -131,7 +185,7 @@ export const login = asyncHandler(async (req, res) => {
 export const getMe = asyncHandler(async (req, res) => {
   // User is already attached by auth middleware
   const user = req.user;
-  
+
   res.status(200).json({
     success: true,
     data: {
@@ -153,7 +207,7 @@ export const getMe = asyncHandler(async (req, res) => {
 export const logout = asyncHandler(async (req, res) => {
   // In JWT-based auth, logout is handled client-side by removing the token
   // This endpoint exists for consistency and can be extended for token blacklisting
-  
+
   res.status(200).json({
     success: true,
     message: 'Logged out successfully'
