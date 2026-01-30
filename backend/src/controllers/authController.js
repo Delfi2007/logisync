@@ -1,13 +1,10 @@
-import { query, getDatabaseInfo } from '../config/database.js';
+import { query } from '../config/database.js';
 import { hashPassword, comparePassword, validatePasswordStrength } from '../utils/password.js';
 import { generateTokenFromUser } from '../utils/jwt.js';
 import { asyncHandler, AppError } from '../middleware/errorHandler.js';
 
-// Check if we're in demo mode (no database)
-const isDemoMode = () => {
-  const dbInfo = getDatabaseInfo();
-  return dbInfo.isInMemory;
-};
+// Check if we're in demo mode (no database configured)
+const DEMO_MODE = !process.env.DB_PASSWORD;
 
 /**
  * Register a new user
@@ -17,11 +14,11 @@ export const register = asyncHandler(async (req, res) => {
   const { email, password, firstName, lastName, full_name } = req.body;
 
   // In demo mode, accept any registration
-  if (isDemoMode()) {
+  if (DEMO_MODE) {
     const demoUser = {
       id: Math.floor(Math.random() * 10000),
-      email: email.toLowerCase(),
-      full_name: full_name || `${firstName} ${lastName}`,
+      email: email?.toLowerCase() || 'demo@logisync.com',
+      full_name: full_name || `${firstName || 'Demo'} ${lastName || 'User'}`,
       role: 'admin',
       created_at: new Date().toISOString()
     };
@@ -30,7 +27,7 @@ export const register = asyncHandler(async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: 'User registered successfully (Demo Mode)',
+      message: 'User registered successfully (Demo Mode - No Database)',
       data: {
         token,
         user: demoUser
@@ -113,10 +110,10 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   // In demo mode, accept ANY email/password combination
-  if (isDemoMode()) {
+  if (DEMO_MODE) {
     const demoUser = {
       id: 1,
-      email: email.toLowerCase(),
+      email: email?.toLowerCase() || 'demo@logisync.com',
       full_name: 'Demo User',
       role: 'admin',
       created_at: new Date().toISOString()
