@@ -12,7 +12,10 @@ import {
   Bell,
   Search,
   User,
-  LogOut
+  LogOut,
+  Sparkles,
+  Link as LinkIcon,
+  Leaf
 } from 'lucide-react';
 import { ReactNode, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -22,7 +25,15 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-const navigation = [
+interface NavigationItem {
+  name: string;
+  href: string;
+  icon: any;
+  badge?: string;
+  badgeColor?: string;
+}
+
+const navigation: NavigationItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Inventory', href: '/inventory', icon: Package },
   { name: 'Orders', href: '/orders', icon: ShoppingCart },
@@ -30,6 +41,9 @@ const navigation = [
   { name: 'Analytics', href: '/analytics', icon: Brain },
   { name: 'Customers', href: '/customers', icon: Users },
   { name: 'Warehouses', href: '/warehouses', icon: Warehouse },
+  { name: 'AI & ML', href: '/ai/demand-forecasting', icon: Sparkles, badge: '7', badgeColor: 'bg-purple-600' },
+  { name: 'Blockchain', href: '/blockchain/tracking', icon: LinkIcon, badge: '2', badgeColor: 'bg-violet-600' },
+  { name: 'Sustainability', href: '/sustainability/carbon-footprint', icon: Leaf, badge: '3', badgeColor: 'bg-green-600' },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
@@ -84,19 +98,26 @@ export default function MainLayout({ children }: LayoutProps) {
                   key={item.name}
                   to={item.href}
                   className={`
-                    group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors
+                    group flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-colors
                     ${active
                       ? 'bg-neutral-900 text-white'
                       : 'text-neutral-700 hover:bg-neutral-100'
                     }
                   `}
                 >
-                  <Icon
-                    className={`mr-3 flex-shrink-0 h-5 w-5 ${
-                      active ? 'text-white' : 'text-neutral-500'
-                    }`}
-                  />
-                  {item.name}
+                  <div className="flex items-center">
+                    <Icon
+                      className={`mr-3 flex-shrink-0 h-5 w-5 ${
+                        active ? 'text-white' : 'text-neutral-500'
+                      }`}
+                    />
+                    {item.name}
+                  </div>
+                  {item.badge && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${item.badgeColor} text-white`}>
+                      {item.badge}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -162,19 +183,26 @@ export default function MainLayout({ children }: LayoutProps) {
                   to={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`
-                    group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors
+                    group flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-colors
                     ${active
                       ? 'bg-neutral-900 text-white'
                       : 'text-neutral-700 hover:bg-neutral-100'
                     }
                   `}
                 >
-                  <Icon
-                    className={`mr-3 flex-shrink-0 h-5 w-5 ${
-                      active ? 'text-white' : 'text-neutral-500'
-                    }`}
-                  />
-                  {item.name}
+                  <div className="flex items-center">
+                    <Icon
+                      className={`mr-3 flex-shrink-0 h-5 w-5 ${
+                        active ? 'text-white' : 'text-neutral-500'
+                      }`}
+                    />
+                    {item.name}
+                  </div>
+                  {item.badge && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${item.badgeColor} text-white`}>
+                      {item.badge}
+                    </span>
+                  )}
                 </Link>
               );
             })}

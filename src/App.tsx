@@ -33,6 +33,11 @@ const NLPInterface = lazy(() => import('@/pages/ai/NLPInterface'));
 const BlockchainTracking = lazy(() => import('@/pages/blockchain/BlockchainTracking'));
 const NFTDigitalTwins = lazy(() => import('@/pages/blockchain/NFTDigitalTwins'));
 
+// Sustainability Features
+const CarbonFootprint = lazy(() => import('@/pages/sustainability/CarbonFootprint'));
+const GreenRouting = lazy(() => import('@/pages/sustainability/GreenRouting'));
+const ESGReporting = lazy(() => import('@/pages/sustainability/ESGReporting'));
+
 function App() {
   return (
     <BrowserRouter>
@@ -75,6 +80,11 @@ function App() {
                     {/* Blockchain Features */}
                     <Route path="/blockchain/tracking" element={<BlockchainTracking />} />
                     <Route path="/blockchain/nft-twins" element={<NFTDigitalTwins />} />
+                    
+                    {/* Sustainability Features */}
+                    <Route path="/sustainability/carbon-footprint" element={<CarbonFootprint />} />
+                    <Route path="/sustainability/green-routing" element={<GreenRouting />} />
+                    <Route path="/sustainability/esg-reporting" element={<ESGReporting />} />
                   </Routes>
                 </MainLayout>
               }
